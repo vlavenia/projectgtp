@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AsalUsul extends Model
+class asal extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_asalUsul'];
+    protected $fillable =[
+        'nama_asal'
+    ];
 
-    // Relasi ke model Asset
     public function assets()
     {
         return $this->hasMany(Asset::class);

@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asal_usuls', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_asalUsul');
-            $table->timestamps();
+        Schema::table('assets', function (Blueprint $table) {
+            $table->unsignedBigInteger('asal_id')->after('bpkb')->required();
+            $table->foreign('asal_id')->references('id')->on('asals');
         });
     }
 
@@ -23,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asal_usuls');
+        Schema::table('assets', function (Blueprint $table) {
+            $table->dropColumn('asal_id');
+        });
     }
 };

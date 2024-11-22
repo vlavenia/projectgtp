@@ -13,12 +13,13 @@
         <br>
         @csrf
         <input type="file" name="file" class="form-control">
+
         <br>
-        <div class="row">
-        </div>
-        <button class="btn btn-success">Import User Data</button>
+
+        <button class="btn btn-success ">Import User Data</button>
         <a class="btn btn-warning float-end" href="{{ route('exportAsset') }}">Export User Data</a>
     </form>
+    
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
@@ -49,18 +50,15 @@
                         {{-- </tr> --}}
                     </thead>
                     <tbody>
-                        @if ($asset->count() > 0)
-                            @foreach ($asset as $rs)
-                                @foreach ($asets as $aset)
-                                    <tr>
-                                        <td>{{ $aset->nama_barang }}</td>
-                                        <td>{{ $aset->kode_barang }}</td>
-                                        <td>{{ $aset->jenis_id }}</td>
-                                        <td>{{ $aset->kategori_id }}</td>
-                                        <td>{{ $aset->asalUsul_id }}</td>
-                                    </tr>
-                                @endforeach
+                        @if ($assets->count() > 0)
+                            @foreach ($assets as $asset)
                                 <tr>
+                                    <td>{{ $asset->id }}</td>
+                                    <td>{{ $asset->nama_barang }}</td>
+                                    <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
+                                    <td>{{ $asset->kategori->nama_kategori ?? 'N/A' }}</td>
+                                    <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td>
+                                </tr>
                             @endforeach
                         @else
                             <tr>

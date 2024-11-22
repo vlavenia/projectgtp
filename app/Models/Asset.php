@@ -15,7 +15,7 @@ class Asset extends Model
         'no_ba_terima',
         'tgl_ba_terima',
         'kategori_id',
-        'asalUsul_id',
+        'asal_id',
         'jenis_id',
 
     ];
@@ -26,9 +26,10 @@ class Asset extends Model
         return $this->belongsTo(Kategori::class);
     }
 
+
     public function asal()
     {
-        return $this->belongsTo(AsalUsul::class);
+        return $this->belongsTo(asal::class);
     }
 
     public function jenis()

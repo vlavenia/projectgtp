@@ -38,7 +38,7 @@ class AsetsImport implements ToModel, WithHeadingRow
             'kode_barang'    => $row['kode_barang'],
             'jenis_id'    => 1,
             'kategori_id' => 1,
-            'asalUsul_id' => 1,
+            'asal_id' => 1,
 
         ]);
     }

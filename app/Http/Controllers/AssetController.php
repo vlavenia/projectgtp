@@ -21,10 +21,16 @@ class AssetController extends Controller
 
     public function index()
     {
-        $asset = Asset::orderBy('created_at', 'DESC')->get();
-        $asets = Asset::get();
+        // $assets = Asset::with('asalUsul')->get();
+        // foreach ($assets as $asset) {
+        //     dd($asset->asalUsul); // Debug relasi 'asalUsul'
+        // }
+        // $asset = Asset::orderBy('created_at', 'DESC')->get();
+        // $asets = Asset::get();
+        // $jenis = Asset::with('jenis')->get();
+        $assets = Asset::with(['jenis', 'kategori', 'asal'])->get();
         // return view('assets.index');
-        return view('assets.index', compact('asset', 'asets'));
+        return view('assets.index', compact('assets'));
     }
 
     public function perolehan()
@@ -111,16 +117,28 @@ class AssetController extends Controller
     }
 
     // import
-    public function import()
 
+
+    // public function import()
+
+    // {
+
+    //     // Excel::import(new UsersImport, request()->file('file'));
+    //     Excel::import(new AsetsImport, request()->file('file'));
+    //     return back();
+    // }
+
+    public function import(Request $request)
     {
+        // Validasi file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
 
-        // Excel::import(new UsersImport, request()->file('file'));
-        Excel::import(new AsetsImport, request()->file('file'));
+        // Jalankan import
+        Excel::import(new AsetsImport, $request->file('file')->store('temp'));
 
-
-
-        return back();
+        return redirect()->back()->with('success', 'File berhasil diimpor!');
     }
 
     public function export()
