@@ -23,6 +23,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
+        
         @include('layouts.sidebar')
         <!-- End of Sidebar -->
 
@@ -42,7 +43,7 @@
                     <!-- Page Heading -->
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">@yield('title')</h1>
-                    
+
 
                     {{-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">@yield('title')</h1>

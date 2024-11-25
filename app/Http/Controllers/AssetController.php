@@ -9,7 +9,10 @@ use App\Http\Requests\AssetRequest;
 use App\Imports\UsersImport;
 use App\Imports\AsetsImport;
 use App\Models\Asset;
+use App\Models\Jenis;
 use App\Models\Kategori;
+use App\Models\Klasifikasi;
+use App\Models\objek;
 use App\Models\User;
 use Illuminate\Http\Request;
 // use App\Http\Requests\UserRequest;
@@ -21,31 +24,52 @@ class AssetController extends Controller
 
     public function index()
     {
-        // $assets = Asset::with('asalUsul')->get();
-        // foreach ($assets as $asset) {
-        //     dd($asset->asalUsul); // Debug relasi 'asalUsul'
-        // }
-        // $asset = Asset::orderBy('created_at', 'DESC')->get();
-        // $asets = Asset::get();
-        // $jenis = Asset::with('jenis')->get();
-        $assets = Asset::with(['jenis', 'kategori', 'asal'])->get();
-        // return view('assets.index');
-        return view('assets.index', compact('assets'));
+
+        $assets = Asset::where('status_asset', ' ')->get();
+
+        $asetsCount = Asset::where('status_asset', ' ')->count();
+
+        $perolehanCount = Asset::whereHas('asal', function ($query) {
+            $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
+        })
+            ->where('status_asset', ' ')
+            ->get()->count();
+
+        $mutasimasukCount = Asset::whereHas('asal', function ($query) {
+            $query->whereIn('nama_asal', ['Hibah']);
+        })->where('status_asset', ' ')
+            ->get()->count();
+
+        //menampilkan data dropdown
+        $jenis = Jenis::all();
+        $objek = objek::all();
+        $Klasifikasi = Klasifikasi::all();
+
+        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi'));
     }
 
     public function perolehan()
     {
-        $asset = Asset::orderBy('created_at', 'DESC')->get();
+        // $asset = Asset::orderBy('created_at', 'DESC')->get();
+        $assets = Asset::whereHas('asal', function ($query) {
+            $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
+        })
+            ->where('status_asset', ' ')
+            ->get();
+
 
         // return view('assets.index');
-        return view('perolehan.index', compact('asset'));
+        return view('perolehan.index', compact('assets'));
     }
+
     public function mutasiMasuk()
     {
-        $asset = Asset::orderBy('created_at', 'DESC')->get();
+        $assets = Asset::whereHas('asal', function ($query) {
+            $query->whereIn('nama_asal', ['Hibah']);
+        })->get();
 
         // return view('assets.index');
-        return view('mutasiMasuk.index', compact('asset'));
+        return view('mutasiMasuk.index', compact('assets'));
     }
 
 
@@ -92,13 +116,17 @@ class AssetController extends Controller
     public function edit(string $id)
     {
         $asset = Asset::findOrFail($id);
+        return view('assets.index', compact('assets'));
 
-        return view('assets.edit', compact('asset'));
+        // return view('assets.edit', compact('asset'));
     }
 
 
     public function update(Request $request, string $id)
     {
+        //$user = auth()->user();
+        //$id = $user->id; cronjob
+        //crudke_tble_Log | props nya di sv: name,id crrnt user,aktivitas("update")
         $asset = Asset::findOrFail($id);
 
         $asset->update($request->all());
@@ -147,25 +175,4 @@ class AssetController extends Controller
 
         return Excel::download(new UsersExport, 'users.xlsx');
     }
-
-
-    // public function import(AssetRequest $request)
-    // {
-    //     try {
-
-    //         Excel::import(new UsersImport, $request->file('file'));
-    //         return response()->json(['data' => 'Users imported successfully.', 201]);
-    //     } catch (\Exception $ex) {
-    //         Log::info($ex);
-    //         return response()->json(['data' => 'Some error has occur.', 400]);
-    //     }
-    // }
-
-    // /**
-    //  * @return \Illuminate\Support\Collection
-    //  */
-    // public function export()
-    // {
-    //     return Excel::download(new UsersExport, 'users.xlsx');
-    // }
 }

@@ -54,17 +54,15 @@ Route::middleware('auth')->group(function () {
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
         Route::get('', 'index')->name('mutasikeluar');
 
-        // Route::get('create', 'create')->name('assets.create');
-        // Route::post('store', 'store')->name('assets.store');
-        // Route::get('show/{id}', 'show')->name('assets.show');
-        // Route::get('edit/{id}', 'edit')->name('assets.edit');
-        // Route::put('edit/{id}', 'update')->name('assets.update');
-        // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
+        Route::put('edit', 'update')->name('mutasikeluar.edit');
     });
+
 
     Route::controller(AssetController::class)->prefix('perolehan')->group(function () {
         Route::get('', 'perolehan')->name('perolehan');
     });
+
+
 
     Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
         Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
@@ -75,23 +73,14 @@ Route::middleware('auth')->group(function () {
     Route::controller(KerusakanController::class)->prefix('kerusakan')->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
-        // Route::get('create', 'create')->name('assets.create');
-        // Route::post('store', 'store')->name('assets.store');
-        // Route::get('show/{id}', 'show')->name('assets.show');
-        // Route::get('edit/{id}', 'edit')->name('assets.edit');
-        // Route::put('edit/{id}', 'update')->name('assets.update');
-        // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
+        Route::put('edit', 'update')->name('kerusakan.edit');
+
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {
         Route::get('', 'index')->name('penghapusan');
 
-        // Route::get('create', 'create')->name('assets.create');
-        // Route::post('store', 'store')->name('assets.store');
-        // Route::get('show/{id}', 'show')->name('assets.show');
-        // Route::get('edit/{id}', 'edit')->name('assets.edit');
-        // Route::put('edit/{id}', 'update')->name('assets.update');
-        // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
+        Route::put('edit', 'update')->name('penghapusan.edit');
     });
 
     Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile');

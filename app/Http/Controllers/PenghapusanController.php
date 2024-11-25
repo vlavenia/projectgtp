@@ -10,24 +10,38 @@ class PenghapusanController extends Controller
 
     public function index()
     {
-        return view('penghapusan.index');
+        $asset = Asset::where('status_asset', ' ')->get();
+        $asset_penghapusan = Asset::where('status_asset', 'penghapusan')->get();
+
+        return view('penghapusan.index', compact('asset', 'asset_penghapusan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
 
-        
-    }
+    public function create() {}
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        // Asset::create($request->all());
+        // Validasi data
+        $validated = $request->validate([
+            'nama_barang' => 'required',
+            'kode_barang' => 'required',
+            'kategori_id' => 'required|exists:kategoris,id', // Pastikan kategori_id valid
+
+        ]);
+
+        // Menyimpan asset dengan kategori_id
+        Asset::create([
+            'nama_barang' => $request->nama_barang,
+            'kode_barang' => $request->kode_barang,
+            'no_ba_terima' => $request->no_ba_terima,
+            'tgl_ba_terima' => $request->tgl_ba_terima,
+            'kategori_id' => $request->kategori_id,
+
+        ]);
+
+        return redirect()->route('assets')->with('success', 'Assets added successfully');
     }
 
     /**
@@ -49,9 +63,26 @@ class PenghapusanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        // Mengambil nilai asset_id yang dipilih dari form
+        $asset_id = $request->input('asset_id');
+
+        // Validasi jika asset_id kosong atau tidak valid
+        $request->validate([
+            'asset_id' => 'required|exists:assets,id', // Pastikan asset_id valid
+        ]);
+
+        // Temukan asset berdasarkan ID
+        $asset = Asset::findOrFail($asset_id);
+
+        // Update hanya kolom `status_asset`
+        $asset->update([
+            'status_asset' => 'Penghapusan', // Nilai statis
+        ]);
+
+        // Redirect ke halaman asset dengan pesan sukses
+        return redirect()->route('kerusakan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
     /**

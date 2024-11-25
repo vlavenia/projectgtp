@@ -3,145 +3,289 @@
 @section('title', 'Assets')
 
 @section('contents')
+    <div class="row">
+        <!-- Jumlah Asset Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Jumlah Asset</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $asetsCount }} </div>
 
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p>
-    <a href="{{ route('assets.create') }}" class="btn btn-primary">Add Asset</a>
-    {{-- <a href="{{ route('importAsset') }}" class="btn btn-primary">Import Asset</a> --}}
-    <form action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data">
-        <br>
-        @csrf
-        <input type="file" name="file" class="form-control">
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Jumlah Asset Card -->
 
-        <br>
+        <!-- Earnings (Annual) Card Example -->
+        <a href="/perolehan" class="card-link col-xl-3 col-md-6 mb-4">
 
-        <button class="btn btn-success ">Import User Data</button>
-        <a class="btn btn-warning float-end" href="{{ route('exportAsset') }}">Export User Data</a>
-    </form>
-    
+            <div class="">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Jumlah Asset Perolehan</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $perolehanCount }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Earnings (Annual) Card Example -->
+         <a href="/mutasiMasuk" class="card-link col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Jumlah Asset Mutasi Masuk</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $mutasimasukCount }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header py-3 font-weight-bold text-primary">Filter Data Barang</div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Jenis</label>
+                </div>
+                <div class="col-md-5">
+                    <select name="jenis_id" class="form-control @error('jenis_id') is-invalid @enderror">
+                        <option value="">- Pilih Jenis-</option>
+                        @foreach ($jenis as $jenis)
+                            <option value="{{ $jenis->id }}" {{ old('jenis_id') == $jenis->id ? 'selected' : null }}>
+                                {{ $jenis->nama_jenis }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Objek</label>
+                </div>
+                <div class="col-md-5">
+                    <select name="objek_id" class="form-control @error('objek_id') is-invalid @enderror">
+                        <option value="">- Pilih objek-</option>
+                        @foreach ($objek as $objek)
+                            <option value="{{ $objek->id }}" {{ old('objek_id') == $objek->id ? 'selected' : null }}>
+                                {{ $objek->nama_objek }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Klasifikasi</label>
+                </div>
+                <div class="col-md-5">
+                    <select name="klasifikasi_id" class="form-control @error('klasifikasi_id') is-invalid @enderror">
+                        <option value="">- Pilih klasifikasi-</option>
+                        @foreach ($Klasifikasi as $klasifikasi)
+                            <option value="{{ $klasifikasi->id }}"
+                                {{ old('klasifikasi_id') == $klasifikasi->id ? 'selected' : null }}>
+                                {{ $klasifikasi->nama_klasifikasi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- <a href="{{ route('assets.create') }}" class="btn btn-primary">Add Asset</a> --}}
+    <!-- Button trigger modal -->
+
+
+
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
             {{ Session::get('success') }}
         </div>
     @endif
-    <div class="card shadow mb-4 ">
+
+    <!-- Tabel Data Assets -->
+    <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Assets</h6>
+            <div class="row d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
+                <div class=" row mr-3">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
+                        Import Aset
+                    </button>
+                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset') }}">Export User
+                            Data</a>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"">
-                    <thead>
+                <table class="table table-striped " id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark text-center ">
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Jenis</th>
-                            <th>Kategori</th>
-                            <th>AsalUsul</th>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Kode Lokasi</th>
+                            <th>Tahun</th>
+                            <th>Nilai Perolehan</th>
+                            <th>Nilai Akumulasi</th>
+                            <th>Merk Type</th>
+                            <th>No Rangka</th>
+                            <th>No BPKB</th>
+                            <th>No Polisi</th>
+                            <th>Luas</th>
+                            <th>Penerbit</th>
+                            <th>Nama Ruangan</th>
+                            <th>Aksi</th>
                         </tr>
-                        {{-- <th>No</th>
-                            <th>Nama barang</th>
-                            <th>kode barang</th>
-                            <th>no ba terima</th>
-                            <th>tgl ba terima</th>
-                            {{-- <th>Action</th> --}}
-                        {{-- </tr> --}}
                     </thead>
-                    <tbody>
-                        @if ($assets->count() > 0)
-                            @foreach ($assets as $asset)
-                                <tr>
-                                    <td>{{ $asset->id }}</td>
-                                    <td>{{ $asset->nama_barang }}</td>
-                                    <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
-                                    <td>{{ $asset->kategori->nama_kategori ?? 'N/A' }}</td>
-                                    <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td>
-                                </tr>
-                            @endforeach
-                        @else
+                    <tbody class="text-center">
+                        @forelse ($assets as $asset)
                             <tr>
-                                <td class="text-center" colspan="5">Assets not found</td>
+                                <td>{{ $asset->kode_barang }}</td>
+                                <td>{{ $asset->nama_barang }}</td>
+                                <td>Kode Lokasi</td>
+                                <td>{{ $asset->thn_pmbelian }}</td>
+                                <td>Nilai Perolehan</td>
+                                <td>Nilai Akumulasi</td>
+                                <td>{{ $asset->merk }}</td>
+                                <td>{{ $asset->rangka }}</td>
+                                <td>{{ $asset->bpkb }}</td>
+                                <td>{{ $asset->polisi }}</td>
+                                <td>luas</td>
+                                <td>penerbit</td>
+                                <td>Nama Ruangan</td>
+                                {{-- <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
+                            <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td> --}}
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <!-- Edit Button -->
+                                        <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
+                                            data-target="#editModal-{{ $asset->id }}">
+                                            Edit
+                                        </button>
+
+                                        <!-- Delete Form -->
+                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
+                                            onsubmit="return confirm('Delete?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        @endif
+
+                            <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="{{ route('assets.update', $asset->id) }}" method="POST">
+
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>Nama Barang</label>
+                                                    <input type="text" name="nama_barang" class="form-control"
+                                                        value="{{ $asset->nama_barang }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Kode Barang</label>
+                                                    <input type="text" name="kode_barang" class="form-control"
+                                                        value="{{ $asset->kode_barang }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>No BA Terima</label>
+                                                    <input type="text" name="no_ba_terima" class="form-control"
+                                                        value="{{ $asset->no_ba_terima }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Tgl BA Terima</label>
+                                                    <input type="date" name="tgl_ba_terima" class="form-control"
+                                                        value="{{ $asset->tgl_ba_terima }}">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-warning">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <tr>
+                                <td colspan="14">Assets not found</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    {{-- <div class="container"> class="container">
 
-    <div class="card bg-light mt-3"><div class="card bg-light mt-3">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Asset</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data">
+                    <br>
+                    <div class="p-3"><input type="file" name="file" class="form-control "
+                            style="border: none; outline: none;"> </div>
+                    @csrf
+                    <br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-success ">Import User Data</button>
+                    </div>
+                </form>
 
-        <div class="card-header"><div class="card-header">
-
-            Laravel 10 Import Export Excel to Database Example - ItSolutionStuff.com
-
-        </div></div>
-
-        <div class="card-body"><div class="card-body">
-
-            <form action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data"><form action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data">
-
-                @csrf
-
-                <input type="file" name="file" class="form-control"><input type="file" name="file" class="form-control">
-
-                <br><br>
-
-                <button class="btn btn-success">Import User Data</button><button class="btn btn-success">Import User Data</button>
-
-            </form></form> --}}
-
-
-
-    {{-- <table class="table table-bordered mt-3"><table class="table table-bordered mt-3">
-
-                <tr><tr>
-
-                    <th colspan="3"><th colspan="3">
-
-                        List Of Users
-
-                        <a class="btn btn-warning float-end" href="{{ route('exportAsset') }}">Export User Data</a><a class="btn btn-warning float-end" href="{{ route('exportAsset') }}">Export User Data</a>
-
-                    </th></th>
-
-                </tr></tr>
-
-                <tr><tr>
-
-                    <th>ID</th><th>ID</th>
-
-                    <th>Name</th><th>Name</th>
-
-                    <th>Email</th><th>Email</th>
-
-                </tr></tr>
-
-                @foreach ($users as $user)
-
-                <tr><tr>
-
-                    <td>{{ $user->id }}</td><td>{{ $user->id }}</td>
-
-                    <td>{{ $user->name }}</td><td>{{ $user->name }}</td>
-
-                    <td>{{ $user->email }}</td><td>{{ $user->email }}</td>
-
-                </tr></tr>
-
-                @endforeach
-
-            </table></table> --}}
-
-
-    {{--
-        </div></div>
-
-    </div></div>
-
-</div> --}}
+            </div>
+        </div>
+    </div>
 
 @endsection
