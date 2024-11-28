@@ -41,6 +41,7 @@ class AsetsImport implements ToModel, WithHeadingRow
             'jenis_id'     => Jenis::where('nama_jenis', $row['jenis_id'])->value('id'),
             'kategori_id'  => Kategori::where('nama_kategori', $row['kategori_id'])->value('id'), // Default ke ID 1 jika tidak ditemukan
             'asal_id'      => asal::where('nama_asal', $row['asal_id'])->value('id'),
+            'status_asset' => "Aset terkini",
         ]);
     }
 }

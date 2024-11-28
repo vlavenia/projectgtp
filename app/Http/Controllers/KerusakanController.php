@@ -10,7 +10,7 @@ class KerusakanController extends Controller
     public function index()
     {
         $asset = Asset::where('status_asset', ' ')->get();
-        $asset_kerusakan = Asset::where('status_asset', 'rusak')->get();
+        $asset_kerusakan = Asset::where('status_asset', 'Rusak')->get();
 
         return view('kerusakan.index', compact('asset', 'asset_kerusakan'));
     }
@@ -21,9 +21,9 @@ class KerusakanController extends Controller
         $asset_id = $request->input('asset_id');
 
         // Validasi jika asset_id kosong atau tidak valid
-        $request->validate([
-            'asset_id' => 'required|exists:assets,id', // Pastikan asset_id valid
-        ]);
+        // $request->validate([
+        //     'asset_id' => 'required|exists:assets,id', // Pastikan asset_id valid
+        // ]);
 
         // Temukan asset berdasarkan ID
         $asset = Asset::findOrFail($asset_id);
@@ -34,6 +34,6 @@ class KerusakanController extends Controller
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses
-        return redirect()->route('penghapusan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
+        return redirect()->route('kerusakan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 }

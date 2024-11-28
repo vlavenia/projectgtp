@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <!-- Tabel Data Assets -->
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="row d-flex justify-content-between">
@@ -69,17 +69,15 @@
                                 <td>luas</td>
                                 <td>penerbit</td>
                                 <td>Nama Ruangan</td>
-                                {{-- <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
-                            <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td> --}}
+
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <!-- Edit Button -->
+
                                         <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
                                             data-target="#editModal-{{ $asset->id }}">
                                             Edit
                                         </button>
 
-                                        <!-- Delete Form -->
                                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
@@ -90,7 +88,7 @@
                                 </td>
                             </tr>
 
-                            <!-- Edit Modal -->
+
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

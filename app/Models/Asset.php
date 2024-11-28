@@ -19,6 +19,9 @@ class Asset extends Model
         'jenis_id',
         'status_asset'
 
+
+
+
     ];
 
 
@@ -39,9 +42,17 @@ class Asset extends Model
     }
 
     //relasi tabel dr penghapusan
-    public function penghapusan()
+    // public function penghapusan()
+    // {
+    //     return $this->hasMany(Penghapusan::class);
+    // }
+
+    public function statusAsset()
     {
-        return $this->hasMany(Penghapusan::class);
+        return $this->belongsTo(statusAsset::class);
     }
+
+
+
 
 }

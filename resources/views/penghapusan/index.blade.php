@@ -7,14 +7,14 @@
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
             DataTables documentation</a>.</p>
-    {{-- <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="modal-addpenghapusan">Add Asset </a> --}}
 
-    <!-- Button trigger modal -->
+
+
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         Tambah Penghapusan Aset
     </button>
 
-    <!-- Modal -->
+
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -104,17 +104,14 @@
                                 <td>luas</td>
                                 <td>penerbit</td>
                                 <td>Nama Ruangan</td>
-                                {{-- <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
-                            <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td> --}}
+
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <!-- Edit Button -->
+
                                         <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
                                             data-target="#editModal-{{ $asset->id }}">
                                             Edit
                                         </button>
-
-                                        <!-- Delete Form -->
                                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
@@ -125,7 +122,7 @@
                                 </td>
                             </tr>
 
-                            <!-- Edit Modal -->
+
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

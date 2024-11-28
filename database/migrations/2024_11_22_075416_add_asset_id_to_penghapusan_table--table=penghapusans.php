@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('penghapusans', function (Blueprint $table) {
-            // $table->dropColumn('asset_id');
+            $table->unsignedBigInteger('asset_id')->after('id')->required();
+            $table->foreign('asset_id')->references('id')->on('assets');
         });
     }
 
@@ -22,10 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('penghapusans', function (Blueprint $table) {
-            // $table->unsignedBigInteger('asset_id')->nullable();
-
-            // // Jika kolom sebelumnya memiliki foreign key
-            // $table->foreign('asset_id')->references('id')->on('aset')->onDelete('cascade');
+            $table->dropColumn('asset_id');
         });
     }
 };

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->unsignedBigInteger('assetfk_id')->after('id');
-            // $table->foreign('assetfk_id')->references('id')->on('assets');
+        Schema::create('asal_usuls', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_asalUsul');
+            $table->timestamps();
         });
     }
 
@@ -22,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->dropColumn('assetfk_id');
-        });
+        Schema::dropIfExists('asal_usuls');
     }
 };

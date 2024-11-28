@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    <!-- Modal -->
+
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -104,8 +104,7 @@
                                 <td>luas</td>
                                 <td>penerbit</td>
                                 <td>Nama Ruangan</td>
-                                {{-- <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
-                            <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td> --}}
+
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <!-- Edit Button -->
@@ -114,7 +113,7 @@
                                             Edit
                                         </button>
 
-                                        <!-- Delete Form -->
+
                                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
@@ -125,7 +124,7 @@
                                 </td>
                             </tr>
 
-                            <!-- Edit Modal -->
+
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

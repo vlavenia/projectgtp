@@ -46,7 +46,7 @@
         </a>
 
         <!-- Earnings (Annual) Card Example -->
-         <a href="/mutasiMasuk" class="card-link col-xl-3 col-md-6 mb-4">
+        <a href="/mutasiMasuk" class="card-link col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -135,6 +135,11 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
+                    <form {{ route('assets') }} method="GET"
+                        class="form-inline my-2 my-lg-0  mr-3 ">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
                         Import Aset
                     </button>
@@ -146,9 +151,10 @@
 
             </div>
         </div>
+
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped " id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
                     <thead class="thead-dark text-center ">
                         <tr>
                             <th>Kode Barang</th>
@@ -210,8 +216,10 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -255,8 +263,14 @@
                                 <td colspan="14">Assets not found</td>
                             </tr>
                         @endforelse
+
                     </tbody>
+
                 </table>
+                <!-- Pagination Links -->
+                <div class="d-flex justify-content-center">
+                    {{ $assets->links() }}
+                </div>
             </div>
         </div>
     </div>

@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-
+    // Route::get('/search', [AssetController::class, 'search']);
     Route::controller(AssetController::class)->prefix('assets')->group(function () {
         Route::get('', 'index')->name('assets');
 
@@ -74,7 +74,6 @@ Route::middleware('auth')->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
         Route::put('edit', 'update')->name('kerusakan.edit');
-
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {

@@ -25,9 +25,14 @@ class AssetController extends Controller
     public function index()
     {
 
-        $assets = Asset::where('status_asset', ' ')->get();
+        $assets = Asset::where('status_asset', ' ')
+            ->orWhere('status_asset', 'Aset terkini')
+            ->paginate(10);
+        // $assets = Asset::simple;
 
-        $asetsCount = Asset::where('status_asset', ' ')->count();
+        $asetsCount = Asset::where('status_asset', ' ')
+            ->orWhere('status_asset', 'Aset terkini')
+            ->count();
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
@@ -38,7 +43,10 @@ class AssetController extends Controller
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('nama_asal', ['Hibah']);
         })->where('status_asset', ' ')
+            ->orWhere('status_asset', 'Aset terkini')
             ->get()->count();
+
+
 
         //menampilkan data dropdown
         $jenis = Jenis::all();
@@ -46,6 +54,17 @@ class AssetController extends Controller
         $Klasifikasi = Klasifikasi::all();
 
         return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $assets = Asset::where(function ($query) use ($search) {
+            $query->where('Kode_Barang', 'like', "%$search%");
+        })->get();
+
+        return view('assets.index', compact('assets', 'search'));
     }
 
     public function perolehan()

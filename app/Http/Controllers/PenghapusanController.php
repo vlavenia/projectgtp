@@ -11,6 +11,7 @@ class PenghapusanController extends Controller
     public function index()
     {
         $asset = Asset::where('status_asset', ' ')->get();
+
         $asset_penghapusan = Asset::where('status_asset', 'penghapusan')->get();
 
         return view('penghapusan.index', compact('asset', 'asset_penghapusan'));
@@ -76,13 +77,13 @@ class PenghapusanController extends Controller
         // Temukan asset berdasarkan ID
         $asset = Asset::findOrFail($asset_id);
 
-        // Update hanya kolom `status_asset`
+
         $asset->update([
             'status_asset' => 'Penghapusan', // Nilai statis
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses
-        return redirect()->route('kerusakan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
+        return redirect()->route('penghapusan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
     /**

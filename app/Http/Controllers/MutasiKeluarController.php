@@ -30,7 +30,7 @@ class MutasiKeluarController extends Controller
         // Temukan asset berdasarkan ID
         $asset = Asset::findOrFail($asset_id);
 
-        // Update hanya kolom `status_asset`
+       // Update hanya kolom `status_asset`
         $asset->update([
             'status_asset' => 'Mutasi Keluar', // Nilai statis
         ]);

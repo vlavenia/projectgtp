@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('penghapusans', function (Blueprint $table) {
-            $table->dropForeign(['asset_id']); // Hapus foreign key yang mengarah ke aset_id
+            // $table->dropForeign(['asset_id']); // Hapus foreign key yang mengarah ke aset_id
         });
     }
 
@@ -23,7 +23,7 @@ return new class extends Migration
     {
         // Menambahkan foreign key kembali jika perlu rollback
         Schema::table('penghapusans', function (Blueprint $table) {
-            $table->foreign('asset_id')->references('id')->on('aset')->onDelete('cascade');
+            // $table->foreign('asset_id')->references('id')->on('aset')->onDelete('cascade');
         });
     }
 };

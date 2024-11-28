@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->unsignedBigInteger('assetfk_id')->after('id');
-            // $table->foreign('assetfk_id')->references('id')->on('assets');
+        Schema::table('assets', function (Blueprint $table) {
+            $table->string('status_asset')->after('opd')->required();
+
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->dropColumn('assetfk_id');
+        Schema::table('assets', function (Blueprint $table) {
+            $table->dropColumn('status_asset');
         });
     }
 };
