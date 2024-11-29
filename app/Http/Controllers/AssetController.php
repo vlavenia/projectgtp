@@ -22,13 +22,76 @@ use Maatwebsite\Excel\Facades\Excel;
 class AssetController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
 
-        $assets = Asset::where('status_asset', ' ')
-            ->orWhere('status_asset', 'Aset terkini')
-            ->paginate(10);
-        // $assets = Asset::simple;
+        // $assets = Asset::where('status_asset', ' ')
+        //     ->orWhere('status_asset', 'Aset terkini')
+        //     ->paginate(10);
+        // // $assets = Asset::simple;
+
+        // $asetsCount = Asset::where('status_asset', ' ')
+        //     ->orWhere('status_asset', 'Aset terkini')
+        //     ->count();
+
+        // $perolehanCount = Asset::whereHas('asal', function ($query) {
+        //     $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
+        // })
+        //     ->where('status_asset', ' ')
+        //     ->get()->count();
+
+        // $mutasimasukCount = Asset::whereHas('asal', function ($query) {
+        //     $query->whereIn('nama_asal', ['Hibah']);
+        // })->where('status_asset', ' ')
+        //     ->orWhere('status_asset', 'Aset terkini')
+        //     ->get()->count();
+
+        // //menampilkan data dropdown
+        // $jenis = Jenis::all();
+        // $objek = objek::all();
+        // $Klasifikasi = Klasifikasi::all();
+
+        // //searching
+
+        // return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi'));
+
+        $search = $request->query('search');
+        $query = Asset::query();
+
+        if (!empty($search)) {
+            $query->where(function ($query) use ($search) {
+                $query->where('kode_barang', 'like', '%' . $search . '%')
+                    ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                    ->orWhere('merk', 'like', '%' . $search . '%')
+                    ->orWhere('bpkb', 'like', '%' . $search . '%')
+                    ->orWhere('polisi', 'like', '%' . $search . '%');
+            })
+                ->where(function ($query) {
+                    $query->where('status_asset', 'aset terkini')
+                        ->orWhere('status_asset', '');
+                });
+        } else {
+
+            $query->where(function ($query) {
+                $query->where('status_asset', 'aset terkini')
+                    ->orWhere('status_asset', ' ');
+            });
+
+            // $assets = Asset::where('status_asset', ' ')
+            //     ->orWhere('status_asset', 'Aset terkini')
+            //     ->paginate(10);
+        }
+
+        // Ambil data dengan paginasi
+        $assets = $query->paginate(10);
+
+        // Jika permintaan AJAX, kembalikan data JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => $assets->items(),
+                // 'pagination' => (string) $assets->links() // Optional: Tambahkan HTML pagination
+            ]);
+        }
 
         $asetsCount = Asset::where('status_asset', ' ')
             ->orWhere('status_asset', 'Aset terkini')
@@ -36,8 +99,7 @@ class AssetController extends Controller
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        })
-            ->where('status_asset', ' ')
+        })->where('status_asset', ' ')
             ->get()->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
@@ -46,14 +108,11 @@ class AssetController extends Controller
             ->orWhere('status_asset', 'Aset terkini')
             ->get()->count();
 
-
-
-        //menampilkan data dropdown
         $jenis = Jenis::all();
-        $objek = objek::all();
+        $objek = Objek::all();
         $Klasifikasi = Klasifikasi::all();
 
-        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi'));
+        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi', 'search'));
     }
 
     public function search(Request $request)

@@ -135,11 +135,12 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
-                    <form {{ route('assets') }} method="GET"
-                        class="form-inline my-2 my-lg-0  mr-3 ">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
+                        <input name="search" id="searchInput" class="form-control mr-sm-2" type="search"
+                            placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
+
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
                         Import Aset
                     </button>
@@ -173,7 +174,7 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody id="tableBody" class="text-center">
                         @forelse ($assets as $asset)
                             <tr>
                                 <td>{{ $asset->kode_barang }}</td>
@@ -209,6 +210,7 @@
                                     </div>
                                 </td>
                             </tr>
+
 
                             <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
@@ -268,7 +270,7 @@
 
                 </table>
                 <!-- Pagination Links -->
-                <div class="d-flex justify-content-center">
+                <div class="">
                     {{ $assets->links() }}
                 </div>
             </div>
@@ -301,5 +303,139 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#searchInput').on('keyup', function() {
+                let searchQuery = $(this).val(); // Ambil nilai input pencarian
+
+                // Jika input kosong, reset dan ambil semua data
+                if (searchQuery === "") {
+                    $.ajax({
+                        url: "{{ route('assets') }}", // Endpoint Laravel
+                        type: "GET",
+                        data: {},
+                        success: function(response) {
+                            // Kosongkan tabel
+                            $('#tableBody').empty();
+
+                            // Cek jika data kosong
+                            if (response.data.length === 0) {
+                                $('#tableBody').append(`
+                                <tr>
+                                    <td colspan="14" class="text-center">Assets not found</td>
+                                </tr>
+                            `);
+                            } else {
+                                // Tambahkan data baru
+                                response.data.forEach(asset => {
+                                    $('#tableBody').append(`
+                                    <tr>
+                                        <td>${asset.kode_barang}</td>
+                                        <td>${asset.nama_barang}</td>
+                                        <td>${asset.kode_lokasi || '-'}</td>
+                                        <td>${asset.thn_pmbelian}</td>
+                                        <td>${asset.nilai_perolehan || 'N/A'}</td>
+                                        <td>${asset.nilai_akumulasi || 'N/A'}</td>
+                                        <td>${asset.merk}</td>
+                                        <td>${asset.rangka || '-'}</td>
+                                        <td>${asset.bpkb}</td>
+                                        <td>${asset.polisi}</td>
+                                        <td>${asset.luas || '-'}</td>
+                                        <td>${asset.penerbit || '-'}</td>
+                                        <td>${asset.nama_ruangan || '-'}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <!-- Edit Button -->
+                                                <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
+                                                    data-target="#editModal-${asset.id}">
+                                                    Edit
+                                                </button>
+
+                                                <!-- Delete Form -->
+                                                <form action="{{ route('assets.destroy', '') }}/${asset.id}" method="POST"
+                                                    onsubmit="return confirm('Delete?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    // Jika ada query pencarian, kirim permintaan AJAX dengan query pencarian
+                    $.ajax({
+                        url: "{{ route('assets') }}", // Endpoint Laravel
+                        type: "GET",
+                        data: {
+                            search: searchQuery
+                        },
+                        success: function(response) {
+                            // Kosongkan tabel
+                            $('#tableBody').empty();
+
+                            // Cek jika data kosong
+                            if (response.data.length === 0) {
+                                $('#tableBody').append(`
+                                <tr>
+                                    <td colspan="14" class="text-center">Assets not found</td>
+                                </tr>
+                            `);
+                            } else {
+                                // Tambahkan data baru
+                                response.data.forEach(asset => {
+                                    $('#tableBody').append(`
+                                    <tr>
+                                        <td>${asset.kode_barang}</td>
+                                        <td>${asset.nama_barang}</td>
+                                        <td>${asset.kode_lokasi || '-'}</td>
+                                        <td>${asset.thn_pmbelian}</td>
+                                        <td>${asset.nilai_perolehan || 'N/A'}</td>
+                                        <td>${asset.nilai_akumulasi || 'N/A'}</td>
+                                        <td>${asset.merk}</td>
+                                        <td>${asset.rangka || '-'}</td>
+                                        <td>${asset.bpkb}</td>
+                                        <td>${asset.polisi}</td>
+                                        <td>${asset.luas || '-'}</td>
+                                        <td>${asset.penerbit || '-'}</td>
+                                        <td>${asset.nama_ruangan || '-'}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <!-- Edit Button -->
+                                                <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
+                                                    data-target="#editModal-${asset.id}">
+                                                    Edit
+                                                </button>
+
+                                                <!-- Delete Form -->
+                                                <form action="{{ route('assets.destroy', '') }}/${asset.id}" method="POST"
+                                                    onsubmit="return confirm('Delete?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `);
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 
 @endsection
