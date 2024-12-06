@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\PenghapusanController;
+use App\Http\Controllers\SampahController;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -36,25 +38,29 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    // Route::get('/search', [AssetController::class, 'search']);
+
     Route::controller(AssetController::class)->prefix('assets')->group(function () {
         Route::get('', 'index')->name('assets');
 
-        Route::get('create', 'create')->name('assets.create');
+        // Route::get('create', 'create')->name('assets.create');
         Route::post('store', 'store')->name('assets.store');
         Route::get('show/{id}', 'show')->name('assets.show');
-        Route::get('edit/{id}', 'edit')->name('assets.edit');
+        // Route::get('edit/{id}', 'edit')->name('assets.edit');
         Route::put('edit/{id}', 'update')->name('assets.update');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
     });
 
+    Route::post('/objek/{id}', [DropdownController::class, 'getObjek']);
+
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
         Route::get('', 'index')->name('mutasikeluar');
-
-        Route::put('edit', 'update')->name('mutasikeluar.edit');
+        Route::put('editStatus', 'changeStatus')->name('mutasikeluar.changeStatus');
+        Route::put('editAsset/{id}', 'update')->name('mutasiKeluar.update');
+        Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
     });
 
 
@@ -66,6 +72,18 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
         Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
+    });
+
+    // Route::controller(SampahController::class)->prefix('sampah')->group(function () {
+    //     Route::get('', 'index')->name('sampah');
+    // });
+
+    Route::controller(SampahController::class)->prefix('sampah')->group(function () {
+        Route::get('', 'trash')->name('sampah');
+
+        Route::get('/assets/trash', [SampahController::class, 'trash'])->name('assets.trash');
+        Route::post('/assets/restore/{id}', [SampahController::class, 'restore'])->name('assets.restore');
+        Route::delete('/assets/force-delete/{id}', [SampahController::class, 'forceDelete'])->name('assets.forceDelete');
     });
 
 

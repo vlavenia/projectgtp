@@ -25,36 +25,6 @@ class AssetController extends Controller
     public function index(Request $request)
     {
 
-        // $assets = Asset::where('status_asset', ' ')
-        //     ->orWhere('status_asset', 'Aset terkini')
-        //     ->paginate(10);
-        // // $assets = Asset::simple;
-
-        // $asetsCount = Asset::where('status_asset', ' ')
-        //     ->orWhere('status_asset', 'Aset terkini')
-        //     ->count();
-
-        // $perolehanCount = Asset::whereHas('asal', function ($query) {
-        //     $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        // })
-        //     ->where('status_asset', ' ')
-        //     ->get()->count();
-
-        // $mutasimasukCount = Asset::whereHas('asal', function ($query) {
-        //     $query->whereIn('nama_asal', ['Hibah']);
-        // })->where('status_asset', ' ')
-        //     ->orWhere('status_asset', 'Aset terkini')
-        //     ->get()->count();
-
-        // //menampilkan data dropdown
-        // $jenis = Jenis::all();
-        // $objek = objek::all();
-        // $Klasifikasi = Klasifikasi::all();
-
-        // //searching
-
-        // return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi'));
-
         $search = $request->query('search');
         $query = Asset::query();
 
@@ -71,28 +41,22 @@ class AssetController extends Controller
                         ->orWhere('status_asset', '');
                 });
         } else {
-
             $query->where(function ($query) {
                 $query->where('status_asset', 'aset terkini')
                     ->orWhere('status_asset', ' ');
             });
-
-            // $assets = Asset::where('status_asset', ' ')
-            //     ->orWhere('status_asset', 'Aset terkini')
-            //     ->paginate(10);
         }
 
-        // Ambil data dengan paginasi
         $assets = $query->paginate(10);
 
         // Jika permintaan AJAX, kembalikan data JSON
         if ($request->ajax()) {
             return response()->json([
                 'data' => $assets->items(),
-                // 'pagination' => (string) $assets->links() // Optional: Tambahkan HTML pagination
             ]);
         }
 
+        //query count
         $asetsCount = Asset::where('status_asset', ' ')
             ->orWhere('status_asset', 'Aset terkini')
             ->count();
@@ -108,9 +72,12 @@ class AssetController extends Controller
             ->orWhere('status_asset', 'Aset terkini')
             ->get()->count();
 
+        // Ambil data Dropdown jenis, objek, dan klasifikasi
+        // $jenis = Jenis::select('id', 'nama_jenis')->get();
         $jenis = Jenis::all();
-        $objek = Objek::all();
-        $Klasifikasi = Klasifikasi::all();
+        $objek = Objek::select('id', 'nama_objek', 'jenis_id')->get();
+        $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
+
 
         return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi', 'search'));
     }
@@ -219,20 +186,10 @@ class AssetController extends Controller
 
         $asset->delete();
 
-        return redirect()->route('assets')->with('success', 'Assets deleted successfully');
+        return redirect()->route('assets')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
 
-    // import
 
-
-    // public function import()
-
-    // {
-
-    //     // Excel::import(new UsersImport, request()->file('file'));
-    //     Excel::import(new AsetsImport, request()->file('file'));
-    //     return back();
-    // }
 
     public function import(Request $request)
     {
@@ -241,10 +198,18 @@ class AssetController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
 
-        // Jalankan import
-        Excel::import(new AsetsImport, $request->file('file')->store('temp'));
+        $import = new AsetsImport();
+        Excel::import($import, $request->file('file')->store('temp'));
+        // Ambil data yang sudah ada dari import
+        $existingData = $import->getExistingData();
+
+        // Berikan feedback kepada pengguna
+        if (count($existingData) > 0) {
+            return redirect()->back()->with('warning', 'Beberapa data sudah ada: ' . implode(', ', $existingData));
+        }
 
         return redirect()->back()->with('success', 'File berhasil diimpor!');
+        // return redirect()->back()->with('success', 'File berhasil diimpor!');
     }
 
     public function export()

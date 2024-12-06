@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="author" content="">
     <title>SIMASET GTP DIY</title>
     <!-- Custom fonts for this template-->
@@ -23,7 +24,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        
+
         @include('layouts.sidebar')
         <!-- End of Sidebar -->
 
@@ -84,6 +85,7 @@
     <script src="{{ asset('admin_assets/js/sb-admin-2.min.js') }}"></script>
     <!-- Page level plugins -->
     <script src="{{ asset('admin_assets/vendor/chart.js/Chart.min.js') }}"></script>
+    
 </body>
 
 </html>

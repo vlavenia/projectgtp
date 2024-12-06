@@ -10,6 +10,12 @@ class objek extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_objek'
+        'nama_objek',
+        'jenis_id'
     ];
+
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class);
+    }
 }

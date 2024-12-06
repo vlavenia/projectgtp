@@ -25,7 +25,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('mutasikeluar.edit') }}" method="POST">
+                <form action="{{ route('mutasikeluar.changeStatus') }}" method="POST">
 
                     @csrf
                     @method('PUT')
@@ -114,7 +114,7 @@
                                         </button>
 
 
-                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
+                                        <form action="{{ route('mutasiKeluar.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
                                             @method('DELETE')
@@ -135,7 +135,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form action="{{ route('assets.update', $asset->id) }}" method="POST">
+                                        <form action="{{ route('mutasiKeluar.update', $asset->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">

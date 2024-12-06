@@ -67,7 +67,75 @@
     <div class="card shadow">
         <div class="card-header py-3 font-weight-bold text-primary">Filter Data Barang</div>
         <div class="card-body">
-            <div class="row mb-4">
+            <label for="jenis">Pilih Jenis:</label>
+            <select id="jenis" name="jenis">
+                <option value="">-- Pilih Jenis --</option>
+                @foreach ($jenis as $item)
+                    <option value="{{ $item->id }}">{{ $item->nama_jenis }}</option>
+                @endforeach
+            </select>
+
+            <label for="objek">Pilih Objek:</label>
+            <select id="objek" name="objek">
+                <option value="">-- Pilih Objek --</option>
+            </select>
+
+            <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+            <script>
+                $(document).ready(function() {
+                    // Ambil token CSRF dari meta tag
+                    // let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                    // Ketika dropdown 'jenis' berubah
+                    $('#jenis').on('change', function() {
+                        let jenisId = $(this).val(); // Ambil ID jenis yang dipilih
+                        console.log(jenisId);
+
+                        // // Hapus opsi sebelumnya di dropdown 'objek'
+                        // $('objek').html('<option value="">-- Pilih Objek --</option>');
+
+                        // Jika jenis dipilih, lakukan permintaan AJAX
+                        if (jenisId) {
+                            // console.log('masuk');
+                            $.ajax({
+                                url: '/objek/' + jenisId, // Endpoint
+                                type: 'POST',
+                                data: {
+                                    // jenis_id: jenisId,
+                                    '_token': '{{ csrf_token() }}' // Kirim token CSRF untuk keamanan
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    console.log(data);
+                                    // // Tambahkan opsi ke dropdown 'objek'
+                                    if (data) {
+                                        $('#objek').empty(); // Menghapus semua opsi sebelumnya
+                                        $('#objek').append(
+                                        '<option value="">-Pilih</option>'); // Tambahkan opsi default
+
+                                        // Iterasi melalui data dan tambahkan opsi ke dropdown
+                                        $.each(data, function(key, objek) {
+                                            $('select[name="objek"]').append(
+                                                '<option value="' + objek.id + '">' + objek
+                                                .nama_objek + '</option>'
+                                            );
+                                        });
+                                    }
+                                    // data.forEach(function(item) {
+                                    //     $('#objek').append('<option value="' + item.id + '">' +
+                                    //         item.nama_objek + '</option>');
+                                    // });
+                                },
+                                // error: function(xhr) {
+                                //     console.log('Error:', xhr);
+                                // }
+                            });
+                        }
+                    });
+                });
+            </script>
+            {{-- <div class="row mb-4">
                 <div class="col-md-1">
                     <label>Jenis</label>
                 </div>
@@ -112,7 +180,7 @@
                         @endforeach
                     </select>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 
@@ -126,6 +194,11 @@
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
             {{ Session::get('success') }}
+        </div>
+    @endif
+    @if (session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
         </div>
     @endif
 

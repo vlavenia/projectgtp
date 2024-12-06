@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Asset extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'nama_barang',
@@ -18,11 +19,8 @@ class Asset extends Model
         'asal_id',
         'jenis_id',
         'status_asset'
-
-
-
-
     ];
+    protected $dates = ['deleted_at'];
 
 
     public function kategori()
@@ -51,8 +49,4 @@ class Asset extends Model
     {
         return $this->belongsTo(statusAsset::class);
     }
-
-
-
-
 }

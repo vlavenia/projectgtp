@@ -13,4 +13,9 @@ class Jenis extends Model
     {
         return $this->hasMany(Asset::class);
     }
+
+    public function objek()
+    {
+        return $this->hasMany(Objek::class);
+    }
 }
