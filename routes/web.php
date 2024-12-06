@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DropdownController;
+use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\PenghapusanController;
@@ -98,6 +99,10 @@ Route::middleware('auth')->group(function () {
         Route::get('', 'index')->name('penghapusan');
 
         Route::put('edit', 'update')->name('penghapusan.edit');
+    });
+
+    Route::controller(InventarisasiController::class)->prefix('inventarisasi')->group(function () {
+        Route::get('', 'index')->name('inventarisasi');
     });
 
     Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile');

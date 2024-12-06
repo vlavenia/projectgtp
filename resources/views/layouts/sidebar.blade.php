@@ -22,13 +22,13 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('assets') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Assets</span></a>
+            <span>Data Asset</span></a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" href="/perolehan">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Perolehan Asset</span></a>
+            <span>Pengadaan / Perolehan </span></a>
     </li>
 
     <li class="nav-item">
@@ -46,13 +46,19 @@
     <li class="nav-item">
         <a class="nav-link" href="/kerusakan">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Kerusakan Aset</span></a>
+            <span>Kerusakan</span></a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" href="/penghapusan">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>penghapusan Aset</span></a>
+            <span>penghapusan</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/inventarisasi">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Inventarisasi</span></a>
     </li>
 
     <li class="nav-item">

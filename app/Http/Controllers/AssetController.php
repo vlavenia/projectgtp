@@ -13,6 +13,7 @@ use App\Models\Jenis;
 use App\Models\Kategori;
 use App\Models\Klasifikasi;
 use App\Models\objek;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
 // use App\Http\Requests\UserRequest;
@@ -74,12 +75,13 @@ class AssetController extends Controller
 
         // Ambil data Dropdown jenis, objek, dan klasifikasi
         // $jenis = Jenis::select('id', 'nama_jenis')->get();
+        $unit = Unit::all();
         $jenis = Jenis::all();
         $objek = Objek::select('id', 'nama_objek', 'jenis_id')->get();
         $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
 
 
-        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'jenis', 'objek', 'Klasifikasi', 'search'));
+        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'unit', 'jenis', 'objek', 'Klasifikasi', 'search'));
     }
 
     public function search(Request $request)

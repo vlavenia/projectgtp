@@ -67,7 +67,8 @@
     <div class="card shadow">
         <div class="card-header py-3 font-weight-bold text-primary">Filter Data Barang</div>
         <div class="card-body">
-            <label for="jenis">Pilih Jenis:</label>
+
+            {{-- <label for="jenis">Pilih Jenis:</label>
             <select id="jenis" name="jenis">
                 <option value="">-- Pilih Jenis --</option>
                 @foreach ($jenis as $item)
@@ -78,7 +79,69 @@
             <label for="objek">Pilih Objek:</label>
             <select id="objek" name="objek">
                 <option value="">-- Pilih Objek --</option>
-            </select>
+            </select> --}}
+
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Unit</label>
+                </div>
+                <div class="col-md-5">
+                    <select id="unit" name="unit" class="form-control @error('jenis_id') is-invalid @enderror">
+                        <option value="">- Pilih Unit-</option>
+                        @foreach ($unit as $unit)
+                            <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : null }}>
+                                {{ $unit->nama_unit }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Jenis</label>
+                </div>
+                <div class="col-md-5">
+                    <select id="jenis" name="jenis" class="form-control @error('jenis_id') is-invalid @enderror">
+                        <option value="">- Pilih Jenis-</option>
+                        @foreach ($jenis as $jenis)
+                            <option value="{{ $jenis->id }}" {{ old('jenis_id') == $jenis->id ? 'selected' : null }}>
+                                {{ $jenis->nama_jenis }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Objek</label>
+                </div>
+                <div class="col-md-5">
+                    <select id="objek" name="objek" class="form-control @error('objek_id') is-invalid @enderror">
+                        <option value="">- Pilih objek-</option>
+                        @foreach ($objek as $objek)
+                            <option value="{{ $objek->id }}" {{ old('objek_id') == $objek->id ? 'selected' : null }}>
+                                {{ $objek->nama_objek }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-1">
+                    <label>Klasifikasi</label>
+                </div>
+                <div class="col-md-5">
+                    <select name="klasifikasi_id" class="form-control @error('klasifikasi_id') is-invalid @enderror">
+                        <option value="">- Pilih klasifikasi-</option>
+                        @foreach ($Klasifikasi as $klasifikasi)
+                            <option value="{{ $klasifikasi->id }}"
+                                {{ old('klasifikasi_id') == $klasifikasi->id ? 'selected' : null }}>
+                                {{ $klasifikasi->nama_klasifikasi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
 
             <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
@@ -112,7 +175,8 @@
                                     if (data) {
                                         $('#objek').empty(); // Menghapus semua opsi sebelumnya
                                         $('#objek').append(
-                                        '<option value="">-Pilih</option>'); // Tambahkan opsi default
+                                            '<option value="">-Pilih</option>'
+                                            ); // Tambahkan opsi default
 
                                         // Iterasi melalui data dan tambahkan opsi ke dropdown
                                         $.each(data, function(key, objek) {
@@ -135,52 +199,6 @@
                     });
                 });
             </script>
-            {{-- <div class="row mb-4">
-                <div class="col-md-1">
-                    <label>Jenis</label>
-                </div>
-                <div class="col-md-5">
-                    <select name="jenis_id" class="form-control @error('jenis_id') is-invalid @enderror">
-                        <option value="">- Pilih Jenis-</option>
-                        @foreach ($jenis as $jenis)
-                            <option value="{{ $jenis->id }}" {{ old('jenis_id') == $jenis->id ? 'selected' : null }}>
-                                {{ $jenis->nama_jenis }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col-md-1">
-                    <label>Objek</label>
-                </div>
-                <div class="col-md-5">
-                    <select name="objek_id" class="form-control @error('objek_id') is-invalid @enderror">
-                        <option value="">- Pilih objek-</option>
-                        @foreach ($objek as $objek)
-                            <option value="{{ $objek->id }}" {{ old('objek_id') == $objek->id ? 'selected' : null }}>
-                                {{ $objek->nama_objek }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col-md-1">
-                    <label>Klasifikasi</label>
-                </div>
-                <div class="col-md-5">
-                    <select name="klasifikasi_id" class="form-control @error('klasifikasi_id') is-invalid @enderror">
-                        <option value="">- Pilih klasifikasi-</option>
-                        @foreach ($Klasifikasi as $klasifikasi)
-                            <option value="{{ $klasifikasi->id }}"
-                                {{ old('klasifikasi_id') == $klasifikasi->id ? 'selected' : null }}>
-                                {{ $klasifikasi->nama_klasifikasi }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div> --}}
         </div>
     </div>
 
