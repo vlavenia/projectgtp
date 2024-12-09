@@ -58,19 +58,22 @@ class AssetController extends Controller
         }
 
         //query count
-        $asetsCount = Asset::where('status_asset', ' ')
-            ->orWhere('status_asset', 'Aset terkini')
+        $asetsCount = Asset::where('status_asset', 'Aset terkini')
             ->count();
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        })->where('status_asset', ' ')
+        })->where('status_asset', 'Aset terkini')
             ->get()->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['Hibah']);
-        })->where('status_asset', ' ')
-            ->orWhere('status_asset', 'Aset terkini')
+            $query->whereIn('nama_asal', ['mutasi']);
+        })->where('status_asset', 'Aset terkini')
+            ->get()->count();
+
+        $hibahCount = Asset::whereHas('asal', function ($query) {
+            $query->whereIn('nama_asal', ['Hadiah', 'Hibah']);
+        })->where('status_asset', 'Aset terkini')
             ->get()->count();
 
         // Ambil data Dropdown jenis, objek, dan klasifikasi
@@ -81,7 +84,7 @@ class AssetController extends Controller
         $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
 
 
-        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'unit', 'jenis', 'objek', 'Klasifikasi', 'search'));
+        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'hibahCount', 'unit', 'jenis', 'objek', 'Klasifikasi', 'search'));
     }
 
     public function search(Request $request)
@@ -95,51 +98,41 @@ class AssetController extends Controller
         return view('assets.index', compact('assets', 'search'));
     }
 
-    public function perolehan()
+    public function filter(Request $request)
     {
-        // $asset = Asset::orderBy('created_at', 'DESC')->get();
-        $assets = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        })
-            ->where('status_asset', ' ')
-            ->get();
+        $query = Asset::query();
 
 
-        // return view('assets.index');
-        return view('perolehan.index', compact('assets'));
+        if ($request->has('jenis_id') && $request->jenis_id != '') {
+            $query->where('jenis_id', $request->jenis_id);
+        }
+
+        if ($request->has('objek_id') && $request->objek_id != '') {
+            $query->where('objek_id', $request->objek_id);
+        }
+
+        $assets = $query->get();
+
+        return response()->json($assets); 
     }
+
 
     public function mutasiMasuk()
     {
         $assets = Asset::whereHas('asal', function ($query) {
             $query->whereIn('nama_asal', ['Hibah']);
         })->get();
-
-        // return view('assets.index');
         return view('mutasiMasuk.index', compact('assets'));
     }
 
-
-    public function create()
-    {
-        $kategori = Kategori::all();
-
-        return view('assets.create', compact('kategori'));
-    }
-
-
     public function store(Request $request)
     {
-        // Asset::create($request->all());
-        // Validasi data
         $validated = $request->validate([
             'nama_barang' => 'required',
             'kode_barang' => 'required',
-            'kategori_id' => 'required|exists:kategoris,id', // Pastikan kategori_id valid
-
+            'kategori_id' => 'required|exists:kategoris,id',
         ]);
 
-        // Menyimpan asset dengan kategori_id
         Asset::create([
             'nama_barang' => $request->nama_barang,
             'kode_barang' => $request->kode_barang,

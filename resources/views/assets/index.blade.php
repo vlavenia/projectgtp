@@ -3,17 +3,15 @@
 @section('title', 'Assets')
 
 @section('contents')
-    <div class="row">
-        <!-- Jumlah Asset Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Jumlah Asset</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $asetsCount }} </div>
-
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $asetsCount }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -22,12 +20,8 @@
                 </div>
             </div>
         </div>
-        <!-- Jumlah Asset Card -->
-
-        <!-- Earnings (Annual) Card Example -->
-        <a href="/perolehan" class="card-link col-xl-3 col-md-6 mb-4">
-
-            <div class="">
+        <div class="col-lg-3 col-md-6">
+            <a href="/perolehan" class="card-link">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -42,45 +36,48 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </a>
-
-        <!-- Earnings (Annual) Card Example -->
-        <a href="/mutasiMasuk" class="card-link col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <a href="/mutasiMasuk" class="card-link">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Jumlah Asset Mutasi Masuk</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $mutasimasukCount }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Jumlah Asset Mutasi Masuk</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $mutasimasukCount }}</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Asset Hadiah/Hibah</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $hibahCount }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
-        </a>
+        </div>
     </div>
+
 
     <div class="card shadow">
         <div class="card-header py-3 font-weight-bold text-primary">Filter Data Barang</div>
         <div class="card-body">
-
-            {{-- <label for="jenis">Pilih Jenis:</label>
-            <select id="jenis" name="jenis">
-                <option value="">-- Pilih Jenis --</option>
-                @foreach ($jenis as $item)
-                    <option value="{{ $item->id }}">{{ $item->nama_jenis }}</option>
-                @endforeach
-            </select>
-
-            <label for="objek">Pilih Objek:</label>
-            <select id="objek" name="objek">
-                <option value="">-- Pilih Objek --</option>
-            </select> --}}
-
             <div class="row mb-4">
                 <div class="col-md-1">
                     <label>Unit</label>
@@ -143,68 +140,9 @@
                 </div>
             </div>
 
-            <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-            <script>
-                $(document).ready(function() {
-                    // Ambil token CSRF dari meta tag
-                    // let csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-                    // Ketika dropdown 'jenis' berubah
-                    $('#jenis').on('change', function() {
-                        let jenisId = $(this).val(); // Ambil ID jenis yang dipilih
-                        console.log(jenisId);
-
-                        // // Hapus opsi sebelumnya di dropdown 'objek'
-                        // $('objek').html('<option value="">-- Pilih Objek --</option>');
-
-                        // Jika jenis dipilih, lakukan permintaan AJAX
-                        if (jenisId) {
-                            // console.log('masuk');
-                            $.ajax({
-                                url: '/objek/' + jenisId, // Endpoint
-                                type: 'POST',
-                                data: {
-                                    // jenis_id: jenisId,
-                                    '_token': '{{ csrf_token() }}' // Kirim token CSRF untuk keamanan
-                                },
-                                dataType: 'json',
-                                success: function(data) {
-                                    console.log(data);
-                                    // // Tambahkan opsi ke dropdown 'objek'
-                                    if (data) {
-                                        $('#objek').empty(); // Menghapus semua opsi sebelumnya
-                                        $('#objek').append(
-                                            '<option value="">-Pilih</option>'
-                                            ); // Tambahkan opsi default
-
-                                        // Iterasi melalui data dan tambahkan opsi ke dropdown
-                                        $.each(data, function(key, objek) {
-                                            $('select[name="objek"]').append(
-                                                '<option value="' + objek.id + '">' + objek
-                                                .nama_objek + '</option>'
-                                            );
-                                        });
-                                    }
-                                    // data.forEach(function(item) {
-                                    //     $('#objek').append('<option value="' + item.id + '">' +
-                                    //         item.nama_objek + '</option>');
-                                    // });
-                                },
-                                // error: function(xhr) {
-                                //     console.log('Error:', xhr);
-                                // }
-                            });
-                        }
-                    });
-                });
-            </script>
         </div>
     </div>
-
-
-    {{-- <a href="{{ route('assets.create') }}" class="btn btn-primary">Add Asset</a> --}}
-    <!-- Button trigger modal -->
 
 
 
@@ -281,27 +219,22 @@
                                 <td>luas</td>
                                 <td>penerbit</td>
                                 <td>Nama Ruangan</td>
-                                {{-- <td>{{ $asset->jenis->nama_jenis ?? 'N/A' }}</td>
-                            <td>{{ $asset->asal->nama_asal ?? 'N/A' }}</td> --}}
+
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <!-- Edit Button -->
-                                        <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
-                                            data-target="#editModal-{{ $asset->id }}">
-                                            Edit
-                                        </button>
-
-                                        <!-- Delete Form -->
+                                        <i class="btn far fa-eye" data-toggle="modal"
+                                            data-target="#detailModal-{{ $asset->id }}"></i>
+                                        <i class="btn fas fa-edit" data-toggle="modal"
+                                            data-target="#editModal-{{ $asset->id }}"></i>
                                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger">Delete</button>
+                                            <button class="btn fas fa-trash-alt"></button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
-
 
                             <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
@@ -351,16 +284,66 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Detail Modal -->
+                            <div class="modal fade" id="detailModal-{{ $asset->id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="detailModalLabel-{{ $asset->id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="detailModalLabel-{{ $asset->id }}">Detail
+                                                <strong> {{ $asset->nama_barang }} </strong>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6">
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         @empty
                             <tr>
                                 <td colspan="14">Assets not found</td>
                             </tr>
                         @endforelse
 
+
+
                     </tbody>
 
                 </table>
-                <!-- Pagination Links -->
+
                 <div class="">
                     {{ $assets->links() }}
                 </div>
@@ -368,7 +351,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Import-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -394,31 +377,62 @@
             </div>
         </div>
     </div>
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         $(document).ready(function() {
-            $('#searchInput').on('keyup', function() {
-                let searchQuery = $(this).val(); // Ambil nilai input pencarian
+            $('#jenis').on('change', function() {
+                let jenisId = $(this).val();
+                if (jenisId) {
+                    $.ajax({
+                        url: '/objek/' + jenisId,
+                        type: 'POST',
+                        data: {
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data) {
+                                $('#objek').empty();
+                                $('#objek').append(
+                                    '<option value="">-Pilih</option>'
+                                );
+                                $.each(data, function(key, objek) {
+                                    $('select[name="objek"]').append(
+                                        '<option value="' + objek.id + '">' + objek
+                                        .nama_objek + '</option>'
+                                    );
+                                });
 
-                // Jika input kosong, reset dan ambil semua data
+                                filterData({
+                                    category_id: categoryId
+                                });
+                            }
+                        },
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#searchInput').on('keyup', function() {
+                let searchQuery = $(this).val();
                 if (searchQuery === "") {
                     $.ajax({
-                        url: "{{ route('assets') }}", // Endpoint Laravel
+                        url: "{{ route('assets') }}",
                         type: "GET",
                         data: {},
                         success: function(response) {
-                            // Kosongkan tabel
                             $('#tableBody').empty();
-
-                            // Cek jika data kosong
                             if (response.data.length === 0) {
                                 $('#tableBody').append(`
                                 <tr>
-                                    <td colspan="14" class="text-center">Assets not found</td>
+                                    <td colspan="14" class="text-center">Barang tidak ditemukan</td>
                                 </tr>
                             `);
                             } else {
-                                // Tambahkan data baru
                                 response.data.forEach(asset => {
                                     $('#tableBody').append(`
                                     <tr>
@@ -462,26 +476,21 @@
                         }
                     });
                 } else {
-                    // Jika ada query pencarian, kirim permintaan AJAX dengan query pencarian
                     $.ajax({
-                        url: "{{ route('assets') }}", // Endpoint Laravel
+                        url: "{{ route('assets') }}",
                         type: "GET",
                         data: {
                             search: searchQuery
                         },
                         success: function(response) {
-                            // Kosongkan tabel
                             $('#tableBody').empty();
-
-                            // Cek jika data kosong
                             if (response.data.length === 0) {
                                 $('#tableBody').append(`
                                 <tr>
-                                    <td colspan="14" class="text-center">Assets not found</td>
+                                    <td colspan="14" class="text-center">Barang tidak ditemukan</td>
                                 </tr>
                             `);
                             } else {
-                                // Tambahkan data baru
                                 response.data.forEach(asset => {
                                     $('#tableBody').append(`
                                     <tr>
@@ -526,6 +535,85 @@
                     });
                 }
             });
+        });
+
+        $(document).ready(function() {
+            // Fungsi untuk memfilter data
+            function filterData() {
+                const jenisId = $('#jenis').val(); // Ambil nilai jenis
+                const objekId = $('#objek').val(); // Ambil nilai objek
+
+                $.ajax({
+                    url: '{{ route('filter.assets') }}', // URL ke route filter
+                    method: 'GET',
+                    data: {
+                        jenis_id: jenisId,
+                        objek_id: objekId
+                    },
+                    success: function(response) {
+                        updateTable(response); // Panggil fungsi untuk memperbarui tabel
+                    },
+                    error: function(error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+
+            // Fungsi untuk memperbarui data tabel
+            function updateTable(data) {
+                data.forEach(item => {
+                    // Cari baris dengan ID atau atribut tertentu
+                    const row = $(`#row-${item.id}`);
+
+                    if (row.length > 0) {
+                        // Baris ditemukan, update kolom yang relevan
+                        row.find('.kode-barang').text(item.kode_barang);
+                        row.find('.nama-barang').text(item.nama_barang);
+                        row.find('.tahun-pembelian').text(item.thn_pmbelian);
+                        row.find('.merk').text(item.merk);
+                        row.find('.rangka').text(item.rangka);
+                        row.find('.bpkb').text(item.bpkb);
+                        row.find('.polisi').text(item.polisi);
+                        // Tambahkan kolom lain sesuai kebutuhan
+                    } else {
+                        // Baris tidak ditemukan, tambahkan baris baru
+                        const newRow = `
+                <tr id="row-${item.id}">
+                    <td class="kode-barang">${item.kode_barang}</td>
+                    <td class="nama-barang">${item.nama_barang}</td>
+                    <td class="tahun-pembelian">${item.thn_pmbelian}</td>
+                    <td class="merk">${item.merk}</td>
+                    <td class="rangka">${item.rangka}</td>
+                    <td class="bpkb">${item.bpkb}</td>
+                    <td class="polisi">${item.polisi}</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <i class="btn far fa-eye" data-toggle="modal"
+                                data-target="#detailModal-${item.id}"></i>
+                            <i class="btn fas fa-edit" data-toggle="modal"
+                                data-target="#editModal-${item.id}"></i>
+                            <form action="/assets/${item.id}" method="POST" onsubmit="return confirm('Delete?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn fas fa-trash-alt"></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            `;
+                        $('#tableBody').append(newRow);
+                    }
+                });
+            }
+
+
+            // Tambahkan event listener ke dropdown
+            $('#jenis, #objek').on('change', function() {
+                filterData(); // Panggil fungsi filter saat dropdown berubah
+            });
+
+            // Panggil filter pertama kali untuk memuat data awal
+            filterData();
         });
     </script>
 

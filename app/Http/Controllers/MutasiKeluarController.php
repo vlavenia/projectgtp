@@ -10,7 +10,7 @@ class MutasiKeluarController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_asset', ' ')->get();
+        $asset = Asset::where('status_asset', 'Aset Terkini')->get();
         $asset_mutasiKeluar = Asset::where('status_asset', 'Mutasi Keluar')->get();
 
 

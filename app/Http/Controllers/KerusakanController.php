@@ -9,7 +9,7 @@ class KerusakanController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_asset', ' ')->get();
+        $asset = Asset::where('status_asset', 'Aset Terkini')->get();
         $asset_kerusakan = Asset::where('status_asset', 'Rusak')->get();
 
         return view('kerusakan.index', compact('asset', 'asset_kerusakan'));

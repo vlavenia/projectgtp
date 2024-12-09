@@ -7,7 +7,8 @@
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
             DataTables documentation</a>.</p>
-    <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="modal-addMutasiKeluar">Add Asset </a>
+    <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="#addmodal" data-toggle="modal">Add Asset
+    </a>
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
@@ -21,9 +22,6 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
-                        Import Aset
-                    </button>
                     <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset') }}">Export User
                             Data</a>
                     </div>
@@ -147,42 +145,138 @@
 
 
 
-    <div class="modal fade" id="modal-addMutasiKeluar" tabindex="-1" role="dialog" aria-labelledby="modalDefaultLabel"
+    <!-- Modal -->
+    <div class="modal fade" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalDefaultLabel">Tambah Penghapusan Aset </h4>
-                    <button type="button" class="close btn btn-primary" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action=" " method="POST">
+                <form action="" method="POST">
+                    @csrf
+                    @method('PUT')
                     <div class="modal-body">
-                        <form class="form-horizontal">
-                            <div class="card-body">
-                                <div class="form-group row">
-                                    @csrf
-                                    <label for="name_classification">Nama Klasifikasi Aset:</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control" name="name_classification"
-                                            id="name_classification" placeholder="masukkan nama klasifikasi" value="">
-                                        @error('name_classification')
-                                            <p></p>
-                                        @enderror
-                                    </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label>Nama Barang*</label>
+                                    <input type="text" name="kode_barang" class="form-control"
+                                        placeholder="kode barang" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nilai Total*</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jumlah*</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Klasifikasi*</label>
+                                    <input type="text" name="kode_barang" class="form-control"
+                                        placeholder="kode barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Tahun pembuatan</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Satuan</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Ruangan</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Kondisi</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Asal Usul</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Keterangan</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group ">
+                                    <label>Merk/Type</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Ukuran/CC</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Warna</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Bahan</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>No Pabrik</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>No Rangka</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>No Mesin</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>No Polisi</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>No BPKB</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group ">
+                                    <label>Upload Gambar</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
                                 </div>
                             </div>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="submit" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
 
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
                 </form>
-
 
             </div>
         </div>
     </div>
+
 @endsection

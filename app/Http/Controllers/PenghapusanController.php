@@ -10,7 +10,7 @@ class PenghapusanController extends Controller
 
     public function index()
     {
-        $asset = Asset::where('status_asset', ' ')->get();
+        $asset = Asset::where('status_asset', 'Aset Terkini')->get();
 
         $asset_penghapusan = Asset::where('status_asset', 'penghapusan')->get();
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\PenghapusanController;
+use App\Http\Controllers\PerolehanController;
 use App\Http\Controllers\SampahController;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
@@ -53,9 +54,16 @@ Route::middleware('auth')->group(function () {
         // Route::get('edit/{id}', 'edit')->name('assets.edit');
         Route::put('edit/{id}', 'update')->name('assets.update');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
+
+        Route::get('/filter-assets','filter')->name('filter.assets');
+
     });
 
     Route::post('/objek/{id}', [DropdownController::class, 'getObjek']);
+
+    Route::controller(PerolehanController::class)->prefix('perolehan')->group(function () {
+        Route::get('', 'index')->name('perolehan');
+    });
 
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
         Route::get('', 'index')->name('mutasikeluar');
@@ -63,13 +71,6 @@ Route::middleware('auth')->group(function () {
         Route::put('editAsset/{id}', 'update')->name('mutasiKeluar.update');
         Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
     });
-
-
-    Route::controller(AssetController::class)->prefix('perolehan')->group(function () {
-        Route::get('', 'perolehan')->name('perolehan');
-    });
-
-
 
     Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
         Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
