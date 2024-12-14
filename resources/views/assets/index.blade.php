@@ -229,121 +229,142 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-    <script>
+   <script>
+    $(document).ready(function () {
+        // Fungsi utama untuk memuat tabel
+        function loadTable(search = '', page = 1, filters = {}) {
+            $.ajax({
+                url: '{{ route('filter.assets') }}',
+                method: 'GET',
+                data: {
+                    search: search,
+                    page: page,
+                    ...filters // Spread operator untuk memasukkan semua filter
+                },
+                success: function (response) {
+                    $('#table-container').html(response); // Menampilkan data di dalam kontainer tabel
+                },
+                error: function (xhr) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Gagal memuat data.');
+                }
+            });
+        }
 
-        $(document).ready(function() {
+        // Fungsi untuk memuat data default
+        function loadDefaultData() {
+            const filters = getFilters(); // Ambil filter yang ada
+            loadTable('', 1, filters); // Memuat data dengan pencarian kosong dan filter
+        }
 
-            function loadTable(search = '', page = 1, filters = {}) {
+        // Fungsi untuk mendapatkan filter dari dropdown
+        function getFilters() {
+            return {
+                jenis_id: $('#jenis').val(),
+                objek_id: $('#objek').val(),
+                unit_id: $('#unit').val(),
+                klasifikasi_id: $('#klasifikasi').val()
+            };
+        }
+
+        // Event untuk pencarian
+        $('#search').on('keyup', function () {
+            const search = $(this).val(); // Ambil nilai pencarian
+            const filters = getFilters(); // Ambil filter yang ada
+            loadTable(search, 1, filters); // Muat tabel dengan pencarian dan filter
+        });
+
+        // Event untuk pagination
+        $(document).on('click', '.pagination a', function (e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+            const page = new URLSearchParams(url.split('?')[1]).get('page'); // Ambil halaman dari URL
+            const search = $('#search').val(); // Ambil nilai pencarian
+            const filters = getFilters(); // Ambil filter yang ada
+            loadTable(search, page, filters); // Muat tabel sesuai halaman dan filter
+        });
+
+        // Event untuk dropdown 'jenis'
+        $('#jenis').on('change', function () {
+            const jenisId = $(this).val();
+            if (jenisId) {
                 $.ajax({
-                    url: '{{ route('filter.assets') }}',
-                    method: 'GET',
+                    url: '/objek/' + jenisId,
+                    type: 'POST',
                     data: {
-                        search: search,
-                        page: page,
-                        ...filters
+                        '_token': '{{ csrf_token() }}' // Sertakan CSRF token
                     },
-                    success: function(response) {
-                        $('#table-container').html(
-                        response);
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            // Perbarui dropdown 'objek'
+                            $('#objek').empty().append('<option value="">-Pilih</option>');
+                            $.each(data, function (key, objek) {
+                                $('#objek').append(`<option value="${objek.id}">${objek.nama_objek}</option>`);
+                            });
+
+                            // Muat tabel dengan filter terbaru
+                            const filters = getFilters();
+                            loadTable($('#search').val(), 1, filters);
+                        }
                     },
-                    error: function() {
-                        alert('Gagal memuat data.');
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Gagal memuat data objek.');
                     }
                 });
             }
-
-            // Fungsi untuk memuat data default
-            function loadDefaultData() {
-                const filters = {
-                    jenis_id: $('#jenis').val(),
-                    objek_id: $('#objek').val(),
-                    unit_id: $('#unit').val(),
-                    klasifikasi_id: $('#klasifikasi').val()
-                };
-                loadTable('', 1, filters); // Memuat data dengan filter yang ada
-            }
-
-            // Event untuk pencarian
-            $('#search').on('keyup', function() {
-                const search = $(this).val(); // Ambil nilai pencarian
-                const filters = {
-                    jenis_id: $('#jenis').val(),
-                    objek_id: $('#objek').val(),
-                    unit_id: $('#unit').val(),
-                    klasifikasi_id: $('#klasifikasi').val()
-                };
-
-                // Memuat tabel dengan pencarian yang mempertimbangkan filter yang sudah ada
-                loadTable(search, 1, filters);
-            });
-
-            // Event untuk pagination
-            $(document).on('click', '.pagination a', function(e) {
-                e.preventDefault();
-                const url = $(this).attr('href');
-                const page = new URLSearchParams(url.split('?')[1]).get(
-                'page'); // Mendapatkan halaman dari URL
-                const search = $('#search').val();
-                const filters = {
-                    jenis_id: $('#jenis').val(),
-                    objek_id: $('#objek').val(),
-                    unit_id: $('#unit').val(),
-                    klasifikasi_id: $('#klasifikasi').val()
-                };
-                loadTable(search, page, filters); // Memuat tabel sesuai dengan halaman yang dipilih
-            });
-
-            $('#jenis').on('change', function() {
-                let jenisId = $(this).val();
-                if (jenisId) {
-                    $.ajax({
-                        url: '/objek/' + jenisId,
-                        type: 'POST',
-                        data: {
-                            '_token': '{{ csrf_token() }}'
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data) {
-                                $('#objek').empty().append('<option value="">-Pilih</option>');
-                                $.each(data, function(key, objek) {
-                                    $('#objek').append('<option value="' + objek.id +
-                                        '">' + objek.nama_objek + '</option>');
-                                });
-
-                                // Setelah mengupdate objek, muat data dengan filter terbaru
-                                const filters = {
-                                    jenis_id: $('#jenis').val(),
-                                    objek_id: $('#objek').val(),
-                                    unit_id: $('#unit').val(),
-                                    klasifikasi_id: $('#klasifikasi').val()
-                                };
-                                loadTable($('#search').val(), 1,
-                                filters); // Memuat data berdasarkan filter yang dipilih
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Error: ' + xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            // Event listener untuk perubahan pada semua dropdown
-            $('#jenis, #objek, #unit, #klasifikasi').on('change', function() {
-                loadDefaultData(); // Memuat data berdasarkan filter yang dipilih
-            });
-
-            // Event untuk tombol reset
-            $('#resetButton').on('click', function() {
-                $('#jenis, #objek, #unit, #klasifikasi').val('');
-                loadDefaultData(); // Memuat data tanpa filter dan pencarian
-            });
-
-            // Muat data default saat halaman pertama kali dibuka
-            loadDefaultData();
         });
-    </script>
+
+        // Event listener untuk perubahan pada semua dropdown
+        $('#jenis, #objek, #unit, #klasifikasi').on('change', function () {
+            loadDefaultData(); // Muat data berdasarkan filter terbaru
+        });
+
+        // Event untuk tombol reset
+        $('#resetButton').on('click', function () {
+            $('#jenis, #objek, #unit, #klasifikasi').val(''); // Reset semua dropdown
+            loadDefaultData(); // Muat data default
+        });
+
+        // Event untuk update data asset
+        $(document).on('click', '.updateAssetBtn', function () {
+            const id = $(this).data('id'); // Ambil ID asset
+            const url = '{{ route('assets.update', ':id') }}'.replace(':id', id); // Gunakan route named assets.update
+            const data = {
+                _token: '{{ csrf_token() }}', // Token CSRF
+                _method: 'PUT', // HTTP Method
+                nama_barang: $(`#nama_barang-${id}`).val(),
+                kode_barang: $(`#kode_barang-${id}`).val(),
+                // no_ba_terima: $(`#no_ba_terima-${id}`).val(),
+                // tgl_ba_terima: $(`#tgl_ba_terima-${id}`).val(),
+            };
+
+            $.ajax({
+                url: url,
+                type: 'POST', // Metode POST karena kita menggunakan _method=PUT
+                data: data,
+                success: function (response) {
+                    // Tampilkan pesan sukses
+                    alert('Data berhasil diperbarui');
+                    // Tutup modal
+                    $(`#editModal-${id}`).modal('hide');
+                    // Perbarui tabel data
+                    loadTable();
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                    alert('Terjadi kesalahan saat memperbarui data.');
+                },
+            });
+        });
+
+
+
+        // Muat data default saat halaman pertama kali dibuka
+        loadDefaultData();
+    });
+</script>
 
 
 
