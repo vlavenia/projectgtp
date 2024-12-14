@@ -76,7 +76,12 @@
 
 
     <div class="card shadow">
-        <div class="card-header py-3 font-weight-bold text-primary">Filter Data Barang</div>
+        <div class="card-header py-3 font-weight-bold text-primary">
+            <div class="row ">
+                <p>Filter Data Barang</p>
+                <button id="resetButton" class="btn btn-secondary ml-3">Reset</button>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-md-1">
@@ -102,7 +107,7 @@
                         <option value="">- Pilih Jenis-</option>
                         @foreach ($jenis as $jenis)
                             <option value="{{ $jenis->id }}" {{ old('jenis_id') == $jenis->id ? 'selected' : null }}>
-                                {{ $jenis->nama_jenis }}
+                                {{ $jenis->jenis_asset }}
                             </option>
                         @endforeach
                     </select>
@@ -128,7 +133,8 @@
                     <label>Klasifikasi</label>
                 </div>
                 <div class="col-md-5">
-                    <select name="klasifikasi_id" class="form-control @error('klasifikasi_id') is-invalid @enderror">
+                    <select id="klasifikasi" name="klasifikasi_id"
+                        class="form-control @error('klasifikasi_id') is-invalid @enderror">
                         <option value="">- Pilih klasifikasi-</option>
                         @foreach ($Klasifikasi as $klasifikasi)
                             <option value="{{ $klasifikasi->id }}"
@@ -163,11 +169,13 @@
         <div class="card-header py-3">
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
+
                 <div class=" row mr-3">
                     <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
-                        <input name="search" id="searchInput" class="form-control mr-sm-2" type="search"
+                        <input name="search" id="search" class="form-control mr-sm-2" type="search"
                             placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        {{-- <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0"
+                            type="submit">Search</button> --}}
                     </form>
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
@@ -184,168 +192,8 @@
 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                    <thead class="thead-dark text-center ">
-                        <tr>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Kode Lokasi</th>
-                            <th>Tahun</th>
-                            <th>Nilai Perolehan</th>
-                            <th>Nilai Akumulasi</th>
-                            <th>Merk Type</th>
-                            <th>No Rangka</th>
-                            <th>No BPKB</th>
-                            <th>No Polisi</th>
-                            <th>Luas</th>
-                            <th>Penerbit</th>
-                            <th>Nama Ruangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody" class="text-center">
-                        @forelse ($assets as $asset)
-                            <tr>
-                                <td>{{ $asset->kode_barang }}</td>
-                                <td>{{ $asset->nama_barang }}</td>
-                                <td>Kode Lokasi</td>
-                                <td>{{ $asset->thn_pmbelian }}</td>
-                                <td>Nilai Perolehan</td>
-                                <td>Nilai Akumulasi</td>
-                                <td>{{ $asset->merk }}</td>
-                                <td>{{ $asset->rangka }}</td>
-                                <td>{{ $asset->bpkb }}</td>
-                                <td>{{ $asset->polisi }}</td>
-                                <td>luas</td>
-                                <td>penerbit</td>
-                                <td>Nama Ruangan</td>
-
-                                <td>
-                                    <div class="d-flex justify-content-center">
-                                        <i class="btn far fa-eye" data-toggle="modal"
-                                            data-target="#detailModal-{{ $asset->id }}"></i>
-                                        <i class="btn fas fa-edit" data-toggle="modal"
-                                            data-target="#editModal-{{ $asset->id }}"></i>
-                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
-                                            onsubmit="return confirm('Delete?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn fas fa-trash-alt"></button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Edit Modal -->
-                            <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form action="{{ route('assets.update', $asset->id) }}" method="POST">
-
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label>Nama Barang</label>
-                                                    <input type="text" name="nama_barang" class="form-control"
-                                                        value="{{ $asset->nama_barang }}" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Kode Barang</label>
-                                                    <input type="text" name="kode_barang" class="form-control"
-                                                        value="{{ $asset->kode_barang }}" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>No BA Terima</label>
-                                                    <input type="text" name="no_ba_terima" class="form-control"
-                                                        value="{{ $asset->no_ba_terima }}">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Tgl BA Terima</label>
-                                                    <input type="date" name="tgl_ba_terima" class="form-control"
-                                                        value="{{ $asset->tgl_ba_terima }}">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-warning">Update</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Detail Modal -->
-                            <div class="modal fade" id="detailModal-{{ $asset->id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="detailModalLabel-{{ $asset->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="detailModalLabel-{{ $asset->id }}">Detail
-                                                <strong> {{ $asset->nama_barang }} </strong>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-12 col-md-6">
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-
-                                                </div>
-                                                <div class="col-12 col-md-6">
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <tr>
-                                <td colspan="14">Assets not found</td>
-                            </tr>
-                        @endforelse
-
-
-
-                    </tbody>
-
-                </table>
-
-                <div class="">
-                    {{ $assets->links() }}
+                <div id="table-container">
+                    @include('assets.partials.table', ['assets' => $assets])
                 </div>
             </div>
         </div>
@@ -378,11 +226,73 @@
         </div>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
     <script>
+
         $(document).ready(function() {
+
+            function loadTable(search = '', page = 1, filters = {}) {
+                $.ajax({
+                    url: '{{ route('filter.assets') }}',
+                    method: 'GET',
+                    data: {
+                        search: search,
+                        page: page,
+                        ...filters
+                    },
+                    success: function(response) {
+                        $('#table-container').html(
+                        response);
+                    },
+                    error: function() {
+                        alert('Gagal memuat data.');
+                    }
+                });
+            }
+
+            // Fungsi untuk memuat data default
+            function loadDefaultData() {
+                const filters = {
+                    jenis_id: $('#jenis').val(),
+                    objek_id: $('#objek').val(),
+                    unit_id: $('#unit').val(),
+                    klasifikasi_id: $('#klasifikasi').val()
+                };
+                loadTable('', 1, filters); // Memuat data dengan filter yang ada
+            }
+
+            // Event untuk pencarian
+            $('#search').on('keyup', function() {
+                const search = $(this).val(); // Ambil nilai pencarian
+                const filters = {
+                    jenis_id: $('#jenis').val(),
+                    objek_id: $('#objek').val(),
+                    unit_id: $('#unit').val(),
+                    klasifikasi_id: $('#klasifikasi').val()
+                };
+
+                // Memuat tabel dengan pencarian yang mempertimbangkan filter yang sudah ada
+                loadTable(search, 1, filters);
+            });
+
+            // Event untuk pagination
+            $(document).on('click', '.pagination a', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('href');
+                const page = new URLSearchParams(url.split('?')[1]).get(
+                'page'); // Mendapatkan halaman dari URL
+                const search = $('#search').val();
+                const filters = {
+                    jenis_id: $('#jenis').val(),
+                    objek_id: $('#objek').val(),
+                    unit_id: $('#unit').val(),
+                    klasifikasi_id: $('#klasifikasi').val()
+                };
+                loadTable(search, page, filters); // Memuat tabel sesuai dengan halaman yang dipilih
+            });
+
             $('#jenis').on('change', function() {
                 let jenisId = $(this).val();
                 if (jenisId) {
@@ -395,226 +305,48 @@
                         dataType: 'json',
                         success: function(data) {
                             if (data) {
-                                $('#objek').empty();
-                                $('#objek').append(
-                                    '<option value="">-Pilih</option>'
-                                );
+                                $('#objek').empty().append('<option value="">-Pilih</option>');
                                 $.each(data, function(key, objek) {
-                                    $('select[name="objek"]').append(
-                                        '<option value="' + objek.id + '">' + objek
-                                        .nama_objek + '</option>'
-                                    );
+                                    $('#objek').append('<option value="' + objek.id +
+                                        '">' + objek.nama_objek + '</option>');
                                 });
 
-                                filterData({
-                                    category_id: categoryId
-                                });
-                            }
-                        },
-                    });
-                }
-            });
-        });
-
-        $(document).ready(function() {
-            $('#searchInput').on('keyup', function() {
-                let searchQuery = $(this).val();
-                if (searchQuery === "") {
-                    $.ajax({
-                        url: "{{ route('assets') }}",
-                        type: "GET",
-                        data: {},
-                        success: function(response) {
-                            $('#tableBody').empty();
-                            if (response.data.length === 0) {
-                                $('#tableBody').append(`
-                                <tr>
-                                    <td colspan="14" class="text-center">Barang tidak ditemukan</td>
-                                </tr>
-                            `);
-                            } else {
-                                response.data.forEach(asset => {
-                                    $('#tableBody').append(`
-                                    <tr>
-                                        <td>${asset.kode_barang}</td>
-                                        <td>${asset.nama_barang}</td>
-                                        <td>${asset.kode_lokasi || '-'}</td>
-                                        <td>${asset.thn_pmbelian}</td>
-                                        <td>${asset.nilai_perolehan || 'N/A'}</td>
-                                        <td>${asset.nilai_akumulasi || 'N/A'}</td>
-                                        <td>${asset.merk}</td>
-                                        <td>${asset.rangka || '-'}</td>
-                                        <td>${asset.bpkb}</td>
-                                        <td>${asset.polisi}</td>
-                                        <td>${asset.luas || '-'}</td>
-                                        <td>${asset.penerbit || '-'}</td>
-                                        <td>${asset.nama_ruangan || '-'}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                <!-- Edit Button -->
-                                                <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
-                                                    data-target="#editModal-${asset.id}">
-                                                    Edit
-                                                </button>
-
-                                                <!-- Delete Form -->
-                                                <form action="{{ route('assets.destroy', '') }}/${asset.id}" method="POST"
-                                                    onsubmit="return confirm('Delete?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `);
-                                });
+                                // Setelah mengupdate objek, muat data dengan filter terbaru
+                                const filters = {
+                                    jenis_id: $('#jenis').val(),
+                                    objek_id: $('#objek').val(),
+                                    unit_id: $('#unit').val(),
+                                    klasifikasi_id: $('#klasifikasi').val()
+                                };
+                                loadTable($('#search').val(), 1,
+                                filters); // Memuat data berdasarkan filter yang dipilih
                             }
                         },
                         error: function(xhr) {
-                            console.error(xhr.responseText);
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: "{{ route('assets') }}",
-                        type: "GET",
-                        data: {
-                            search: searchQuery
-                        },
-                        success: function(response) {
-                            $('#tableBody').empty();
-                            if (response.data.length === 0) {
-                                $('#tableBody').append(`
-                                <tr>
-                                    <td colspan="14" class="text-center">Barang tidak ditemukan</td>
-                                </tr>
-                            `);
-                            } else {
-                                response.data.forEach(asset => {
-                                    $('#tableBody').append(`
-                                    <tr>
-                                        <td>${asset.kode_barang}</td>
-                                        <td>${asset.nama_barang}</td>
-                                        <td>${asset.kode_lokasi || '-'}</td>
-                                        <td>${asset.thn_pmbelian}</td>
-                                        <td>${asset.nilai_perolehan || 'N/A'}</td>
-                                        <td>${asset.nilai_akumulasi || 'N/A'}</td>
-                                        <td>${asset.merk}</td>
-                                        <td>${asset.rangka || '-'}</td>
-                                        <td>${asset.bpkb}</td>
-                                        <td>${asset.polisi}</td>
-                                        <td>${asset.luas || '-'}</td>
-                                        <td>${asset.penerbit || '-'}</td>
-                                        <td>${asset.nama_ruangan || '-'}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                <!-- Edit Button -->
-                                                <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
-                                                    data-target="#editModal-${asset.id}">
-                                                    Edit
-                                                </button>
-
-                                                <!-- Delete Form -->
-                                                <form action="{{ route('assets.destroy', '') }}/${asset.id}" method="POST"
-                                                    onsubmit="return confirm('Delete?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `);
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error(xhr.responseText);
+                            console.error('Error: ' + xhr.responseText);
                         }
                     });
                 }
             });
-        });
 
-        $(document).ready(function() {
-            // Fungsi untuk memfilter data
-            function filterData() {
-                const jenisId = $('#jenis').val(); // Ambil nilai jenis
-                const objekId = $('#objek').val(); // Ambil nilai objek
-
-                $.ajax({
-                    url: '{{ route('filter.assets') }}', // URL ke route filter
-                    method: 'GET',
-                    data: {
-                        jenis_id: jenisId,
-                        objek_id: objekId
-                    },
-                    success: function(response) {
-                        updateTable(response); // Panggil fungsi untuk memperbarui tabel
-                    },
-                    error: function(error) {
-                        console.error('Error fetching data:', error);
-                    }
-                });
-            }
-
-            // Fungsi untuk memperbarui data tabel
-            function updateTable(data) {
-                data.forEach(item => {
-                    // Cari baris dengan ID atau atribut tertentu
-                    const row = $(`#row-${item.id}`);
-
-                    if (row.length > 0) {
-                        // Baris ditemukan, update kolom yang relevan
-                        row.find('.kode-barang').text(item.kode_barang);
-                        row.find('.nama-barang').text(item.nama_barang);
-                        row.find('.tahun-pembelian').text(item.thn_pmbelian);
-                        row.find('.merk').text(item.merk);
-                        row.find('.rangka').text(item.rangka);
-                        row.find('.bpkb').text(item.bpkb);
-                        row.find('.polisi').text(item.polisi);
-                        // Tambahkan kolom lain sesuai kebutuhan
-                    } else {
-                        // Baris tidak ditemukan, tambahkan baris baru
-                        const newRow = `
-                <tr id="row-${item.id}">
-                    <td class="kode-barang">${item.kode_barang}</td>
-                    <td class="nama-barang">${item.nama_barang}</td>
-                    <td class="tahun-pembelian">${item.thn_pmbelian}</td>
-                    <td class="merk">${item.merk}</td>
-                    <td class="rangka">${item.rangka}</td>
-                    <td class="bpkb">${item.bpkb}</td>
-                    <td class="polisi">${item.polisi}</td>
-                    <td>
-                        <div class="d-flex justify-content-center">
-                            <i class="btn far fa-eye" data-toggle="modal"
-                                data-target="#detailModal-${item.id}"></i>
-                            <i class="btn fas fa-edit" data-toggle="modal"
-                                data-target="#editModal-${item.id}"></i>
-                            <form action="/assets/${item.id}" method="POST" onsubmit="return confirm('Delete?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn fas fa-trash-alt"></button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            `;
-                        $('#tableBody').append(newRow);
-                    }
-                });
-            }
-
-
-            // Tambahkan event listener ke dropdown
-            $('#jenis, #objek').on('change', function() {
-                filterData(); // Panggil fungsi filter saat dropdown berubah
+            // Event listener untuk perubahan pada semua dropdown
+            $('#jenis, #objek, #unit, #klasifikasi').on('change', function() {
+                loadDefaultData(); // Memuat data berdasarkan filter yang dipilih
             });
 
-            // Panggil filter pertama kali untuk memuat data awal
-            filterData();
+            // Event untuk tombol reset
+            $('#resetButton').on('click', function() {
+                $('#jenis, #objek, #unit, #klasifikasi').val('');
+                loadDefaultData(); // Memuat data tanpa filter dan pencarian
+            });
+
+            // Muat data default saat halaman pertama kali dibuka
+            loadDefaultData();
         });
     </script>
+
+
+
+
 
 @endsection
