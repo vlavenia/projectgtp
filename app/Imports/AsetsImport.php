@@ -25,8 +25,9 @@ class AsetsImport implements ToModel, WithHeadingRow
 
 {
 
-    // Array untuk menyimpan kode barang yang sudah ada
-    protected $existingData = [];
+
+    protected $newData= []; // Hitung data baru
+    protected $existingData = []; // Simpan data duplikat
 
     /**
      * Memproses setiap baris data dari file Excel.
@@ -37,12 +38,12 @@ class AsetsImport implements ToModel, WithHeadingRow
     {
 
         $existingAsset = Asset::where('kode_barang', $row['kode_barang'])
-        ->where('no_register', $row['no_register'])
-        ->where(function ($query) use ($row) {
-            if ($row['merk'] !== null) {
-                $query->where('merk', $row['merk']);
-            }
-        })
+            ->where('no_register', $row['no_register'])
+            ->where(function ($query) use ($row) {
+                if ($row['merk'] !== null) {
+                    $query->where('merk', $row['merk']);
+                }
+            })
             ->where('thn_pmbelian', $row['thn_pmbelian'])
             ->first();
 
@@ -82,5 +83,10 @@ class AsetsImport implements ToModel, WithHeadingRow
     public function getExistingData()
     {
         return $this->existingData;
+    }
+
+    public function getNewData()
+    {
+        return $this->newData;
     }
 }

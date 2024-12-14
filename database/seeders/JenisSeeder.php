@@ -15,17 +15,17 @@ class JenisSeeder extends Seeder
     public function run(): void
     {
         DB::table('jenis')->insert([
-            ['nama_jenis' => 'Tanah'],
-            ['nama_jenis' => 'Peralatan dan Mesin'],
-            ['nama_jenis' => 'Gedung dan Bangunan'],
-            ['nama_jenis' => 'Jalan, Jaringan dan Irigasi'],
-            ['nama_jenis' => 'Aset Tetap Lainnya'],
-            ['nama_jenis' => 'Aset Lainnya'],
-            ['nama_jenis' => 'Aset Tidak Berwujud'],
-            ['nama_jenis' => 'Konstruksi Dalam Pengerjaan'],
-            ['nama_jenis' => 'Kemitraan Dengan Pihak Ketiga'],
-            ['nama_jenis' => 'Aset Lain-Lain'],
-            ['nama_jenis' => 'Bukan Aset Pemda'],
+            ['jenis_asset' => 'Tanah'],
+            ['jenis_asset' => 'Peralatan dan Mesin'],
+            ['jenis_asset' => 'Gedung dan Bangunan'],
+            ['jenis_asset' => 'Jalan, Jaringan dan Irigasi'],
+            ['jenis_asset' => 'Aset Tetap Lainnya'],
+            ['jenis_asset' => 'Aset Lainnya'],
+            ['jenis_asset' => 'Aset Tidak Berwujud'],
+            ['jenis_asset' => 'Konstruksi Dalam Pengerjaan'],
+            ['jenis_asset' => 'Kemitraan Dengan Pihak Ketiga'],
+            ['jenis_asset' => 'Aset Lain-Lain'],
+            ['jenis_asset' => 'Bukan Aset Pemda'],
         ]);
     }
 }

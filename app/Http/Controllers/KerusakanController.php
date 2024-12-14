@@ -9,8 +9,8 @@ class KerusakanController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_asset', 'Aset Terkini')->get();
-        $asset_kerusakan = Asset::where('status_asset', 'Rusak')->get();
+        $asset = Asset::where('status_id', 'Aset Terkini')->get();
+        $asset_kerusakan = Asset::where('status_id', 'Rusak')->get();
 
         return view('kerusakan.index', compact('asset', 'asset_kerusakan'));
     }
@@ -28,9 +28,9 @@ class KerusakanController extends Controller
         // Temukan asset berdasarkan ID
         $asset = Asset::findOrFail($asset_id);
 
-        // Update hanya kolom `status_asset`
+        // Update hanya kolom `status_id`
         $asset->update([
-            'status_asset' => 'Rusak', // Nilai statis
+            'status_id' => 'Rusak', // Nilai statis
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses

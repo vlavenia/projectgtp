@@ -12,11 +12,8 @@ class PerolehanController extends Controller
      */
     public function index()
     {
-        // $asset = Asset::orderBy('created_at', 'DESC')->get();
-        $assets = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        })
-            ->where('status_asset', ' ')
+        $assets = Asset::whereIn('asal_id', ['1', '2', '3'])
+            ->orderBy('created_at', 'DESC')
             ->get();
 
 
@@ -76,7 +73,12 @@ class PerolehanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $asset = Asset::findOrFail($id);
+
+        $asset->update($request->all());
+
+        return redirect()->route('perolehan')->with('success', 'Assets updated successfully');
     }
 
     /**
@@ -84,6 +86,10 @@ class PerolehanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $asset = Asset::findOrFail($id);
+
+        $asset->delete();
+
+        return redirect()->route('perolehan')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
 }

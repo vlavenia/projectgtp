@@ -13,12 +13,30 @@ class Asset extends Model
     protected $fillable = [
         'nama_barang',
         'kode_barang',
-        'no_ba_terima',
-        'tgl_ba_terima',
+        'jenis_id',
+        'objek_id',
         'kategori_id',
         'asal_id',
-        'jenis_id',
-        'status_asset'
+        'img_url',
+        'no_ba_terima',
+        'tgl_ba_terima',
+        'no_register',
+        'merk',
+        'bahan',
+        'thn_pmbelian',
+        'pabrik',
+        'rangka',
+        'mesin',
+        'polisi',
+        'bpkb',
+        'harga',
+        'deskripsi_brg',
+        'keterangan',
+        'opd',
+        'status_id',
+        'unit_id',
+        'klasifikasi_id',
+
     ];
     protected $dates = ['deleted_at'];
 
@@ -34,19 +52,18 @@ class Asset extends Model
         return $this->belongsTo(asal::class);
     }
 
-    public function jenis()
-    {
-        return $this->belongsTo(Jenis::class);
-    }
-
-    //relasi tabel dr penghapusan
-    // public function penghapusan()
+    // public function jenis()
     // {
-    //     return $this->hasMany(Penghapusan::class);
+    //     return $this->belongsTo(Jenis::class);
     // }
 
     public function statusAsset()
     {
-        return $this->belongsTo(statusAsset::class);
+        return $this->belongsTo(status::class);
+    }
+
+    public function objek()
+    {
+        return $this->belongsTo(Objek::class);
     }
 }

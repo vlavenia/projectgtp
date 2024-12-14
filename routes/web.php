@@ -14,17 +14,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Models\Asset;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -55,14 +44,18 @@ Route::middleware('auth')->group(function () {
         Route::put('edit/{id}', 'update')->name('assets.update');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
 
-        Route::get('/filter-assets','filter')->name('filter.assets');
-
+        Route::delete('/counters', 'getCounters')->name('get.counters');
+        Route::get('/filter-assets', 'filter')->name('filter.assets');
+        Route::get('/search-assets', 'search')->name('assets.search');
     });
 
     Route::post('/objek/{id}', [DropdownController::class, 'getObjek']);
 
     Route::controller(PerolehanController::class)->prefix('perolehan')->group(function () {
         Route::get('', 'index')->name('perolehan');
+
+        Route::put('edit/{id}', 'update')->name('assets.update.perolehan');
+        Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.perolehan');
     });
 
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
@@ -76,10 +69,6 @@ Route::middleware('auth')->group(function () {
         Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
     });
 
-    // Route::controller(SampahController::class)->prefix('sampah')->group(function () {
-    //     Route::get('', 'index')->name('sampah');
-    // });
-
     Route::controller(SampahController::class)->prefix('sampah')->group(function () {
         Route::get('', 'trash')->name('sampah');
 
@@ -87,8 +76,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/assets/restore/{id}', [SampahController::class, 'restore'])->name('assets.restore');
         Route::delete('/assets/force-delete/{id}', [SampahController::class, 'forceDelete'])->name('assets.forceDelete');
     });
-
-
 
     Route::controller(KerusakanController::class)->prefix('kerusakan')->group(function () {
         Route::get('', 'index')->name('kerusakan');
@@ -108,7 +95,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile');
 
-    // import-export
     Route::get('/user', function (HttpRequest $request) {
         return $request->user();
     })->middleware('auth:sanctum');

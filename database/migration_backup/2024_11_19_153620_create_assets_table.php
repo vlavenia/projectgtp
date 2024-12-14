@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_barang');
             $table->string('kode_barang');
+            $table->string('nama_barang');
             $table->string('no_ba_terima');
             $table->date('tgl_ba_terima');
             $table->string('register');

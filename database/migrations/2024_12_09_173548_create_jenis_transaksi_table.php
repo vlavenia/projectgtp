@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->unsignedBigInteger('asset_id')->after('id')->required();
-            $table->foreign('asset_id')->references('id')->on('assets');
+        Schema::create('jenis_transaksis', function (Blueprint $table) {
+            $table->id();
+            $table->string('jenis_tarnsaksi');
+            $table->timestamps();
         });
     }
 
@@ -22,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('penghapusans', function (Blueprint $table) {
-            $table->dropColumn('asset_id');
-        });
+        Schema::dropIfExists('jenis_transaksis');
     }
 };

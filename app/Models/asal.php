@@ -10,7 +10,7 @@ class asal extends Model
     use HasFactory;
 
     protected $fillable =[
-        'nama_asal'
+        'asal_asset'
     ];
 
     public function assets()

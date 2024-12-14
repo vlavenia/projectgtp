@@ -174,7 +174,7 @@
                     <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
                         <input name="search" id="search" class="form-control mr-sm-2" type="search"
                             placeholder="Search" aria-label="Search">
-            
+
                     </form>
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
@@ -209,7 +209,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data">
+                <form id="importForm" action="{{ route('importAsset') }}" method="POST" enctype="multipart/form-data">
                     <br>
                     <div class="p-3"><input type="file" name="file" class="form-control "
                             style="border: none; outline: none;"> </div>
@@ -231,140 +231,211 @@
 
     <script>
         $(document).ready(function() {
-    function loadTable(search = '', page = 1, filters = {}) {
-        $.ajax({
-            url: '{{ route('filter.assets') }}',
-            method: 'GET',
-            data: {
-                search: search,
-                page: page,
-                ...filters
-            },
-            success: function(response) {
-                $('#table-container').html(response);
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseText);
-                alert('Gagal memuat data.');
-            }
-        });
-    }
-
-    function loadDefaultData() {
-        const filters = getFilters();
-        loadTable('', 1, filters);
-    }
-
-    function getFilters() {
-        return {
-            jenis_id: $('#jenis').val(),
-            objek_id: $('#objek').val(),
-            unit_id: $('#unit').val(),
-            klasifikasi_id: $('#klasifikasi').val()
-        };
-    }
-
-    $('#search').on('keyup', function() {
-        const search = $(this).val();
-        const filters = getFilters();
-        loadTable(search, 1, filters);
-    });
-
-
-    $(document).on('click', '.pagination a', function(e) {
-        e.preventDefault();
-        const url = $(this).attr('href');
-        const page = new URLSearchParams(url.split('?')[1]).get('page');
-        const search = $('#search').val();
-        const filters = getFilters();
-        loadTable(search, page, filters);
-    });
-
-    $('#jenis').on('change', function() {
-        const jenisId = $(this).val();
-        if (jenisId) {
-            $.ajax({
-                url: '/objek/' + jenisId,
-                type: 'POST',
-                data: {
-                    '_token': '{{ csrf_token() }}'
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (data) {
-                        $('#objek').empty().append('<option value="">-Pilih</option>');
-                        $.each(data, function(key, objek) {
-                            $('#objek').append(
-                                `<option value="${objek.id}">${objek.nama_objek}</option>`
-                            );
-                        });
-
-                        const filters = getFilters();
-                        loadTable($('#search').val(), 1, filters);
+            function loadTable(search = '', page = 1, filters = {}) {
+                $.ajax({
+                    url: '{{ route('filter.assets') }}',
+                    method: 'GET',
+                    data: {
+                        search: search,
+                        page: page,
+                        ...filters
+                    },
+                    success: function(response) {
+                        $('#table-container').html(response);
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Gagal memuat data.');
                     }
-                },
-                error: function(xhr) {
-                    console.error('Error:', xhr.responseText);
-                    alert('Gagal memuat data objek.');
-                }
-            });
-        }
-    });
-
-    $('#jenis, #objek, #unit, #klasifikasi').on('change', function() {
-        loadDefaultData();
-    });
-
-    $('#resetButton').on('click', function() {
-        $('#jenis, #objek, #unit, #klasifikasi').val('');
-        loadDefaultData();
-    });
-
-
-    $(document).on('click', '.updateAssetBtn', function() {
-        const id = $(this).data('id');
-        const url = '{{ route('assets.update', ':id') }}'.replace(':id', id);
-        const data = {
-            _token: '{{ csrf_token() }}',
-            _method: 'PUT',
-            nama_barang: $(`#nama_barang-${id}`).val(),
-            kode_barang: $(`#kode_barang-${id}`).val(),
-            // no_ba_terima: $(`#no_ba_terima-${id}`).val(),
-            // tgl_ba_terima: $(`#tgl_ba_terima-${id}`).val(),
-        };
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            success: function(response) {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Data berhasil diperbarui.",
-                    icon: "success",
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 5000
                 });
+            }
 
-                $(`#editModal-${id}`).modal('hide');
+            function loadDefaultData() {
+                const filters = getFilters();
+                loadTable('', 1, filters);
+            }
 
+            function getFilters() {
+                return {
+                    jenis_id: $('#jenis').val(),
+                    objek_id: $('#objek').val(),
+                    unit_id: $('#unit').val(),
+                    klasifikasi_id: $('#klasifikasi').val()
+                };
+            }
+
+            $('#search').on('keyup', function() {
+                const search = $(this).val();
+                const filters = getFilters();
+                loadTable(search, 1, filters);
+            });
+
+
+            $(document).on('click', '.pagination a', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('href');
+                const page = new URLSearchParams(url.split('?')[1]).get('page');
                 const search = $('#search').val();
                 const filters = getFilters();
+                loadTable(search, page, filters);
+            });
 
-                loadTable(search, 1, filters);
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-                alert('Terjadi kesalahan saat memperbarui data.');
-            },
+            $('#jenis').on('change', function() {
+                const jenisId = $(this).val();
+                if (jenisId) {
+                    $.ajax({
+                        url: '/objek/' + jenisId,
+                        type: 'POST',
+                        data: {
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data) {
+                                $('#objek').empty().append('<option value="">-Pilih</option>');
+                                $.each(data, function(key, objek) {
+                                    $('#objek').append(
+                                        `<option value="${objek.id}">${objek.nama_objek}</option>`
+                                    );
+                                });
+
+                                const filters = getFilters();
+                                loadTable($('#search').val(), 1, filters);
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Error:', xhr.responseText);
+                            alert('Gagal memuat data objek.');
+                        }
+                    });
+                }
+            });
+
+            $('#jenis, #objek, #unit, #klasifikasi').on('change', function() {
+                loadDefaultData();
+            });
+
+            $('#resetButton').on('click', function() {
+                $('#jenis, #objek, #unit, #klasifikasi').val('');
+                loadDefaultData();
+            });
+
+            $('#importForm').on('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ route('importAsset') }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        Swal.fire({
+                            title: 'Mengimpor...',
+                            text: 'Silakan tunggu...',
+                            didOpen: () => {
+                                Swal.showLoading();
+                            },
+                            allowOutsideClick: false
+                        });
+                    },
+                    success: function(response) {
+                        Swal.close();
+                        if (response.status === 'success') {
+                            // Toast notification for success
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                                toast: true,
+                                position: 'top-end',
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+
+                            // Memuat ulang data setelah berhasil diimpor
+                            const search = $('#search').val();
+                            const filters = getFilters();
+                            loadTable(search, 1, filters); // Memuat data terbaru setelah impor
+
+                            $('#exampleModal').modal('hide'); // Menutup modal setelah sukses
+                        } else if (response.status === 'warning') {
+                            // Toast notification for warning
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Perhatian!',
+                                text: response.message,
+                                toast: true,
+                                position: 'top-end',
+                                timer: 5000,
+                                showConfirmButton: false
+                            });
+
+                            $('#exampleModal').modal('hide'); // Menutup modal setelah warning
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat mengimpor data. Coba lagi.',
+                            toast: true,
+                            position: 'top-end',
+                            timer: 5000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            });
+
+
+
+
+            $(document).on('click', '.updateAssetBtn', function() {
+                const id = $(this).data('id');
+                const url = '{{ route('assets.update', ':id') }}'.replace(':id', id);
+                const data = {
+                    _token: '{{ csrf_token() }}',
+                    _method: 'PUT',
+                    nama_barang: $(`#nama_barang-${id}`).val(),
+                    kode_barang: $(`#kode_barang-${id}`).val(),
+                    // no_ba_terima: $(`#no_ba_terima-${id}`).val(),
+                    // tgl_ba_terima: $(`#tgl_ba_terima-${id}`).val(),
+                };
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Data berhasil diperbarui.",
+                            icon: "success",
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 5000
+                        });
+
+                        $(`#editModal-${id}`).modal('hide');
+
+                        const search = $('#search').val();
+                        const filters = getFilters();
+
+                        loadTable(search, 1, filters);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        alert('Terjadi kesalahan saat memperbarui data.');
+                    },
+                });
+            });
+
+            loadDefaultData();
         });
-    });
-
-    loadDefaultData();
-});
-
     </script>
 
 

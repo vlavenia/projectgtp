@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Jenis extends Model
 {
     use HasFactory;
-    protected $fillable = ['nama_jenis'];
-    public function assets()
-    {
-        return $this->hasMany(Asset::class);
-    }
+    protected $fillable = ['jenis_asset'];
+
+    // public function assets()
+    // {
+    //     return $this->hasMany(Asset::class);
+    // }
 
     public function objek()
     {

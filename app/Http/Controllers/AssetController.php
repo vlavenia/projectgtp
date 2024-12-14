@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exports\AsetssExport;
 use App\Exports\UsersExport;
 use App\Http\Requests\AssetRequest;
-
 use App\Imports\UsersImport;
 use App\Imports\AsetsImport;
 use App\Models\Asset;
@@ -25,10 +24,32 @@ class AssetController extends Controller
 
     public function index(Request $request)
     {
-
         $search = $request->query('search');
+        $jenis_id = $request->query('jenis_id');
+        $objek_id = $request->query('objek_id');
+        $unit_id = $request->query('unit_id');
+        $klasifikasi_id = $request->query('klasifikasi_id');
+
         $query = Asset::query();
 
+        // Filter berdasarkan jenis, objek, unit, dan klasifikasi
+        if (!empty($jenis_id)) {
+            $query->where('jenis_id', $jenis_id);
+        }
+
+        if (!empty($objek_id)) {
+            $query->where('objek_id', $objek_id);
+        }
+
+        if (!empty($unit_id)) {
+            $query->where('unit_id', $unit_id);
+        }
+
+        if (!empty($klasifikasi_id)) {
+            $query->where('klasifikasi_id', $klasifikasi_id);
+        }
+
+        // Filter pencarian
         if (!empty($search)) {
             $query->where(function ($query) use ($search) {
                 $query->where('kode_barang', 'like', '%' . $search . '%')
@@ -36,91 +57,140 @@ class AssetController extends Controller
                     ->orWhere('merk', 'like', '%' . $search . '%')
                     ->orWhere('bpkb', 'like', '%' . $search . '%')
                     ->orWhere('polisi', 'like', '%' . $search . '%');
-            })
-                ->where(function ($query) {
-                    $query->where('status_asset', 'aset terkini')
-                        ->orWhere('status_asset', '');
-                });
+            })->where('status_id', '1');
         } else {
-            $query->where(function ($query) {
-                $query->where('status_asset', 'aset terkini')
-                    ->orWhere('status_asset', ' ');
-            });
+            $query->where('status_id', '1');
         }
 
+        // Menambahkan pagination
         $assets = $query->paginate(10);
 
-        // Jika permintaan AJAX, kembalikan data JSON
         if ($request->ajax()) {
-            return response()->json([
-                'data' => $assets->items(),
-            ]);
+            return view('assets.partials.table', ['assets' => $assets])->render();
         }
 
-        //query count
-        $asetsCount = Asset::where('status_asset', 'Aset terkini')
-            ->count();
+        // Hitung data tambahan
+        $asetsCount = Asset::where('status_id', '1')->count();
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['APBD', 'DAK', 'DAIS', 'Hadiah']);
-        })->where('status_asset', 'Aset terkini')
-            ->get()->count();
+            $query->whereIn('asal_id', [1, 2, 3]); // Pastikan ID benar
+        })->where('status_id', '1')->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['mutasi']);
-        })->where('status_asset', 'Aset terkini')
-            ->get()->count();
+            $query->where('asal_id', 'mutasi'); // Pastikan nilai 'mutasi' sesuai dengan database Anda
+        })->where('status_id', '1')->count();
 
         $hibahCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['Hadiah', 'Hibah']);
-        })->where('status_asset', 'Aset terkini')
-            ->get()->count();
+            $query->whereIn('asal_id', [4, 5]); // Pastikan ID benar
+        })->where('status_id', '1')->count();
 
-        // Ambil data Dropdown jenis, objek, dan klasifikasi
-        // $jenis = Jenis::select('id', 'nama_jenis')->get();
+
+        // Data filter
         $unit = Unit::all();
         $jenis = Jenis::all();
         $objek = Objek::select('id', 'nama_objek', 'jenis_id')->get();
         $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
 
-
-        return view('assets.index', compact('assets', 'asetsCount', 'perolehanCount', 'mutasimasukCount', 'hibahCount', 'unit', 'jenis', 'objek', 'Klasifikasi', 'search'));
+        return view('assets.index', compact(
+            'assets',
+            'asetsCount',
+            'perolehanCount',
+            'mutasimasukCount',
+            'hibahCount',
+            'unit',
+            'jenis',
+            'objek',
+            'Klasifikasi'
+        ));
     }
+
 
     public function search(Request $request)
     {
-        $search = $request->search;
 
-        $assets = Asset::where(function ($query) use ($search) {
-            $query->where('Kode_Barang', 'like', "%$search%");
-        })->get();
+        $searchTerm = $request->input('search');
+        $assets = Asset::where('nama_barang', 'like', '%' . $searchTerm . '%')
+            ->orWhere('kode_barang', 'like', '%' . $searchTerm . '%')
+            ->orWhere('merk', 'like', '%' . $searchTerm . '%')
+            ->paginate(10);  // Pagination dengan 10 item per halaman
 
-        return view('assets.index', compact('assets', 'search'));
+        return response()->json($assets);
     }
+
+    // public function filter(Request $request)
+    // {
+    //     $query = Asset::query();
+
+
+    //     if ($request->has('objek_id') && $request->objek_id != '') {
+    //         $query->where('objek_id', $request->objek_id);
+    //     }
+
+    //     if ($request->has('unit_id') && $request->unit_id != '') {
+    //         $query->where('unit_id', $request->unit_id);
+    //     }
+
+    //     if ($request->has('klasifikasi_id') && $request->klasifikasi_id != '') {
+    //         $query->where('klasifikasi_id', $request->klasifikasi_id);
+    //     }
+
+    //     $assets = $query->get();
+
+    //     return response()->json($assets);
+    // }
+
 
     public function filter(Request $request)
     {
         $query = Asset::query();
 
-
-        if ($request->has('jenis_id') && $request->jenis_id != '') {
-            $query->where('jenis_id', $request->jenis_id);
+        // Filter berdasarkan pencarian
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($query) use ($search) {
+                $query->where('kode_barang', 'like', '%' . $search . '%')
+                    ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                    ->orWhere('merk', 'like', '%' . $search . '%')
+                    ->orWhere('bpkb', 'like', '%' . $search . '%')
+                    ->orWhere('polisi', 'like', '%' . $search . '%');
+            });
         }
 
+        // Filter berdasarkan objek_id
         if ($request->has('objek_id') && $request->objek_id != '') {
             $query->where('objek_id', $request->objek_id);
         }
 
-        $assets = $query->get();
+        // Filter berdasarkan unit_id
+        if ($request->has('unit_id') && $request->unit_id != '') {
+            $query->where('unit_id', $request->unit_id);
+        }
 
-        return response()->json($assets); 
+        // Filter berdasarkan klasifikasi_id
+        if ($request->has('klasifikasi_id') && $request->klasifikasi_id != '') {
+            $query->where('klasifikasi_id', $request->klasifikasi_id);
+        }
+
+        // Menambahkan status jika diperlukan (misalnya status aktif)
+        $query->where('status_id', '1');
+
+        // Paginate data jika ada parameter page
+        $assets = $query->paginate(10);  // Sesuaikan jumlah per halaman sesuai kebutuhan
+
+        if ($request->ajax()) {
+            return view('assets.partials.table', ['assets' => $assets])->render();
+        }
+
+        // Jika tidak menggunakan AJAX, kembalikan data JSON
+        return response()->json($assets);
     }
+
 
 
     public function mutasiMasuk()
     {
         $assets = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('nama_asal', ['Hibah']);
+            $query->whereIn('asal_id', ['Hibah']);
         })->get();
         return view('mutasiMasuk.index', compact('assets'));
     }
@@ -153,25 +223,26 @@ class AssetController extends Controller
         return view('assets.show', compact('asset'));
     }
 
-    public function edit(string $id)
+
+    public function update(Request $request, $id)
     {
-        $asset = Asset::findOrFail($id);
-        return view('assets.index', compact('assets'));
+        $asset = Asset::find($id); // Cari asset berdasarkan ID
+        if (!$asset) {
+            return response()->json(['message' => 'Asset not found'], 404);
+        }
 
-        // return view('assets.edit', compact('asset'));
-    }
+        // Validasi input data
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:255',
+            'no_ba_terima' => 'nullable|string|max:255',
+            'tgl_ba_terima' => 'nullable|date',
+        ]);
 
+        // Update asset dengan data baru
+        $asset->update($validated);
 
-    public function update(Request $request, string $id)
-    {
-        //$user = auth()->user();
-        //$id = $user->id; cronjob
-        //crudke_tble_Log | props nya di sv: name,id crrnt user,aktivitas("update")
-        $asset = Asset::findOrFail($id);
-
-        $asset->update($request->all());
-
-        return redirect()->route('assets')->with('success', 'Assets updated successfully');
+        return response()->json(['message' => 'Asset updated successfully'], 200);
     }
 
 
@@ -184,28 +255,101 @@ class AssetController extends Controller
         return redirect()->route('assets')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
 
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|mimes:xlsx,xls,csv'
+    //     ]);
+
+    //     $import = new AsetsImport();
+    //     Excel::import($import, $request->file('file')->store('temp'));
+
+    //     // Ambil data baru dan data duplikat dari AsetsImport
+    //     $newDataCount = $import->getNewDataCount(); // Jumlah data baru yang berhasil ditambahkan
+    //     $existingData = $import->getExistingData(); // Data duplikat yang ditemukan
+    //     $duplicateCount = count($existingData);
+
+    //     // Buat respons JSON untuk memberi tahu status
+    //     if ($newDataCount > 0 && $duplicateCount > 0) {
+    //         return response()->json([
+    //             'status' => 'warning',
+    //             'message' => "$newDataCount data berhasil ditambahkan, dan $duplicateCount data sudah diimpor sebelumnya.",
+    //             'newDataCount' => $newDataCount // Kirim jumlah data baru
+    //         ]);
+    //     } elseif ($newDataCount > 0) {
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => "$newDataCount data berhasil ditambahkan tanpa duplikat.",
+    //             'newDataCount' => $newDataCount
+    //         ]);
+    //     } elseif ($duplicateCount > 0) {
+    //         return response()->json([
+    //             'status' => 'warning',
+    //             'message' => "Semua file yang diimpor sudah ada di database. Tidak ada data baru yang ditambahkan."
+    //         ]);
+    //     }
+
+    //     return response()->json([
+    //         'status' => 'info',
+    //         'message' => "File tidak berisi data yang valid untuk diimpor."
+    //     ]);
+    // }
+
 
 
     public function import(Request $request)
     {
-        // Validasi file
+        // Validasi bahwa file harus ada dan memiliki ekstensi yang benar
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv'
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ], [
+            'file.mimes' => 'File yang diupload harus memiliki ekstensi .xlsx, .xls, atau .csv.',
         ]);
 
-        $import = new AsetsImport();
-        Excel::import($import, $request->file('file')->store('temp'));
-        // Ambil data yang sudah ada dari import
-        $existingData = $import->getExistingData();
-
-        // Berikan feedback kepada pengguna
-        if (count($existingData) > 0) {
-            return redirect()->back()->with('warning', 'Beberapa data sudah ada: ' . implode(', ', $existingData));
+        // Pastikan file yang diupload sesuai ekstensi
+        $file = $request->file('file');
+        if (!in_array($file->extension(), ['xlsx', 'xls', 'csv'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ekstensi file tidak didukung. Hanya file dengan ekstensi .xlsx, .xls, atau .csv yang dapat diimpor.'
+            ]);
         }
 
-        return redirect()->back()->with('success', 'File berhasil diimpor!');
-        // return redirect()->back()->with('success', 'File berhasil diimpor!');
+        // Proses import file
+        $import = new AsetsImport();
+        Excel::import($import, $file->store('temp'));
+
+        // Ambil data yang sudah ada (duplikat) dan data baru
+        $existingData = $import->getExistingData();
+        $newData = $import->getNewData();
+
+        $duplicateCount = count($existingData);
+        $newDataCount = count($newData);
+
+        // Cek jika tidak ada data baru yang diimpor
+        if ($newDataCount === 0 && $duplicateCount > 0) {
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'File sudah pernah diupload sebelumnya, semua data adalah duplikat.'
+            ]);
+        }
+
+        // Jika ada data duplikat, berikan peringatan
+        if ($duplicateCount > 0) {
+            return response()->json([
+                'status' => 'warning',
+                'message' => 'Berhasil diimpor, namun ada ' . $duplicateCount . ' data yang sudah diimpor.'
+            ]);
+        }
+
+        // Jika tidak ada duplikat, beri pesan sukses
+        return response()->json([
+            'status' => 'success',
+            'message' => 'File berhasil diimpor!'
+        ]);
     }
+
+
 
     public function export()
 

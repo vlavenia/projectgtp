@@ -18,4 +18,9 @@ class objek extends Model
     {
         return $this->belongsTo(Jenis::class);
     }
+    
+    public function assets()
+    {
+        return $this->hasMany(Asset::class, 'objek_id');
+    }
 }

@@ -67,27 +67,23 @@
                                 <td>luas</td>
                                 <td>penerbit</td>
                                 <td>Nama Ruangan</td>
-
                                 <td>
                                     <div class="d-flex justify-content-center">
-
-                                        <button type="button" class="btn btn-warning mr-2" data-toggle="modal"
-                                            data-target="#editModal-{{ $asset->id }}">
-                                            Edit
-                                        </button>
-
-
-                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
+                                        <i class="btn far fa-eye" data-toggle="modal"
+                                            data-target="#detailModal-{{ $asset->id }}"></i>
+                                        <i class="btn fas fa-edit" data-toggle="modal"
+                                            data-target="#editModal-{{ $asset->id }}"></i>
+                                        <form action="{{ route('assets.destroy.perolehan', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger">Delete</button>
+                                            <button class="btn fas fa-trash-alt"></button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
 
-
+                            <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -98,7 +94,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form action="{{ route('assets.update', $asset->id) }}" method="POST">
+                                        <form action="{{ route('assets.update.perolehan', $asset->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">
@@ -132,6 +128,54 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Detail Modal -->
+                            <div class="modal fade" id="detailModal-{{ $asset->id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="detailModalLabel-{{ $asset->id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="detailModalLabel-{{ $asset->id }}">Detail
+                                                <strong> {{ $asset->nama_barang }} </strong>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6">
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+                                                    <p><strong>Kode Barang:</strong> {{ $asset->nama_barang }}</p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         @empty
                             <tr>
                                 <td colspan="14">Assets not found</td>
@@ -145,7 +189,7 @@
 
 
 
-    <!-- Modal -->
+    <!-- Add Modal -->
     <div class="modal fade" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">

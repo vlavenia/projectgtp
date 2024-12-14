@@ -27,7 +27,7 @@ class AsetssExport implements FromCollection, WithHeadings
 
     {
 
-        return Asset::select("id", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asalUsul_id")->get();
+        return Asset::select("id", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asal_id")->get();
     }
 
 
@@ -46,6 +46,6 @@ class AsetssExport implements FromCollection, WithHeadings
 
     {
 
-        return ["ID", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asalUsul_id"];
+        return ["ID", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asal_id"];
     }
 }
