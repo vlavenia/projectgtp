@@ -174,8 +174,7 @@
                     <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
                         <input name="search" id="search" class="form-control mr-sm-2" type="search"
                             placeholder="Search" aria-label="Search">
-                        {{-- <button id="searchButton" class="btn btn-outline-success my-2 my-sm-0"
-                            type="submit">Search</button> --}}
+            
                     </form>
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
@@ -227,144 +226,146 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-   <script>
-    $(document).ready(function () {
-        // Fungsi utama untuk memuat tabel
-        function loadTable(search = '', page = 1, filters = {}) {
+    <script>
+        $(document).ready(function() {
+    function loadTable(search = '', page = 1, filters = {}) {
+        $.ajax({
+            url: '{{ route('filter.assets') }}',
+            method: 'GET',
+            data: {
+                search: search,
+                page: page,
+                ...filters
+            },
+            success: function(response) {
+                $('#table-container').html(response);
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseText);
+                alert('Gagal memuat data.');
+            }
+        });
+    }
+
+    function loadDefaultData() {
+        const filters = getFilters();
+        loadTable('', 1, filters);
+    }
+
+    function getFilters() {
+        return {
+            jenis_id: $('#jenis').val(),
+            objek_id: $('#objek').val(),
+            unit_id: $('#unit').val(),
+            klasifikasi_id: $('#klasifikasi').val()
+        };
+    }
+
+    $('#search').on('keyup', function() {
+        const search = $(this).val();
+        const filters = getFilters();
+        loadTable(search, 1, filters);
+    });
+
+
+    $(document).on('click', '.pagination a', function(e) {
+        e.preventDefault();
+        const url = $(this).attr('href');
+        const page = new URLSearchParams(url.split('?')[1]).get('page');
+        const search = $('#search').val();
+        const filters = getFilters();
+        loadTable(search, page, filters);
+    });
+
+    $('#jenis').on('change', function() {
+        const jenisId = $(this).val();
+        if (jenisId) {
             $.ajax({
-                url: '{{ route('filter.assets') }}',
-                method: 'GET',
+                url: '/objek/' + jenisId,
+                type: 'POST',
                 data: {
-                    search: search,
-                    page: page,
-                    ...filters // Spread operator untuk memasukkan semua filter
+                    '_token': '{{ csrf_token() }}'
                 },
-                success: function (response) {
-                    $('#table-container').html(response); // Menampilkan data di dalam kontainer tabel
+                dataType: 'json',
+                success: function(data) {
+                    if (data) {
+                        $('#objek').empty().append('<option value="">-Pilih</option>');
+                        $.each(data, function(key, objek) {
+                            $('#objek').append(
+                                `<option value="${objek.id}">${objek.nama_objek}</option>`
+                            );
+                        });
+
+                        const filters = getFilters();
+                        loadTable($('#search').val(), 1, filters);
+                    }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error:', xhr.responseText);
-                    alert('Gagal memuat data.');
+                    alert('Gagal memuat data objek.');
                 }
             });
         }
+    });
 
-        // Fungsi untuk memuat data default
-        function loadDefaultData() {
-            const filters = getFilters(); // Ambil filter yang ada
-            loadTable('', 1, filters); // Memuat data dengan pencarian kosong dan filter
-        }
-
-        // Fungsi untuk mendapatkan filter dari dropdown
-        function getFilters() {
-            return {
-                jenis_id: $('#jenis').val(),
-                objek_id: $('#objek').val(),
-                unit_id: $('#unit').val(),
-                klasifikasi_id: $('#klasifikasi').val()
-            };
-        }
-
-        // Event untuk pencarian
-        $('#search').on('keyup', function () {
-            const search = $(this).val(); // Ambil nilai pencarian
-            const filters = getFilters(); // Ambil filter yang ada
-            loadTable(search, 1, filters); // Muat tabel dengan pencarian dan filter
-        });
-
-        // Event untuk pagination
-        $(document).on('click', '.pagination a', function (e) {
-            e.preventDefault();
-            const url = $(this).attr('href');
-            const page = new URLSearchParams(url.split('?')[1]).get('page'); // Ambil halaman dari URL
-            const search = $('#search').val(); // Ambil nilai pencarian
-            const filters = getFilters(); // Ambil filter yang ada
-            loadTable(search, page, filters); // Muat tabel sesuai halaman dan filter
-        });
-
-        // Event untuk dropdown 'jenis'
-        $('#jenis').on('change', function () {
-            const jenisId = $(this).val();
-            if (jenisId) {
-                $.ajax({
-                    url: '/objek/' + jenisId,
-                    type: 'POST',
-                    data: {
-                        '_token': '{{ csrf_token() }}' // Sertakan CSRF token
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data) {
-                            // Perbarui dropdown 'objek'
-                            $('#objek').empty().append('<option value="">-Pilih</option>');
-                            $.each(data, function (key, objek) {
-                                $('#objek').append(`<option value="${objek.id}">${objek.nama_objek}</option>`);
-                            });
-
-                            // Muat tabel dengan filter terbaru
-                            const filters = getFilters();
-                            loadTable($('#search').val(), 1, filters);
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error('Error:', xhr.responseText);
-                        alert('Gagal memuat data objek.');
-                    }
-                });
-            }
-        });
-
-        // Event listener untuk perubahan pada semua dropdown
-        $('#jenis, #objek, #unit, #klasifikasi').on('change', function () {
-            loadDefaultData(); // Muat data berdasarkan filter terbaru
-        });
-
-        // Event untuk tombol reset
-        $('#resetButton').on('click', function () {
-            $('#jenis, #objek, #unit, #klasifikasi').val(''); // Reset semua dropdown
-            loadDefaultData(); // Muat data default
-        });
-
-        // Event untuk update data asset
-        $(document).on('click', '.updateAssetBtn', function () {
-            const id = $(this).data('id'); // Ambil ID asset
-            const url = '{{ route('assets.update', ':id') }}'.replace(':id', id); // Gunakan route named assets.update
-            const data = {
-                _token: '{{ csrf_token() }}', // Token CSRF
-                _method: 'PUT', // HTTP Method
-                nama_barang: $(`#nama_barang-${id}`).val(),
-                kode_barang: $(`#kode_barang-${id}`).val(),
-                // no_ba_terima: $(`#no_ba_terima-${id}`).val(),
-                // tgl_ba_terima: $(`#tgl_ba_terima-${id}`).val(),
-            };
-
-            $.ajax({
-                url: url,
-                type: 'POST', // Metode POST karena kita menggunakan _method=PUT
-                data: data,
-                success: function (response) {
-                    // Tampilkan pesan sukses
-                    alert('Data berhasil diperbarui');
-                    // Tutup modal
-                    $(`#editModal-${id}`).modal('hide');
-                    // Perbarui tabel data
-                    loadTable();
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                    alert('Terjadi kesalahan saat memperbarui data.');
-                },
-            });
-        });
-
-
-
-        // Muat data default saat halaman pertama kali dibuka
+    $('#jenis, #objek, #unit, #klasifikasi').on('change', function() {
         loadDefaultData();
     });
-</script>
+
+    $('#resetButton').on('click', function() {
+        $('#jenis, #objek, #unit, #klasifikasi').val('');
+        loadDefaultData();
+    });
+
+
+    $(document).on('click', '.updateAssetBtn', function() {
+        const id = $(this).data('id');
+        const url = '{{ route('assets.update', ':id') }}'.replace(':id', id);
+        const data = {
+            _token: '{{ csrf_token() }}',
+            _method: 'PUT',
+            nama_barang: $(`#nama_barang-${id}`).val(),
+            kode_barang: $(`#kode_barang-${id}`).val(),
+            // no_ba_terima: $(`#no_ba_terima-${id}`).val(),
+            // tgl_ba_terima: $(`#tgl_ba_terima-${id}`).val(),
+        };
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Data berhasil diperbarui.",
+                    icon: "success",
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000
+                });
+
+                $(`#editModal-${id}`).modal('hide');
+
+                const search = $('#search').val();
+                const filters = getFilters();
+
+                loadTable(search, 1, filters);
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                alert('Terjadi kesalahan saat memperbarui data.');
+            },
+        });
+    });
+
+    loadDefaultData();
+});
+
+    </script>
 
 
 
