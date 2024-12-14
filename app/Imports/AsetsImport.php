@@ -22,12 +22,9 @@ use Hash;
 use Illuminate\Support\Facades\Hash as FacadesHash;
 
 class AsetsImport implements ToModel, WithHeadingRow
-
 {
-
-
-    protected $newData= []; // Hitung data baru
-    protected $existingData = []; // Simpan data duplikat
+    protected $newData = [];
+    protected $existingData = []; // Initialize the correct variable name
 
     /**
      * Memproses setiap baris data dari file Excel.
@@ -36,7 +33,6 @@ class AsetsImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-
         $existingAsset = Asset::where('kode_barang', $row['kode_barang'])
             ->where('no_register', $row['no_register'])
             ->where(function ($query) use ($row) {
@@ -49,11 +45,11 @@ class AsetsImport implements ToModel, WithHeadingRow
 
         if ($existingAsset) {
             $this->existingData[] = $row['no_register'];
-            return null;
+            return null; // Skip the row if it's a duplicate
         }
 
         if (is_numeric($row['no'])) {
-            return new Asset([
+            $newAsset = new Asset([
                 'nama_barang'  => $row['nama_barang'],
                 'kode_barang'  => $row['kode_barang'],
                 'no_register'  => $row['no_register'],
@@ -75,16 +71,28 @@ class AsetsImport implements ToModel, WithHeadingRow
                 'unit_id'      => null,
                 'klasifikasi_id' => Klasifikasi::where('nama_klasifikasi', 'Extra Countable')->value('id'),
             ]);
+            $this->newData[] = $newAsset;
+            return $newAsset;
         }
 
         return null;
     }
 
-    public function getExistingData()
+    /**
+     * Mengambil data yang sudah ada (duplikat).
+     *
+     * @return array
+     */
+    public function getDuplicateData()
     {
         return $this->existingData;
     }
 
+    /**
+     * Mengambil data baru yang berhasil ditambahkan.
+     *
+     * @return array
+     */
     public function getNewData()
     {
         return $this->newData;

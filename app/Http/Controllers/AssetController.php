@@ -62,30 +62,27 @@ class AssetController extends Controller
             $query->where('status_id', '1');
         }
 
-        // Menambahkan pagination
         $assets = $query->paginate(10);
 
         if ($request->ajax()) {
             return view('assets.partials.table', ['assets' => $assets])->render();
         }
 
-        // Hitung data tambahan
         $asetsCount = Asset::where('status_id', '1')->count();
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('asal_id', [1, 2, 3]); // Pastikan ID benar
+            $query->whereIn('asal_id', [1, 2, 3]);
         })->where('status_id', '1')->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
-            $query->where('asal_id', 'mutasi'); // Pastikan nilai 'mutasi' sesuai dengan database Anda
+            $query->where('asal_id', 'mutasi');
         })->where('status_id', '1')->count();
 
         $hibahCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('asal_id', [4, 5]); // Pastikan ID benar
+            $query->whereIn('asal_id', [4, 5]);
         })->where('status_id', '1')->count();
 
 
-        // Data filter
         $unit = Unit::all();
         $jenis = Jenis::all();
         $objek = Objek::select('id', 'nama_objek', 'jenis_id')->get();
@@ -117,34 +114,10 @@ class AssetController extends Controller
         return response()->json($assets);
     }
 
-    // public function filter(Request $request)
-    // {
-    //     $query = Asset::query();
-
-
-    //     if ($request->has('objek_id') && $request->objek_id != '') {
-    //         $query->where('objek_id', $request->objek_id);
-    //     }
-
-    //     if ($request->has('unit_id') && $request->unit_id != '') {
-    //         $query->where('unit_id', $request->unit_id);
-    //     }
-
-    //     if ($request->has('klasifikasi_id') && $request->klasifikasi_id != '') {
-    //         $query->where('klasifikasi_id', $request->klasifikasi_id);
-    //     }
-
-    //     $assets = $query->get();
-
-    //     return response()->json($assets);
-    // }
-
-
     public function filter(Request $request)
     {
         $query = Asset::query();
 
-        // Filter berdasarkan pencarian
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($query) use ($search) {
@@ -156,32 +129,26 @@ class AssetController extends Controller
             });
         }
 
-        // Filter berdasarkan objek_id
         if ($request->has('objek_id') && $request->objek_id != '') {
             $query->where('objek_id', $request->objek_id);
         }
 
-        // Filter berdasarkan unit_id
         if ($request->has('unit_id') && $request->unit_id != '') {
             $query->where('unit_id', $request->unit_id);
         }
 
-        // Filter berdasarkan klasifikasi_id
         if ($request->has('klasifikasi_id') && $request->klasifikasi_id != '') {
             $query->where('klasifikasi_id', $request->klasifikasi_id);
         }
 
-        // Menambahkan status jika diperlukan (misalnya status aktif)
         $query->where('status_id', '1');
 
-        // Paginate data jika ada parameter page
-        $assets = $query->paginate(10);  // Sesuaikan jumlah per halaman sesuai kebutuhan
+        $assets = $query->paginate(10);
 
         if ($request->ajax()) {
             return view('assets.partials.table', ['assets' => $assets])->render();
         }
 
-        // Jika tidak menggunakan AJAX, kembalikan data JSON
         return response()->json($assets);
     }
 
@@ -226,7 +193,7 @@ class AssetController extends Controller
 
     public function update(Request $request, $id)
     {
-        $asset = Asset::find($id); // Cari asset berdasarkan ID
+        $asset = Asset::find($id);
         if (!$asset) {
             return response()->json(['message' => 'Asset not found'], 404);
         }
@@ -255,58 +222,15 @@ class AssetController extends Controller
         return redirect()->route('assets')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
 
-    // public function import(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|mimes:xlsx,xls,csv'
-    //     ]);
-
-    //     $import = new AsetsImport();
-    //     Excel::import($import, $request->file('file')->store('temp'));
-
-    //     // Ambil data baru dan data duplikat dari AsetsImport
-    //     $newDataCount = $import->getNewDataCount(); // Jumlah data baru yang berhasil ditambahkan
-    //     $existingData = $import->getExistingData(); // Data duplikat yang ditemukan
-    //     $duplicateCount = count($existingData);
-
-    //     // Buat respons JSON untuk memberi tahu status
-    //     if ($newDataCount > 0 && $duplicateCount > 0) {
-    //         return response()->json([
-    //             'status' => 'warning',
-    //             'message' => "$newDataCount data berhasil ditambahkan, dan $duplicateCount data sudah diimpor sebelumnya.",
-    //             'newDataCount' => $newDataCount // Kirim jumlah data baru
-    //         ]);
-    //     } elseif ($newDataCount > 0) {
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => "$newDataCount data berhasil ditambahkan tanpa duplikat.",
-    //             'newDataCount' => $newDataCount
-    //         ]);
-    //     } elseif ($duplicateCount > 0) {
-    //         return response()->json([
-    //             'status' => 'warning',
-    //             'message' => "Semua file yang diimpor sudah ada di database. Tidak ada data baru yang ditambahkan."
-    //         ]);
-    //     }
-
-    //     return response()->json([
-    //         'status' => 'info',
-    //         'message' => "File tidak berisi data yang valid untuk diimpor."
-    //     ]);
-    // }
-
-
-
     public function import(Request $request)
     {
-        // Validasi bahwa file harus ada dan memiliki ekstensi yang benar
+        // Validasi file
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
         ], [
             'file.mimes' => 'File yang diupload harus memiliki ekstensi .xlsx, .xls, atau .csv.',
         ]);
 
-        // Pastikan file yang diupload sesuai ekstensi
         $file = $request->file('file');
         if (!in_array($file->extension(), ['xlsx', 'xls', 'csv'])) {
             return response()->json([
@@ -315,46 +239,49 @@ class AssetController extends Controller
             ]);
         }
 
-        // Proses import file
         $import = new AsetsImport();
         Excel::import($import, $file->store('temp'));
 
-        // Ambil data yang sudah ada (duplikat) dan data baru
-        $existingData = $import->getExistingData();
         $newData = $import->getNewData();
+        $duplicateData = $import->getDuplicateData();
 
-        $duplicateCount = count($existingData);
         $newDataCount = count($newData);
+        $duplicateCount = count($duplicateData);
 
-        // Cek jika tidak ada data baru yang diimpor
-        if ($newDataCount === 0 && $duplicateCount > 0) {
+        if ($newDataCount == 0 && $duplicateCount > 0) {
             return response()->json([
                 'status' => 'warning',
-                'message' => 'File sudah pernah diupload sebelumnya, semua data adalah duplikat.'
+                'message' => 'File telah diupload sebelumnya dan semua data adalah duplikat',
+                'duplicateCount' => $duplicateCount
             ]);
         }
 
-        // Jika ada data duplikat, berikan peringatan
-        if ($duplicateCount > 0) {
+        if ($newDataCount > 0 && $duplicateCount > 0) {
             return response()->json([
                 'status' => 'warning',
-                'message' => 'Berhasil diimpor, namun ada ' . $duplicateCount . ' data yang sudah diimpor.'
+                'message' => " $newDataCount data baru berhasil ditambahkan",
+                'newDataCount' => $newDataCount,
+                'duplicateCount' => $duplicateCount
             ]);
         }
 
-        // Jika tidak ada duplikat, beri pesan sukses
+        if ($newDataCount > 0 && $duplicateCount == 0) {
+            return response()->json([
+                'status' => 'success',
+                'message' => "$newDataCount data baru berhasil diimport",
+                'newDataCount' => $newDataCount
+            ]);
+        }
+
         return response()->json([
-            'status' => 'success',
-            'message' => 'File berhasil diimpor!'
+            'status' => 'info',
+            'message' => 'Tidak ada data yang ditambahkan atau ditemukan duplikat.',
         ]);
     }
-
-
 
     public function export()
 
     {
-
         return Excel::download(new UsersExport, 'users.xlsx');
     }
 }
