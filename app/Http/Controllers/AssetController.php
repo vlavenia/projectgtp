@@ -219,7 +219,7 @@ class AssetController extends Controller
         $validated = $request->validate([
             'nama_barang' => 'required|string|max:255',
             'kode_barang' => 'required|string|max:255',
-            'no_register' => 'nullable|string|max:255',
+            'no_register' => 'nullable|numeric',
             'merk' => 'nullable|string|max:255',
             'bahan' => 'nullable|string|max:255',
             'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
