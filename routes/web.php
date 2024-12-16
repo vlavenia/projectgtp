@@ -6,6 +6,7 @@ use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\MutasiKeluarController;
+use App\Http\Controllers\MutasiMasukController;
 use App\Http\Controllers\PenghapusanController;
 use App\Http\Controllers\PerolehanController;
 use App\Http\Controllers\SampahController;
@@ -60,6 +61,9 @@ Route::middleware('auth')->group(function () {
         Route::post('store', 'store')->name('assets.store.perolehan');
         Route::put('edit/{id}', 'update')->name('assets.update.perolehan');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.perolehan');
+        
+        Route::get('search', 'search')->name('assets.search.perolehan');
+        Route::get('/asets-perolehan-export', 'exportPerolehan')->name('exportAsset.perolehan');
     });
 
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
@@ -69,9 +73,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
     });
 
-    Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
-        Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
+    Route::controller(MutasiMasukController::class)->prefix('mutasiMasuk')->group(function () {
+        Route::get('', 'index')->name('mutasiMasuk');
+
     });
+
+    // Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
+    //     Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
+    // });
 
     Route::controller(SampahController::class)->prefix('sampah')->group(function () {
         Route::get('', 'trash')->name('sampah');

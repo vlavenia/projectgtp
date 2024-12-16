@@ -173,9 +173,10 @@ class AssetController extends Controller
 
     public function mutasiMasuk()
     {
-        $assets = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('asal_id', ['Hibah']);
-        })->get();
+        $assets = Asset::whereIn('asal_id', ['1', '2', '3'])
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10); // Pindahkan paginate sebelum get()
+
         return view('mutasiMasuk.index', compact('assets'));
     }
 
@@ -313,6 +314,6 @@ class AssetController extends Controller
     public function export()
 
     {
-        return Excel::download(new UsersExport, 'users.xlsx');
+        return Excel::download(new UsersExport, 'DataAssetGTP.xlsx');
     }
 }
