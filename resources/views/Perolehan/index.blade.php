@@ -22,7 +22,7 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
-                    <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
+                     <form id="searchForm" class="form-inline my-2 my-lg-0  mr-3">
                         <input name="search" id="search" class="form-control mr-sm-2" type="search"
                             placeholder="Search" aria-label="Search">
 
@@ -142,8 +142,7 @@
                                             <h5 class="modal-title" id="detailModalLabel-{{ $asset->id }}">Detail
                                                 <strong> {{ $asset->nama_barang }} </strong>
                                             </h5>
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -188,178 +187,130 @@
                         @endforelse
                     </tbody>
                 </table>
-                <div>
-                    {{ $assets->links() }}
-                </div>
+                
             </div>
         </div>
     </div>
 
 
 
-            <!-- Modal Detail -->
-            <div class="modal fade" id="detailModal-{{ $asset->id }}" tabindex="-1" role="dialog"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Detail <strong>{{ $asset->nama_barang }}</strong></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Kode Barang:</strong> {{ $asset->kode_barang }}</p>
-                                    <p><strong>Nama Barang:</strong> {{ $asset->nama_barang }}</p>
-                                    <p><strong>No Register:</strong> {{ $asset->no_register }}</p>
-                                    <p><strong>Merk:</strong> {{ $asset->merk }}</p>
-                                    <p><strong>Bahan:</strong> {{ $asset->bahan }}</p>
-                                    <p><strong>Tahun Pembelian:</strong> {{ $asset->thn_pembelian }}</p>
-                                    <p><strong>Pabrik:</strong> {{ $asset->pabrik }}</p>
-                                    <p><strong>Rangka:</strong> {{ $asset->rangka }}</p>
-
+    <!-- Add Modal -->
+    <div class="modal fade" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form  id="addForm">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label>Kode Barang*</label>
+                                    <input type="text" name="kode_barang" class="form-control"
+                                        placeholder="kode barang" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <p><strong>mesin:</strong> {{ $asset->mesin }}</p>
-                                    <p><strong>polisi:</strong> {{ $asset->polisi }}</p>
-                                    <p><strong>bpkb:</strong> {{ $asset->bpkb }}</p>
-                                    <p><strong>asal:</strong> {{ $asset->asal_id }}</p>
-                                    <p><strong>Harga:</strong> {{ $asset->harga }}</p>
-                                    <p><strong>Deskripsi Barang:</strong> {{ $asset->deskripsi_brg }}</p>
-                                    <p><strong>Keterangan:</strong> {{ $asset->keterangan }}</p>
-                                    <p><strong>OPD:</strong> {{ $asset->opd }}</p>
+                                <div class="form-group">
+                                    <label>Nama Barang*</label>
+                                    <input type="text" name="nama_barang" class="form-control"
+                                        placeholder="nama barang" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>No Register*</label>
+                                    <input type="numeric" name="no_register" class="form-control"
+                                        placeholder="No Register" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Merk*</label>
+                                    <input type="text" name="merk" class="form-control" placeholder="Merk">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Bahan*</label>
+                                    <input type="text" name="bahan" class="form-control" placeholder="Bahan">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Tahun Pembelian</label>
+                                    <input type="year" name="thn_pembelian" class="form-control"
+                                        placeholder="Tahun Pembelian">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Pabrik</label>
+                                    <input type="text" name="pabrik" class="form-control" placeholder="Pabrik">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Rangka</label>
+                                    <input type="text" name="rangka" class="form-control" placeholder="Rangka">
+                                </div>
+                                <div class="form-group ">
+                                    <label>mesin</label>
+                                    <input type="text" name="mesin" class="form-control" placeholder="Mesin">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Polisi</label>
+                                    <input type="text" name="polisi" class="form-control" placeholder="Polisi">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group ">
+                                    <label>BPKB</label>
+                                    <input type="text" name="bpkb" class="form-control" placeholder="BPKB">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Asal</label>
+                                    <input type="text" name="asal_id" class="form-control" placeholder="Asal">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Harga</label>
+                                    <input type="text" name="harga" class="form-control" placeholder="harga">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Deskripsi Barang</label>
+                                    <input type="text" name="deskripsi_brg" class="form-control"
+                                        placeholder="Deskripsi Barang">
+                                </div>
+                                <div class="form-group ">
+                                    <label>Keterangan</label>
+                                    <input type="text" name="keterangan" class="form-control"
+                                        placeholder="keterangan">
+                                </div>
+                                <div class="form-group ">
+                                    <label>OPD</label>
+                                    <input type="text" name="opd" class="form-control" placeholder="OPD">
+                                </div>
+                                <div class="form-group">
+                                    <label>Klasifikasi</label>
+                                    <input type="date" name="klasifikasi" class="form-control"
+                                        value="{{ $asset->tgl_ba_terima }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Objek</label>
+                                    <input type="date" name="klasifikasi" class="form-control"
+                                        value="{{ $asset->tgl_ba_terima }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Gambar</label>
+                                    {{-- <input type="date" name="klasifikasi" class="form-control"
+                                                        value="{{ $asset->tgl_ba_terima }}"> --}}
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Modal Edit -->
-            <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
-                aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form id="editAssetForm-{{ $asset->id }}">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Nama Barang</label>
-                                            <input type="text" id="nama_barang-{{ $asset->id }}"
-                                                name="nama_barang" class="form-control"
-                                                value="{{ $asset->nama_barang }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Kode Barang</label>
-                                            <input type="text" id="kode_barang-{{ $asset->id }}"
-                                                name="kode_barang" class="form-control"
-                                                value="{{ $asset->kode_barang }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>No Register</label>
-                                            <input type="text" id="no_register-{{ $asset->id }}"
-                                                name="no_register" class="form-control"
-                                                value="{{ $asset->no_register }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Merk</label>
-                                            <input type="text" id="merk-{{ $asset->id }}" name="merk"
-                                                class="form-control" value="{{ $asset->merk }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Bahan</label>
-                                            <input type="text" id="bahan-{{ $asset->id }}" name="bahan"
-                                                class="form-control" value="{{ $asset->bahan }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Tahun Pembelian</label>
-                                            <input type="text" id="thn_pembelian-{{ $asset->id }}"
-                                                name="thn_pembelian" class="form-control"
-                                                value="{{ $asset->thn_pembelian }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Pabrik</label>
-                                            <input type="text" id="pabrik-{{ $asset->id }}" name="pabrik"
-                                                class="form-control" value="{{ $asset->pabrik }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Rangka</label>
-                                            <input type="text" id="rangka-{{ $asset->id }}" name="rangka"
-                                                class="form-control" value="{{ $asset->rangka }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Mesin</label>
-                                            <input type="text" id="mesin-{{ $asset->id }}" name="mesin"
-                                                class="form-control" value="{{ $asset->mesin }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Polisi</label>
-                                            <input type="text" id="polisi-{{ $asset->id }}" name="polisi"
-                                                class="form-control" value="{{ $asset->polisi }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>BPKB</label>
-                                            <input type="text" id="bpkb-{{ $asset->id }}" name="bpkb"
-                                                class="form-control" value="{{ $asset->bpkb }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Asal</label>
-                                            <select name="asal_id" id="asal_id-{{ $asset->id }}" class="form-control">
-                                                {{-- <option value="">Pilih Asal</option> --}}
-                                                <!-- Dropdown akan dipopulasi melalui AJAX -->
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Harga</label>
-                                            <input type="text" id="harga-{{ $asset->id }}" name="harga"
-                                                class="form-control" value="{{ $asset->harga }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Deskripsi Barang</label>
-                                            <input type="text" id="deskripsi_brg-{{ $asset->id }}"
-                                                name="deskripsi_brg" class="form-control"
-                                                value="{{ $asset->deskripsi_brg }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Keterangan</label>
-                                            <input type="text" id="keterangan-{{ $asset->id }}"
-                                                name="keterangan" class="form-control"
-                                                value="{{ $asset->keterangan }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>OPD</label>
-                                            <input type="text" id="opd-{{ $asset->id }}" name="opd"
-                                                class="form-control" value="{{ $asset->opd }} " readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-warning updateAssetBtn"
-                                    data-id="{{ $asset->id }}" data-asalid="{{$asset->asal_id}}">Update</button>
-                            </div>
-                        </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
-                </div>
+                </form>
+
             </div>
+        </div>
+    </div>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -369,10 +320,10 @@
     <script>
         $(document).ready(function() {
 
-            $('#addForm').on('submit', function(e) {
+             $('#addForm').on('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
-                $.ajax({
+                 $.ajax({
                     url: "{{ route('assets.store.perolehan') }}",
                     method: "POST",
                     data: formData,
@@ -452,7 +403,7 @@
                         });
                     }
                 });
-            })
+             })
         })
 
-    @endsection
+@endsection
