@@ -22,12 +22,15 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
-                      <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET" action="{{ route('assets.search.perolehan') }}">
+                    <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
+                        action="{{ route('assets.search.perolehan') }}">
                         @csrf
-                        <input name="search" id="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <input name="search" id="search" class="form-control mr-sm-2" type="search"
+                            placeholder="Search" aria-label="Search">
                         <button type="submit" class="btn btn-primary ml-2">Search</button>
                     </form>
-                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset.perolehan') }}">Export Data</a>
+                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset.perolehan') }}">Export
+                            Data</a>
                     </div>
 
                 </div>
@@ -220,7 +223,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
 
-                                                    <img src="{{ $asset->img_url}}" alt="">
+                                                    <img src="{{ $asset->img_url }}" alt="">
                                                     <p><strong>Kode Barang:</strong> {{ $asset->kode_barang }}</p>
                                                     <p><strong>Nama Barang:</strong> {{ $asset->nama_barang }}</p>
                                                     <p><strong>No Register:</strong> {{ $asset->no_register }}</p>
@@ -278,7 +281,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form  id="addFormmmmmm" action="{{ route('assets.store.perolehan') }}" method="POST" enctype="multipart/form-data">
+                <form id="addFormmmmmm" action="{{ route('assets.store.perolehan') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
 
                     <div class="modal-body">
@@ -368,7 +372,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Gambar</label>
-                                 <input type="file" name="gambar" class="form-control">
+                                    <input type="file" name="gambar" class="form-control">
                                 </div>
                             </div>
 
@@ -479,4 +483,4 @@
             })
         }) --}}
 
-    @endsection
+@endsection

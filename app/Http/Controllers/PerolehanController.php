@@ -27,10 +27,13 @@ class PerolehanController extends Controller
         $query = $request->input('search');
 
         $assets = Asset::where('nama_barang', 'LIKE', "%{$query}%")
-        ->whereIn('asal_id', ['1', '2', '3'])
+            ->whereIn('asal_id', ['1', '2', '3'])
             // ->orWhere('description', 'LIKE', "%{$query}%")
             ->orderBy('created_at', 'DESC')
             ->paginate(10); // Pindahkan paginate sebelum get()
+
+        $assets->appends(['search' => $query]);
+
 
         return view('perolehan.index', compact('assets'));
     }

@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::post('store', 'store')->name('assets.store.perolehan');
         Route::put('edit/{id}', 'update')->name('assets.update.perolehan');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.perolehan');
-        
+
         Route::get('search', 'search')->name('assets.search.perolehan');
         Route::get('/asets-perolehan-export', 'exportPerolehan')->name('exportAsset.perolehan');
     });
@@ -71,10 +71,13 @@ Route::middleware('auth')->group(function () {
         Route::put('editStatus', 'changeStatus')->name('mutasikeluar.changeStatus');
         Route::put('editAsset/{id}', 'update')->name('mutasiKeluar.update');
         Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
+
+        Route::get('search', 'search')->name('assets.search.mutasiKeluar');
     });
 
     Route::controller(MutasiMasukController::class)->prefix('mutasiMasuk')->group(function () {
         Route::get('', 'index')->name('mutasiMasuk');
+        Route::delete('destroy/{id}', 'destroy')->name('mutasimasuk.destroy');
 
     });
 
@@ -94,12 +97,17 @@ Route::middleware('auth')->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
         Route::put('edit', 'update')->name('kerusakan.edit');
+
+        Route::get('search', 'search')->name('assets.search.kerusakan');
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {
         Route::get('', 'index')->name('penghapusan');
 
         Route::put('edit', 'update')->name('penghapusan.edit');
+        Route::delete('destroy/{id}', 'destroy')->name('penghapusan.destroy');
+
+        Route::get('search', 'search')->name('assets.search.penghapusan');
     });
 
     Route::controller(InventarisasiController::class)->prefix('inventarisasi')->group(function () {

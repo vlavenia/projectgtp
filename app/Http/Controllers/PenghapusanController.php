@@ -10,11 +10,27 @@ class PenghapusanController extends Controller
 
     public function index()
     {
-        $asset = Asset::where('status_id', '1')->get();
+        $assets = Asset::where('status_id', '1')->get();
 
-        $asset_penghapusan = Asset::where('status_id', '5')->get();
+        $asset_penghapusan = Asset::where('status_id', '5')->paginate(10);
 
-        return view('penghapusan.index', compact('asset', 'asset_penghapusan'));
+        return view('penghapusan.index', compact('assets', 'asset_penghapusan'));
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+        $assets = Asset::where('status_id', 1)->get();
+        $asset_penghapusan = Asset::where('nama_barang', 'LIKE', "%{$query}%")
+        ->whereIn('status_id', ['5'])
+            // ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10); // Pindahkan paginate sebelum get()
+
+        $asset_penghapusan->appends(['search' => $query]);
+
+
+        return view('penghapusan.index', compact('assets', 'asset_penghapusan'));
     }
 
 
@@ -91,6 +107,11 @@ class PenghapusanController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $asset = Asset::findOrFail($id);
+
+        $asset->delete();
+
+        return redirect()->route('penghapusan')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
+
 }

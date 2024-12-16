@@ -10,11 +10,17 @@ class MutasiKeluarController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_id', '1')->get();
-        $asset_mutasiKeluar = Asset::where('status_id', '3')->get();
+        // $assets = Asset::whereIn('status_id', ['3'])
+        //     ->orderBy('created_at', 'DESC')
+        //     ->paginate(10); // Pindahkan paginate sebelum get()
 
+        // return view('perolehan.index', compact('assets'));
 
-        return view('mutasiKeluar.index', compact('asset', 'asset_mutasiKeluar'));
+        $assets = Asset::where('status_id', 1)->get(); // Jika hanya ingin mendapatkan semua data
+        $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10); // Paginate untuk 10 item per halaman
+        // dd($asset_mutasiKeluar);
+        return view('mutasiKeluar.index', compact('assets', 'asset_mutasiKeluar'));
+
     }
 
     public function changeStatus(Request $request)
@@ -39,6 +45,23 @@ class MutasiKeluarController extends Controller
         return redirect()->route('mutasikeluar')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+        $assets = Asset::where('status_id', 1)->get();
+        $asset_mutasiKeluar = Asset::where('nama_barang', 'LIKE', "%{$query}%")
+            ->whereIn('status_id', ['3'])
+            // ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10); // Pindahkan paginate sebelum get()
+
+        $asset_mutasiKeluar->appends(['search' => $query]);
+        // dd($assets);
+        // $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10);
+
+        return view('mutasiKeluar.index', compact('assets', 'asset_mutasiKeluar'));
+    }
+    
     public function update(Request $request, string $id)
     {
         $asset = Asset::findOrFail($id);
