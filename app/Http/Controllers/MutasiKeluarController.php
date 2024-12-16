@@ -10,8 +10,8 @@ class MutasiKeluarController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_id', 'Aset Terkini')->get();
-        $asset_mutasiKeluar = Asset::where('status_id', 'Mutasi Keluar')->get();
+        $asset = Asset::where('status_id', '1')->get();
+        $asset_mutasiKeluar = Asset::where('status_id', '3')->get();
 
 
         return view('mutasiKeluar.index', compact('asset', 'asset_mutasiKeluar'));
@@ -32,7 +32,7 @@ class MutasiKeluarController extends Controller
 
         // Update hanya kolom `status_asset`
         $asset->update([
-            'status_id' => 'Mutasi Keluar', // Nilai statis
+            'status_id' => '3', // Nilai statis
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses
@@ -52,6 +52,6 @@ class MutasiKeluarController extends Controller
 
         $asset->delete();
 
-        return redirect()->route('mutasikeluar')->with('success', 'Data ' . implode(', ', $asset->nama_barang) . 'telah dipindahkan ke halaman sampah.');
+        return redirect()->route('mutasikeluar')->with('success', 'Data telah dipindahkan ke halaman sampah.');
     }
 }

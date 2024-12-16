@@ -44,12 +44,16 @@ Route::middleware('auth')->group(function () {
         Route::put('edit/{id}', 'update')->name('assets.update');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
 
-        Route::delete('/counters', 'getCounters')->name('get.counters');
+        Route::delete('/assets/count', 'getCounters')->name('assets.count');
+   #
+
         Route::get('/filter-assets', 'filter')->name('filter.assets');
+        Route::get('/get-asals', 'getAsals')->name('getAsals');
         Route::get('/search-assets', 'search')->name('assets.search');
     });
 
     Route::post('/objek/{id}', [DropdownController::class, 'getObjek']);
+    // Route::post('/asals', [DropdownController::class, 'getAsals'])->name('get.asals');
 
     Route::controller(PerolehanController::class)->prefix('perolehan')->group(function () {
         Route::get('', 'index')->name('perolehan');

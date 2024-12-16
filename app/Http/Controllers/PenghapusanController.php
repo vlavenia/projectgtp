@@ -10,9 +10,9 @@ class PenghapusanController extends Controller
 
     public function index()
     {
-        $asset = Asset::where('status_id', 'Aset Terkini')->get();
+        $asset = Asset::where('status_id', '1')->get();
 
-        $asset_penghapusan = Asset::where('status_id', 'penghapusan')->get();
+        $asset_penghapusan = Asset::where('status_id', '5')->get();
 
         return view('penghapusan.index', compact('asset', 'asset_penghapusan'));
     }
@@ -79,7 +79,7 @@ class PenghapusanController extends Controller
 
 
         $asset->update([
-            'status_id' => 'Penghapusan', // Nilai statis
+            'status_id' => '5', // Nilai statis
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses

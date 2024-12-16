@@ -7,6 +7,7 @@ use App\Exports\UsersExport;
 use App\Http\Requests\AssetRequest;
 use App\Imports\UsersImport;
 use App\Imports\AsetsImport;
+use App\Models\asal;
 use App\Models\Asset;
 use App\Models\Jenis;
 use App\Models\Kategori;
@@ -97,11 +98,21 @@ class AssetController extends Controller
             'unit',
             'jenis',
             'objek',
-            'Klasifikasi'
+            'Klasifikasi',
+
         ));
     }
 
+    public function getAsals(Request $request)
+    {
+        // Ambil semua data asal
+        $asals = Asal::select('id', 'asal_asset')->get();
 
+        // Pastikan ini mengembalikan data asal dalam bentuk JSON
+        return response()->json([
+            'asals' => $asals
+        ]);
+    }
     public function search(Request $request)
     {
 
@@ -144,9 +155,15 @@ class AssetController extends Controller
         $query->where('status_id', '1');
 
         $assets = $query->paginate(10);
+        $asals = Asal::all();
 
         if ($request->ajax()) {
-            return view('assets.partials.table', ['assets' => $assets])->render();
+            $asals = Asal::select('id', 'asal_asset')->get(); // Query untuk mengambil data asal
+
+            return response()->json([
+                'html' => view('assets.partials.table', ['assets' => $assets])->render(),
+                'asals' => $asals // Tambahkan daftar asals
+            ]);
         }
 
         return response()->json($assets);
@@ -193,7 +210,7 @@ class AssetController extends Controller
 
     public function update(Request $request, $id)
     {
-        $asset = Asset::find($id);
+        $asset = Asset::findOrFail($id);
         if (!$asset) {
             return response()->json(['message' => 'Asset not found'], 404);
         }
@@ -202,9 +219,23 @@ class AssetController extends Controller
         $validated = $request->validate([
             'nama_barang' => 'required|string|max:255',
             'kode_barang' => 'required|string|max:255',
-            'no_ba_terima' => 'nullable|string|max:255',
-            'tgl_ba_terima' => 'nullable|date',
+            'no_register' => 'nullable|string|max:255',
+            'merk' => 'nullable|string|max:255',
+            'bahan' => 'nullable|string|max:255',
+            'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
+            'pabrik' => 'nullable|string|max:255',
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+            'harga' => 'nullable|numeric', // Harga sebagai angka
+            'deskripsi_brg' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
+            'opd' => 'nullable|string|max:255',
+            'asal_id' => 'nullable|exists:asals,id',
         ]);
+
+
 
         // Update asset dengan data baru
         $asset->update($validated);

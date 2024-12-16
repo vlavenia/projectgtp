@@ -9,8 +9,8 @@ class KerusakanController extends Controller
 {
     public function index()
     {
-        $asset = Asset::where('status_id', 'Aset Terkini')->get();
-        $asset_kerusakan = Asset::where('status_id', 'Rusak')->get();
+        $asset = Asset::where('status_id', '1')->get();
+        $asset_kerusakan = Asset::where('status_id', '6')->get();
 
         return view('kerusakan.index', compact('asset', 'asset_kerusakan'));
     }
@@ -30,7 +30,7 @@ class KerusakanController extends Controller
 
         // Update hanya kolom `status_id`
         $asset->update([
-            'status_id' => 'Rusak', // Nilai statis
+            'status_id' => '6', // Nilai statis
         ]);
 
         // Redirect ke halaman asset dengan pesan sukses

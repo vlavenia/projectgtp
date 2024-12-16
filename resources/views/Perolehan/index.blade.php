@@ -94,7 +94,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form action="{{ route('assets.update.perolehan', $asset->id) }}" method="POST">
+                                        <form action="{{ route('assets.update', $asset->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-body">

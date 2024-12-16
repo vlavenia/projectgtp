@@ -233,7 +233,7 @@
         $(document).ready(function() {
             function loadTable(search = '', page = 1, filters = {}) {
                 $.ajax({
-                    url: '{{ route('filter.assets') }}',
+                    url: '{{ route('filter.assets') }}', // URL menuju route yang diinginkan
                     method: 'GET',
                     data: {
                         search: search,
@@ -241,7 +241,13 @@
                         ...filters
                     },
                     success: function(response) {
-                        $('#table-container').html(response);
+                        // Memperbarui kontainer tabel
+                        $('#table-container').html(response.html);
+
+                        // // Populate dropdown Asal
+                        // if (response.asals) {
+                        //     populateAsalDropdown(response.asals);
+                        // }
                     },
                     error: function(xhr) {
                         console.error('Error:', xhr.responseText);
@@ -249,6 +255,49 @@
                     }
                 });
             }
+            // Tangkap value yang dipilih oleh user
+            // $('#asal_id').on('change', function() {
+            //     const asalId = $(this).val(); // Mendapatkan value yang dipilih
+            //     console.log('Asal yang dipilih:', asalId); // Debugging: Cek value yang dipilih
+
+            //     if (asalId) {
+            //         // Lakukan sesuatu jika ada asal yang dipilih
+            //         console.log('Asal ID yang dipilih:', asalId);
+            //     } else {
+            //         // Jika tidak ada yang dipilih
+            //         console.log('Tidak ada asal yang dipilih');
+            //     }
+            // });
+
+            $.ajax({
+                url: '{{ route('getAsals') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.asals) {
+                        console.log('+++');
+                        console.log(response.asals);
+                        $('#asal_id').empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.asals, function(key, asal) {
+                            $('#asal_id').append(
+                                `<option value="${asal.id}">${asal.asal_asset}</option>`
+                            );
+                            console.log('---------');
+                            console.log(asal.asal_asset);
+                        });
+                    } else {
+                        console.log('Data asal tidak ditemukan');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
 
             function loadDefaultData() {
                 const filters = getFilters();
@@ -408,11 +457,26 @@
             $(document).on('click', '.updateAssetBtn', function() {
                 const id = $(this).data('id');
                 const url = '{{ route('assets.update', ':id') }}'.replace(':id', id);
+
                 const data = {
                     _token: '{{ csrf_token() }}',
                     _method: 'PUT',
                     nama_barang: $(`#nama_barang-${id}`).val(),
                     kode_barang: $(`#kode_barang-${id}`).val(),
+                    no_register: $(`#no_register-${id}`).val(),
+                    merk: $(`#merk-${id}`).val(),
+                    bahan: $(`#bahan-${id}`).val(),
+                    thn_pembelian: $(`#thn_pembelian-${id}`).val(),
+                    pabrik: $(`#pabrik-${id}`).val(),
+                    rangka: $(`#rangka-${id}`).val(),
+                    mesin: $(`#mesin-${id}`).val(),
+                    polisi: $(`#polisi-${id}`).val(),
+                    bpkb: $(`#bpkb-${id}`).val(),
+                    // asal_id: $(`#bpkb-${id}`).val(),
+                    harga: $(`#harga-${id}`).val(),
+                    deskripsi_brg: $(`#deskripsi_brg-${id}`).val(),
+                    keterangan: $(`#keterangan-${id}`).val(),
+                    opd: $(`#opd-${id}`).val(),
                 };
 
                 $.ajax({
@@ -429,7 +493,8 @@
                             showConfirmButton: false,
                             timer: 5000
                         });
-
+                        console.log('----');
+                        console.log($(`#asal-${id}`).val());
                         $(`#editModal-${id}`).modal('hide');
 
                         const search = $('#search').val();
@@ -445,6 +510,12 @@
             });
 
             loadDefaultData();
+        });
+        $('.editAssetBtn').on('click', function() {
+            const assetId = $(this).data('id');
+            const asalId = $('#asal_id').val(); // Ambil nilai asal_id yang dipilih
+
+            console.log('Nilai asal_id saat modal dibuka:', asalId);
         });
     </script>
 

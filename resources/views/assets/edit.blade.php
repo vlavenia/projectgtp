@@ -11,21 +11,25 @@
         <div class="row">
             <div class="col mb-3">
                 <label class="form-label">Nama Barang</label>
-                <input type="text" name="nama_barang" class="form-control" placeholder="nama_barang" value="{{ $asset->nama_barang }}" >
+                <input type="text" name="nama_barang" class="form-control" placeholder="nama_barang"
+                    value="{{ $asset->nama_barang }}">
             </div>
             <div class="col mb-3">
                 <label class="form-label">kode barang</label>
-                <input type="text" name="kode_barang" class="form-control" placeholder="kode_barang" value="{{ $asset->kode_barang }}" >
+                <input type="text" name="kode_barang" class="form-control" placeholder="kode_barang"
+                    value="{{ $asset->kode_barang }}">
             </div>
         </div>
         <div class="row">
             <div class="col mb-3">
                 <label class="form-label">no ba terima</label>
-                <input type="text" name="no_ba_terima" class="form-control" placeholder="no_ba_terima" value="{{ $asset->no_ba_terima }}" >
+                <input type="text" name="no_ba_terima" class="form-control" placeholder="no_ba_terima"
+                    value="{{ $asset->no_ba_terima }}">
             </div>
             <div class="col mb-3">
                 <label class="form-label">Description</label>
-                 <input type="text" name="tgl_ba_terima" class="form-control" placeholder="tgl_ba_terima" value="{{ $asset->tgl_ba_terima }}" >
+                <input type="text" name="tgl_ba_terima" class="form-control" placeholder="tgl_ba_terima"
+                    value="{{ $asset->tgl_ba_terima }}">
             </div>
         </div>
         <div class="row">
