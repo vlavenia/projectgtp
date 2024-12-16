@@ -20,7 +20,7 @@
                 <td>
                     <div class="d-flex justify-content-center">
                         <i class="btn far fa-eye" data-toggle="modal" data-target="#detailModal-{{ $asset->id }}"></i>
-                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal" data-target="#editModal-{{ $asset->id }}"></i>
+                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal" data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}" data-asalid="{{$asset->asal_id}}"></i>
                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                             onsubmit="return confirm('Delete?')">
                             @csrf
@@ -155,7 +155,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Asal</label>
-                                            <select name="asal_id" id="asal_id" class="form-control">
+                                            <select name="asal_id" id="asal_id-{{ $asset->id }}" class="form-control">
                                                 {{-- <option value="">Pilih Asal</option> --}}
                                                 <!-- Dropdown akan dipopulasi melalui AJAX -->
                                             </select>
@@ -188,7 +188,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-warning updateAssetBtn"
-                                    data-id="{{ $asset->id }}">Update</button>
+                                    data-id="{{ $asset->id }}" data-asalid="{{$asset->asal_id}}">Update</button>
                             </div>
                         </form>
                     </div>

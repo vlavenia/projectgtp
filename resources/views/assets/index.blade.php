@@ -180,8 +180,7 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
                         Import Aset
                     </button>
-                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset') }}">Export User
-                            Data</a>
+                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset') }}">Export Data</a>
                     </div>
 
                 </div>
@@ -269,34 +268,34 @@
             //     }
             // });
 
-            $.ajax({
-                url: '{{ route('getAsals') }}',
-                type: 'GET',
-                data: {
-                    '_token': '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.asals) {
-                        console.log('+++');
-                        console.log(response.asals);
-                        $('#asal_id').empty().append(
-                            '<option value="">-Pilih</option>'
-                        );
-                        $.each(response.asals, function(key, asal) {
-                            $('#asal_id').append(
-                                `<option value="${asal.id}">${asal.asal_asset}</option>`
-                            );
-                            console.log('---------');
-                            console.log(asal.asal_asset);
-                        });
-                    } else {
-                        console.log('Data asal tidak ditemukan');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                }
-            });
+            // $.ajax({
+            //     url: '{{ route('getAsals') }}',
+            //     type: 'GET',
+            //     data: {
+            //         '_token': '{{ csrf_token() }}'
+            //     },
+            //     success: function(response) {
+            //         if (response.asals) {
+            //             console.log('+++');
+            //             console.log(response.asals);
+            //             $('#asal_id').empty().append(
+            //                 '<option value="">-Pilih</option>'
+            //             );
+            //             $.each(response.asals, function(key, asal) {
+            //                 $('#asal_id').append(
+            //                     `<option value="${asal.id}">${asal.asal_asset}</option>`
+            //                 );
+            //                 console.log('---------');
+            //                 console.log(asal.asal_asset);
+            //             });
+            //         } else {
+            //             console.log('Data asal tidak ditemukan');
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error('AJAX Error:', error);
+            //     }
+            // });
 
 
             function loadDefaultData() {
@@ -457,6 +456,7 @@
             $(document).on('click', '.updateAssetBtn', function() {
                 const id = $(this).data('id');
                 const url = '{{ route('assets.update', ':id') }}'.replace(':id', id);
+                const asalId = $(this).data('asalid');
 
                 const data = {
                     _token: '{{ csrf_token() }}',
@@ -472,6 +472,7 @@
                     mesin: $(`#mesin-${id}`).val(),
                     polisi: $(`#polisi-${id}`).val(),
                     bpkb: $(`#bpkb-${id}`).val(),
+                    asal_id: $(`#asal_id-${id}`).val(),
                     // asal_id: $(`#bpkb-${id}`).val(),
                     harga: $(`#harga-${id}`).val(),
                     deskripsi_brg: $(`#deskripsi_brg-${id}`).val(),
@@ -493,14 +494,16 @@
                             showConfirmButton: false,
                             timer: 5000
                         });
-                        console.log('----');
-                        console.log($(`#asal-${id}`).val());
+                        // console.log('----');
+                        // console.log($(`#asal-${id}`).val());
                         $(`#editModal-${id}`).modal('hide');
 
                         const search = $('#search').val();
                         const filters = getFilters();
 
                         loadTable(search, 1, filters);
+                                    // loadDefaultData();
+
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
@@ -509,14 +512,84 @@
                 });
             });
 
-            loadDefaultData();
+            // loadDefaultData();
         });
-        $('.editAssetBtn').on('click', function() {
-            const assetId = $(this).data('id');
-            const asalId = $('#asal_id').val(); // Ambil nilai asal_id yang dipilih
+        // $('.editAssetBtn').on('click', function() {
 
-            console.log('Nilai asal_id saat modal dibuka:', asalId);
-        });
+        //     console.log('edit button clicked');
+        //     const assetId = $(this).data('id');
+        //     const asalId = $(this).data('asalid');
+        //     // const asalId = $(`#asal_id-${assetId}`).val(); // Ambil nilai asal_id yang dipilih
+
+        //     console.log('Nilai asset saat modal dibuka:', assetId);
+        //     console.log('Nilai asal_id saat modal dibuka:', asalId);
+
+        //     $.ajax({
+        //         url: '{{ route('getAsals') }}',
+        //         type: 'GET',
+        //         data: {
+        //             '_token': '{{ csrf_token() }}'
+        //         },
+        //         success: function(response) {
+        //             if (response.asals) {
+        //                 console.log('+++');
+        //                 console.log(response.asals);
+        //                 $(`#asal_id-${assetId}`).empty().append(
+        //                     '<option value="">-Pilih</option>'
+        //                 );
+        //                 $.each(response.asals, function(key, asal) {
+        //                     $(`#asal_id-${assetId}`).append(
+        //                         `<option ${asalId == asal.id ? 'selected':''} value="${asal.id}">${asal.asal_asset}</option>`
+        //                     );
+        //                     // console.log("asal="+asal)
+        //                     console.log(asalId+"-"+asal)
+        //                 });
+        //             } else {
+        //                 console.log('Data asal tidak ditemukan');
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('AJAX Error:', error);
+        //         }
+        //     });
+        // });
+
+        $(document).on('click', '.editAssetBtn', function () {
+    console.log('edit button clicked');
+    const assetId = $(this).data('id');
+    const asalId = $(this).data('asalid');
+
+    console.log('Nilai asset saat modal dibuka:', assetId);
+    console.log('Nilai asal_id saat modal dibuka:', asalId);
+
+    $.ajax({
+        url: '{{ route('getAsals') }}',
+        type: 'GET',
+        data: {
+            '_token': '{{ csrf_token() }}'
+        },
+        success: function (response) {
+            if (response.asals) {
+                console.log('+++');
+                console.log(response.asals);
+                $(`#asal_id-${assetId}`).empty().append(
+                    '<option value="">-Pilih</option>'
+                );
+                $.each(response.asals, function (key, asal) {
+                    $(`#asal_id-${assetId}`).append(
+                        `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                    );
+                    console.log(asalId + "-" + JSON.stringify(asal));
+                });
+            } else {
+                console.log('Data asal tidak ditemukan');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+        }
+    });
+});
     </script>
 
 
