@@ -86,9 +86,9 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form id="editAssetForm-{{ $asset->id }}">
+                                        <form action="{{ route('assets.update.perolehan', ['id' => $asset->id]) }}" method="POST">
                                             @csrf
-                                            @method('PUT')
+                                            {{-- @method('PUT') --}}
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -164,8 +164,6 @@
                                                             <label>Asal</label>
                                                             <select name="asal_id" id="asal_id-{{ $asset->id }}"
                                                                 class="form-control">
-                                                                {{-- <option value="">Pilih Asal</option> --}}
-                                                                <!-- Dropdown akan dipopulasi melalui AJAX -->
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
@@ -198,7 +196,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-warning updateAssetBtn"
+                                                <button type="submit" class="btn btn-warning updateAssetBtn"
                                                     data-id="{{ $asset->id }}"
                                                     data-asalid="{{ $asset->asal_id }}">Update</button>
                                             </div>
@@ -482,5 +480,44 @@
                 });
             })
         }) --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.editAssetBtn', function() {
+                console.log('edit button clicked');
+                const assetId = $(this).data('id');
+                const asalId = $(this).data('asalid');
+
+                $.ajax({
+                    url: '{{ route('getAsals') }}',
+                    type: 'GET',
+                    data: {
+                        '_token': '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.asals) {
+                            console.log('+++');
+                            console.log(response.asals);
+                            $(`#asal_id-${assetId}`).empty().append(
+                                '<option value="">-Pilih</option>'
+                            );
+                            $.each(response.asals, function(key, asal) {
+                                $(`#asal_id-${assetId}`).append(
+                                    `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                                );
+                                console.log(asalId + "-" + JSON.stringify(asal));
+                            });
+                        } else {
+                            console.log('Data asal tidak ditemukan');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            });
+        })
+    </script>
 @endsection

@@ -156,8 +156,6 @@
                                         <div class="form-group">
                                             <label>Asal</label>
                                             <select name="asal_id" id="asal_id-{{ $asset->id }}" class="form-control">
-                                                {{-- <option value="">Pilih Asal</option> --}}
-                                                <!-- Dropdown akan dipopulasi melalui AJAX -->
                                             </select>
                                         </div>
                                         <div class="form-group">

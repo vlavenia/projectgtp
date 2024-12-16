@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(PerolehanController::class)->prefix('perolehan')->group(function () {
         Route::get('', 'index')->name('perolehan');
         Route::post('store', 'store')->name('assets.store.perolehan');
-        Route::put('edit/{id}', 'update')->name('assets.update.perolehan');
+        Route::post('edit/{id}', 'update')->name('assets.update.perolehan');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.perolehan');
 
         Route::get('search', 'search')->name('assets.search.perolehan');
