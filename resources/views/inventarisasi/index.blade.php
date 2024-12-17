@@ -4,9 +4,6 @@
 
 @section('contents')
 
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p>
     <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="modal-addMutasiKeluar">Add Asset </a>
     <div class="mb-4"></div>
     @if (Session::has('success'))

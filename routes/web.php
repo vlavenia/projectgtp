@@ -68,22 +68,26 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(MutasiKeluarController::class)->prefix('mutasikeluar')->group(function () {
         Route::get('', 'index')->name('mutasikeluar');
+
         Route::put('editStatus', 'changeStatus')->name('mutasikeluar.changeStatus');
-        Route::put('editAsset/{id}', 'update')->name('mutasiKeluar.update');
+        Route::post('editAsset/{id}', 'update')->name('mutasiKeluar.update');
         Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
 
         Route::get('search', 'search')->name('assets.search.mutasiKeluar');
+        Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.mutasiKeluar');
+
     });
 
     Route::controller(MutasiMasukController::class)->prefix('mutasiMasuk')->group(function () {
         Route::get('', 'index')->name('mutasiMasuk');
+        Route::post('store', 'store')->name('mutasiMasuk.store');
+        Route::post('edit/{id}', 'update')->name('mutasiMasuk.update');
         Route::delete('destroy/{id}', 'destroy')->name('mutasimasuk.destroy');
 
-    });
+        Route::get('search', 'search')->name('mutasiMasuk.search');
+        Route::get('/asets-mutasiMasuk-export', 'export')->name('exportAsset.mutasiMasuk');
 
-    // Route::controller(AssetController::class)->prefix('mutasiMasuk')->group(function () {
-    //     Route::get('', 'mutasiMasuk')->name('mutasiMasuk');
-    // });
+    });
 
     Route::controller(SampahController::class)->prefix('sampah')->group(function () {
         Route::get('', 'trash')->name('sampah');
@@ -96,18 +100,23 @@ Route::middleware('auth')->group(function () {
     Route::controller(KerusakanController::class)->prefix('kerusakan')->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
-        Route::put('edit', 'update')->name('kerusakan.edit');
+        Route::put('edit', 'changeStatus')->name('kerusakan.changeStatus');
+        Route::post('edit/{id}', 'update')->name('kerusakan.update');
+        Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kerusakan');
 
+        Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kerusakan');
         Route::get('search', 'search')->name('assets.search.kerusakan');
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {
         Route::get('', 'index')->name('penghapusan');
 
-        Route::put('edit', 'update')->name('penghapusan.edit');
+        Route::put('edit', 'changeStatus')->name('penghapusan.edit');
+        Route::post('edit/{id}', 'update')->name('assets.update.penghapusan');
         Route::delete('destroy/{id}', 'destroy')->name('penghapusan.destroy');
 
         Route::get('search', 'search')->name('assets.search.penghapusan');
+        Route::get('/asets-penghapusan-export', 'export')->name('exportAsset.penghapusan');
     });
 
     Route::controller(InventarisasiController::class)->prefix('inventarisasi')->group(function () {

@@ -4,9 +4,7 @@
 
 @section('contents')
 
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p>
+     <p class="mb-4">Halaman ini menampilkan data Asset terkini yang dikategorikan berdasarkan asal nya, yaitu APBD/DAK/DANAIS</p>
     <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="#addmodal" data-toggle="modal">Add Asset
     </a>
     <div class="mb-4"></div>
@@ -86,7 +84,8 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form action="{{ route('assets.update.perolehan', ['id' => $asset->id]) }}" method="POST">
+                                        <form action="{{ route('assets.update.perolehan', ['id' => $asset->id]) }}"
+                                            method="POST">
                                             @csrf
                                             {{-- @method('PUT') --}}
                                             <div class="modal-body">
@@ -218,44 +217,68 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-
-                                                    <img src="{{ $asset->img_url }}" alt="">
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->kode_barang }}</p>
-                                                    <p><strong>Nama Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>No Register:</strong> {{ $asset->no_register }}</p>
-                                                    <p><strong>Merk:</strong> {{ $asset->merk }}</p>
-                                                    <p><strong>Bahan:</strong> {{ $asset->bahan }}</p>
-                                                    <p><strong>Tahun Pembelian:</strong> {{ $asset->thn_pembelian }}</p>
-                                                    <p><strong>Pabrik:</strong> {{ $asset->pabrik }}</p>
-                                                    <p><strong>Rangka:</strong> {{ $asset->rangka }}</p>
-
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p><strong>mesin:</strong> {{ $asset->mesin }}</p>
-                                                    <p><strong>polisi:</strong> {{ $asset->polisi }}</p>
-                                                    <p><strong>bpkb:</strong> {{ $asset->bpkb }}</p>
-                                                    <p><strong>asal:</strong> {{ $asset->asal_id }}</p>
-                                                    <p><strong>Harga:</strong> {{ $asset->harga }}</p>
-                                                    <p><strong>Deskripsi Barang:</strong> {{ $asset->deskripsi_brg }}</p>
-                                                    <p><strong>Keterangan:</strong> {{ $asset->keterangan }}</p>
-                                                    <p><strong>OPD:</strong> {{ $asset->opd }}</p>
+                                            <div class="row mb-4">
+                                                <div class="col-12 text-center">
+                                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang"
+                                                        class="img-fluid rounded"
+                                                        style="max-height: 200px;">
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush">
+                                                        <li class="list-group-item"><strong>Kode Barang:</strong>
+                                                            {{ $asset->kode_barang }}</li>
+                                                        <li class="list-group-item"><strong>Nama Barang:</strong>
+                                                            {{ $asset->nama_barang }}</li>
+                                                        <li class="list-group-item"><strong>No Register:</strong>
+                                                            {{ $asset->no_register }}</li>
+                                                        <li class="list-group-item"><strong>Merk:</strong>
+                                                            {{ $asset->merk }}</li>
+                                                        <li class="list-group-item"><strong>Bahan:</strong>
+                                                            {{ $asset->bahan }}</li>
+                                                        <li class="list-group-item"><strong>Tahun Pembelian:</strong>
+                                                            {{ $asset->thn_pembelian }}</li>
+                                                        <li class="list-group-item"><strong>Pabrik:</strong>
+                                                            {{ $asset->pabrik }}</li>
+                                                        <li class="list-group-item"><strong>Rangka:</strong>
+                                                            {{ $asset->rangka }}</li>
+                                                    </ul>
+                                                </div>
 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
+
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush">
+                                                        <li class="list-group-item"><strong>Mesin:</strong>
+                                                            {{ $asset->mesin }}</li>
+                                                        <li class="list-group-item"><strong>Polisi:</strong>
+                                                            {{ $asset->polisi }}</li>
+                                                        <li class="list-group-item"><strong>BPKB:</strong>
+                                                            {{ $asset->bpkb }}</li>
+                                                        <li class="list-group-item"><strong>Asal:</strong>
+                                                            {{ $asset->asal_id }}</li>
+                                                        <li class="list-group-item"><strong>Harga:</strong>
+                                                            {{ $asset->harga }}</li>
+                                                        <li class="list-group-item"><strong>Deskripsi Barang:</strong>
+                                                            {{ $asset->deskripsi_brg }}</li>
+                                                        <li class="list-group-item"><strong>Keterangan:</strong>
+                                                            {{ $asset->keterangan }}</li>
+                                                        <li class="list-group-item"><strong>OPD:</strong>
+                                                            {{ $asset->opd }}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @empty
-                            <tr>
-                                <td colspan="14">Assets not found</td>
-                            </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="14">Assets not found</td>
+                                </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -358,7 +381,7 @@
                                     <label>OPD</label>
                                     <input type="text" name="opd" class="form-control" placeholder="OPD">
                                 </div>
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     <label>Klasifikasi</label>
                                     <input type="date" name="klasifikasi" class="form-control"
                                         value="{{ $asset->tgl_ba_terima }}">
@@ -367,7 +390,7 @@
                                     <label>Objek</label>
                                     <input type="date" name="klasifikasi" class="form-control"
                                         value="{{ $asset->tgl_ba_terima }}">
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <label>Gambar</label>
                                     <input type="file" name="gambar" class="form-control">

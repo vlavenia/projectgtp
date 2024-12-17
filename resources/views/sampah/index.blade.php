@@ -4,10 +4,6 @@
 
 @section('contents')
 
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p>
-
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
@@ -24,23 +20,15 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped " id="dataTable" width="100%" cellspacing="0">
-                    <thead class="thead-dark text-center ">
+                <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
+                     <thead>
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
-                            <th>Kode Lokasi</th>
-                            <th>Tahun</th>
-                            <th>Nilai Perolehan</th>
-                            <th>Nilai Akumulasi</th>
-                            <th>Merk Type</th>
-                            <th>No Rangka</th>
-                            <th>No BPKB</th>
-                            <th>No Polisi</th>
-                            <th>Luas</th>
-                            <th>Penerbit</th>
-                            <th>Nama Ruangan</th>
-                            <th>Delete At</th>
+                            <th>Merk</th>
+                            <th>BPKB</th>
+                            <th>Polisi</th>
+                            <th>Deleted At</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -49,17 +37,10 @@
                             <tr>
                                 <td>{{ $asset->kode_barang }}</td>
                                 <td>{{ $asset->nama_barang }}</td>
-                                <td>Kode Lokasi</td>
-                                <td>{{ $asset->thn_pmbelian }}</td>
-                                <td>Nilai Perolehan</td>
-                                <td>Nilai Akumulasi</td>
                                 <td>{{ $asset->merk }}</td>
-                                <td>{{ $asset->rangka }}</td>
                                 <td>{{ $asset->bpkb }}</td>
                                 <td>{{ $asset->polisi }}</td>
-                                <td>luas</td>
-                                <td>penerbit</td>
-                                <td>Nama Ruangan</td>
+
                                 <td>{{ $asset->deleted_at }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center">
@@ -70,7 +51,7 @@
                                         <form action="{{ route('assets.forceDelete', $asset->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger" type="submit">Hapus Permanen</button>
+                                            <button class="btn btn-danger fas fa-trash-alt" type="submit"> Hapus Permanen</button>
                                         </form>
                                     </div>
                                 </td>

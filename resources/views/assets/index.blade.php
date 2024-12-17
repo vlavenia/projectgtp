@@ -3,6 +3,7 @@
 @section('title', 'Assets')
 
 @section('contents')
+  <p class="mb-4">Halaman ini menampilkan data aset Terkini atau aset rusak yang berasal dari berbagai sumber/asal Asset.</p>
     <div class="row g-4 mb-4">
         <div class="col-lg-3 col-md-6">
             <div class="card border-left-primary shadow h-100 py-2">

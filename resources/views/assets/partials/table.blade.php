@@ -20,7 +20,9 @@
                 <td>
                     <div class="d-flex justify-content-center">
                         <i class="btn far fa-eye" data-toggle="modal" data-target="#detailModal-{{ $asset->id }}"></i>
-                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal" data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}" data-asalid="{{$asset->asal_id}}"></i>
+                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
+                            data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
+                            data-asalid="{{ $asset->asal_id }}"></i>
                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                             onsubmit="return confirm('Delete?')">
                             @csrf
@@ -43,27 +45,54 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="row mb-4">
+                                <div class="col-12 text-center">
+                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang" class="img-fluid rounded"
+                                        style="max-height: 200px;">
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Kode Barang:</strong> {{ $asset->kode_barang }}</p>
-                                    <p><strong>Nama Barang:</strong> {{ $asset->nama_barang }}</p>
-                                    <p><strong>No Register:</strong> {{ $asset->no_register }}</p>
-                                    <p><strong>Merk:</strong> {{ $asset->merk }}</p>
-                                    <p><strong>Bahan:</strong> {{ $asset->bahan }}</p>
-                                    <p><strong>Tahun Pembelian:</strong> {{ $asset->thn_pembelian }}</p>
-                                    <p><strong>Pabrik:</strong> {{ $asset->pabrik }}</p>
-                                    <p><strong>Rangka:</strong> {{ $asset->rangka }}</p>
-
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><strong>Kode Barang:</strong>
+                                            {{ $asset->kode_barang }}</li>
+                                        <li class="list-group-item"><strong>Nama Barang:</strong>
+                                            {{ $asset->nama_barang }}</li>
+                                        <li class="list-group-item"><strong>No Register:</strong>
+                                            {{ $asset->no_register }}</li>
+                                        <li class="list-group-item"><strong>Merk:</strong>
+                                            {{ $asset->merk }}</li>
+                                        <li class="list-group-item"><strong>Bahan:</strong>
+                                            {{ $asset->bahan }}</li>
+                                        <li class="list-group-item"><strong>Tahun Pembelian:</strong>
+                                            {{ $asset->thn_pembelian }}</li>
+                                        <li class="list-group-item"><strong>Pabrik:</strong>
+                                            {{ $asset->pabrik }}</li>
+                                        <li class="list-group-item"><strong>Rangka:</strong>
+                                            {{ $asset->rangka }}</li>
+                                    </ul>
                                 </div>
+
+
                                 <div class="col-md-6">
-                                    <p><strong>mesin:</strong> {{ $asset->mesin }}</p>
-                                    <p><strong>polisi:</strong> {{ $asset->polisi }}</p>
-                                    <p><strong>bpkb:</strong> {{ $asset->bpkb }}</p>
-                                    <p><strong>asal:</strong> {{ $asset->asal_id }}</p>
-                                    <p><strong>Harga:</strong> {{ $asset->harga }}</p>
-                                    <p><strong>Deskripsi Barang:</strong> {{ $asset->deskripsi_brg }}</p>
-                                    <p><strong>Keterangan:</strong> {{ $asset->keterangan }}</p>
-                                    <p><strong>OPD:</strong> {{ $asset->opd }}</p>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><strong>Mesin:</strong>
+                                            {{ $asset->mesin }}</li>
+                                        <li class="list-group-item"><strong>Polisi:</strong>
+                                            {{ $asset->polisi }}</li>
+                                        <li class="list-group-item"><strong>BPKB:</strong>
+                                            {{ $asset->bpkb }}</li>
+                                        <li class="list-group-item"><strong>Asal:</strong>
+                                            {{ $asset->asal_id }}</li>
+                                        <li class="list-group-item"><strong>Harga:</strong>
+                                            {{ $asset->harga }}</li>
+                                        <li class="list-group-item"><strong>Deskripsi Barang:</strong>
+                                            {{ $asset->deskripsi_brg }}</li>
+                                        <li class="list-group-item"><strong>Keterangan:</strong>
+                                            {{ $asset->keterangan }}</li>
+                                        <li class="list-group-item"><strong>OPD:</strong>
+                                            {{ $asset->opd }}</li>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -155,7 +184,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Asal</label>
-                                            <select name="asal_id" id="asal_id-{{ $asset->id }}" class="form-control">
+                                            <select name="asal_id" id="asal_id-{{ $asset->id }}"
+                                                class="form-control">
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -180,13 +210,27 @@
                                             <input type="text" id="opd-{{ $asset->id }}" name="opd"
                                                 class="form-control" value="{{ $asset->opd }} " readonly>
                                         </div>
+                                        {{-- <div class="form-group">
+                                            <label for="gambar-{{ $asset->id }}">Gambar</label>
+
+                                            @if ($asset->img_url)
+                                                <div class="mb-2">
+                                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang"
+                                                        class="img-thumbnail" style="max-height: 200px;">
+                                                </div>
+                                            @endif
+
+                                            <input type="file" id="gambar-{{ $asset->id }}" name="gambar"
+                                                class="form-control">
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-warning updateAssetBtn"
-                                    data-id="{{ $asset->id }}" data-asalid="{{$asset->asal_id}}">Update</button>
+                                    data-id="{{ $asset->id }}"
+                                    data-asalid="{{ $asset->asal_id }}">Update</button>
                             </div>
                         </form>
                     </div>

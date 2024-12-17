@@ -59,10 +59,7 @@ class UsersExport implements FromCollection, WithHeadings
 
     {
 
-        return Asset::select( "nama_barang", "kode_barang","no_register","merk","bahan","thn_pmbelian","pabrik","rangka","mesin","polisi","bpkb","harga","deskripsi_brg","keterangan","opd")
-        ->where("status_id", 1)
-        ->get();
-
+        return Asset::select("id", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asal_id")->get();
     }
 
 
@@ -81,6 +78,6 @@ class UsersExport implements FromCollection, WithHeadings
 
     {
 
-        return ["nama_barang", "kode_barang", "no_register", "merk", "bahan", "thn_pmbelian", "pabrik", "rangka", "mesin", "polisi", "bpkb", "harga", "deskripsi_brg", "keterangan", "opd"];
+        return ["ID", "nama_barang", "kode_barang", "jenis_id", "kategori_id", "asalUsul_id"];
     }
 }

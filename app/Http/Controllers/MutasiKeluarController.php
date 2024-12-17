@@ -2,46 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MutasiKeluarExport;
 use App\Models\Asset;
 use App\Models\MutasiKeluar;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiKeluarController extends Controller
 {
     public function index()
     {
-        // $assets = Asset::whereIn('status_id', ['3'])
-        //     ->orderBy('created_at', 'DESC')
-        //     ->paginate(10); // Pindahkan paginate sebelum get()
 
-        // return view('perolehan.index', compact('assets'));
+        $assets = Asset::whereIn('status_id', [1, 6])->get();
 
-        $assets = Asset::where('status_id', 1)->get(); // Jika hanya ingin mendapatkan semua data
-        $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10); // Paginate untuk 10 item per halaman
-        // dd($asset_mutasiKeluar);
+        $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10);
         return view('mutasiKeluar.index', compact('assets', 'asset_mutasiKeluar'));
-
     }
+
+
 
     public function changeStatus(Request $request)
     {
-        // Mengambil nilai asset_id yang dipilih dari form
+
         $asset_id = $request->input('asset_id');
 
-        // Validasi jika asset_id kosong atau tidak valid
         $request->validate([
-            'asset_id' => 'required|exists:assets,id', // Pastikan asset_id valid
+            'asset_id' => 'required|exists:assets,id',
         ]);
 
-        // Temukan asset berdasarkan ID
         $asset = Asset::findOrFail($asset_id);
 
-        // Update hanya kolom `status_asset`
+
         $asset->update([
-            'status_id' => '3', // Nilai statis
+            'status_id' => '3',
         ]);
 
-        // Redirect ke halaman asset dengan pesan sukses
         return redirect()->route('mutasikeluar')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
@@ -56,16 +51,44 @@ class MutasiKeluarController extends Controller
             ->paginate(10); // Pindahkan paginate sebelum get()
 
         $asset_mutasiKeluar->appends(['search' => $query]);
-        // dd($assets);
-        // $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10);
+
 
         return view('mutasiKeluar.index', compact('assets', 'asset_mutasiKeluar'));
     }
-    
+
     public function update(Request $request, string $id)
     {
+
         $asset = Asset::findOrFail($id);
-        $asset->update($request->all());
+        if (!$asset) {
+            return response()->json(['message' => 'Asset not found'], 404);
+        }
+        // dd($request);
+        // Validasi input data
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:255',
+            'no_register' => 'nullable|numeric',
+            'merk' => 'nullable|string|max:255',
+            'bahan' => 'nullable|string|max:255',
+            'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
+            'pabrik' => 'nullable|string|max:255',
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+            'harga' => 'nullable|numeric', // Harga sebagai angka
+            'deskripsi_brg' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
+            'opd' => 'nullable|string|max:255',
+            'asal_id' => 'nullable|exists:asals,id',
+            // 'img_url' => 'nullable|exists:asals,id',
+        ]);
+
+
+
+        // Update asset dengan data baru
+        $asset->update($validated);
         return redirect()->route('mutasikeluar')->with('success', 'Assets updated successfully');
     }
 
@@ -76,5 +99,12 @@ class MutasiKeluarController extends Controller
         $asset->delete();
 
         return redirect()->route('mutasikeluar')->with('success', 'Data telah dipindahkan ke halaman sampah.');
+    }
+
+
+    public function export()
+
+    {
+        return Excel::download(new MutasiKeluarExport, 'DataAsset-MutasiKeluar-GTP.xlsx');
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PenghapusanExport;
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PenghapusanController extends Controller
 {
@@ -80,7 +82,7 @@ class PenghapusanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function changeStatus(Request $request)
     {
         // Mengambil nilai asset_id yang dipilih dari form
         $asset_id = $request->input('asset_id');
@@ -102,6 +104,43 @@ class PenghapusanController extends Controller
         return redirect()->route('penghapusan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
+    public function update(Request $request, string $id)
+    {
+
+        $asset = Asset::findOrFail($id);
+        if (!$asset) {
+            return response()->json(['message' => 'Asset not found'], 404);
+        }
+        // dd($request);
+        // Validasi input data
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:255',
+            'no_register' => 'nullable|numeric',
+            'merk' => 'nullable|string|max:255',
+            'bahan' => 'nullable|string|max:255',
+            'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
+            'pabrik' => 'nullable|string|max:255',
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+            'harga' => 'nullable|numeric', // Harga sebagai angka
+            'deskripsi_brg' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
+            'opd' => 'nullable|string|max:255',
+            'asal_id' => 'nullable|exists:asals,id',
+            // 'img_url' => 'nullable|exists:asals,id',
+        ]);
+
+
+
+        // Update asset dengan data baru
+        $asset->update($validated);
+        return redirect()->route('penghapusan')->with('success', 'Assets updated successfully');
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */
@@ -112,6 +151,12 @@ class PenghapusanController extends Controller
         $asset->delete();
 
         return redirect()->route('penghapusan')->with('success', 'Data telah dipindahkan ke halaman sampah.');
+    }
+
+    public function export()
+
+    {
+        return Excel::download(new PenghapusanExport, 'DataAsset-Penghapusan-GTP.xlsx');
     }
 
 }

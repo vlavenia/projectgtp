@@ -4,10 +4,6 @@
 
 @section('contents')
 
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
-            DataTables documentation</a>.</p>
-
     <div class="mb-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
             Tambah Mutasi Keluar
@@ -75,7 +71,7 @@
                             placeholder="Search" aria-label="Search">
                         <button type="submit" class="btn btn-primary ml-2">Search</button>
                     </form>
-                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset.perolehan') }}">Export
+                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset.mutasiKeluar') }}">Export
                             Data</a>
                     </div>
 
@@ -133,9 +129,10 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form id="editAssetForm-{{ $asset->id }}">
+                                        <form action="{{ route('mutasiKeluar.update', ['id' => $asset->id]) }}"
+                                            method="POST">
                                             @csrf
-                                            @method('PUT')
+                                            {{-- @method('PUT') --}}
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -211,8 +208,6 @@
                                                             <label>Asal</label>
                                                             <select name="asal_id" id="asal_id-{{ $asset->id }}"
                                                                 class="form-control">
-                                                                {{-- <option value="">Pilih Asal</option> --}}
-                                                                <!-- Dropdown akan dipopulasi melalui AJAX -->
                                                             </select>
                                                         </div>
                                                         <div class="form-group">
@@ -245,7 +240,7 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-warning updateAssetBtn"
+                                                <button type="submit" class="btn btn-warning updateAssetBtn"
                                                     data-id="{{ $asset->id }}"
                                                     data-asalid="{{ $asset->asal_id }}">Update</button>
                                             </div>
@@ -267,32 +262,56 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-
-                                                    <img src="{{ $asset->img_url }}" alt="">
-                                                    <p><strong>Kode Barang:</strong> {{ $asset->kode_barang }}</p>
-                                                    <p><strong>Nama Barang:</strong> {{ $asset->nama_barang }}</p>
-                                                    <p><strong>No Register:</strong> {{ $asset->no_register }}</p>
-                                                    <p><strong>Merk:</strong> {{ $asset->merk }}</p>
-                                                    <p><strong>Bahan:</strong> {{ $asset->bahan }}</p>
-                                                    <p><strong>Tahun Pembelian:</strong> {{ $asset->thn_pembelian }}</p>
-                                                    <p><strong>Pabrik:</strong> {{ $asset->pabrik }}</p>
-                                                    <p><strong>Rangka:</strong> {{ $asset->rangka }}</p>
-
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p><strong>mesin:</strong> {{ $asset->mesin }}</p>
-                                                    <p><strong>polisi:</strong> {{ $asset->polisi }}</p>
-                                                    <p><strong>bpkb:</strong> {{ $asset->bpkb }}</p>
-                                                    <p><strong>asal:</strong> {{ $asset->asal_id }}</p>
-                                                    <p><strong>Harga:</strong> {{ $asset->harga }}</p>
-                                                    <p><strong>Deskripsi Barang:</strong> {{ $asset->deskripsi_brg }}</p>
-                                                    <p><strong>Keterangan:</strong> {{ $asset->keterangan }}</p>
-                                                    <p><strong>OPD:</strong> {{ $asset->opd }}</p>
+                                            <div class="row mb-4">
+                                                <div class="col-12 text-center">
+                                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang"
+                                                        class="img-fluid rounded" style="max-height: 200px;">
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush">
+                                                        <li class="list-group-item"><strong>Kode Barang:</strong>
+                                                            {{ $asset->kode_barang }}</li>
+                                                        <li class="list-group-item"><strong>Nama Barang:</strong>
+                                                            {{ $asset->nama_barang }}</li>
+                                                        <li class="list-group-item"><strong>No Register:</strong>
+                                                            {{ $asset->no_register }}</li>
+                                                        <li class="list-group-item"><strong>Merk:</strong>
+                                                            {{ $asset->merk }}</li>
+                                                        <li class="list-group-item"><strong>Bahan:</strong>
+                                                            {{ $asset->bahan }}</li>
+                                                        <li class="list-group-item"><strong>Tahun Pembelian:</strong>
+                                                            {{ $asset->thn_pembelian }}</li>
+                                                        <li class="list-group-item"><strong>Pabrik:</strong>
+                                                            {{ $asset->pabrik }}</li>
+                                                        <li class="list-group-item"><strong>Rangka:</strong>
+                                                            {{ $asset->rangka }}</li>
+                                                    </ul>
+                                                </div>
 
+
+                                                <div class="col-md-6">
+                                                    <ul class="list-group list-group-flush">
+                                                        <li class="list-group-item"><strong>Mesin:</strong>
+                                                            {{ $asset->mesin }}</li>
+                                                        <li class="list-group-item"><strong>Polisi:</strong>
+                                                            {{ $asset->polisi }}</li>
+                                                        <li class="list-group-item"><strong>BPKB:</strong>
+                                                            {{ $asset->bpkb }}</li>
+                                                        <li class="list-group-item"><strong>Asal:</strong>
+                                                            {{ $asset->asal_id }}</li>
+                                                        <li class="list-group-item"><strong>Harga:</strong>
+                                                            {{ $asset->harga }}</li>
+                                                        <li class="list-group-item"><strong>Deskripsi Barang:</strong>
+                                                            {{ $asset->deskripsi_brg }}</li>
+                                                        <li class="list-group-item"><strong>Keterangan:</strong>
+                                                            {{ $asset->keterangan }}</li>
+                                                        <li class="list-group-item"><strong>OPD:</strong>
+                                                            {{ $asset->opd }}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
@@ -314,5 +333,44 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.editAssetBtn', function() {
+                console.log('edit button clicked');
+                const assetId = $(this).data('id');
+                const asalId = $(this).data('asalid');
+
+                $.ajax({
+                    url: '{{ route('getAsals') }}',
+                    type: 'GET',
+                    data: {
+                        '_token': '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.asals) {
+                            console.log('+++');
+                            console.log(response.asals);
+                            $(`#asal_id-${assetId}`).empty().append(
+                                '<option value="">-Pilih</option>'
+                            );
+                            $.each(response.asals, function(key, asal) {
+                                $(`#asal_id-${assetId}`).append(
+                                    `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                                );
+                                console.log(asalId + "-" + JSON.stringify(asal));
+                            });
+                        } else {
+                            console.log('Data asal tidak ditemukan');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            });
+        })
+    </script>
 @endsection

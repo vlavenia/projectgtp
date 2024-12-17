@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AsetssExport;
+use App\Exports\AssetsExport;
+use App\Exports\AssetssExport;
 use App\Exports\UsersExport;
 use App\Http\Requests\AssetRequest;
 use App\Imports\UsersImport;
@@ -58,30 +60,34 @@ class AssetController extends Controller
                     ->orWhere('merk', 'like', '%' . $search . '%')
                     ->orWhere('bpkb', 'like', '%' . $search . '%')
                     ->orWhere('polisi', 'like', '%' . $search . '%');
-            })->where('status_id', '1');
+            })->whereIn('status_id', ['1', '6']);
         } else {
-            $query->where('status_id', '1');
+            $query->whereIn('status_id', ['1','6']);
         }
 
+        $query->orderBy('updated_at', 'DESC');
+
         $assets = $query->paginate(10);
+
+
 
         if ($request->ajax()) {
             return view('assets.partials.table', ['assets' => $assets])->render();
         }
 
-        $asetsCount = Asset::where('status_id', '1')->count();
+        $asetsCount = Asset::whereIn('status_id', [1, 6])->count();
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('asal_id', [1, 2, 3]);
-        })->where('status_id', '1')->count();
+        })->whereIn('status_id', ['1','6'])->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
-            $query->where('asal_id', 'mutasi');
-        })->where('status_id', '1')->count();
+            $query->whereIn('asal_id', ['4', '5']);
+        })->whereIn('status_id', ['1','6'])->count();
 
         $hibahCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('asal_id', [4, 5]);
-        })->where('status_id', '1')->count();
+            $query->whereIn('asal_id',[]);//notes:?
+        })->whereIn('status_id', ['1','6'])->count();
 
 
         $unit = Unit::all();
@@ -152,7 +158,10 @@ class AssetController extends Controller
             $query->where('klasifikasi_id', $request->klasifikasi_id);
         }
 
-        $query->where('status_id', '1');
+        $query->whereIn('status_id', ['1','6']);
+
+        $query->orderBy('updated_at', 'DESC');
+
 
         $assets = $query->paginate(10);
         $asals = Asal::all();
@@ -171,14 +180,14 @@ class AssetController extends Controller
 
 
 
-    public function mutasiMasuk()
-    {
-        $assets = Asset::whereIn('asal_id', ['1', '2', '3'])
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10); // Pindahkan paginate sebelum get()
+    // public function mutasiMasuk()
+    // {
+    //     $assets = Asset::whereIn('asal_id', ['1', '2', '3'])
+    //         ->orderBy('created_at', 'DESC')
+    //         ->paginate(10); // Pindahkan paginate sebelum get()
 
-        return view('mutasiMasuk.index', compact('assets'));
-    }
+    //     return view('mutasiMasuk.index', compact('assets'));
+    // }
 
     public function store(Request $request)
     {
@@ -314,6 +323,6 @@ class AssetController extends Controller
     public function export()
 
     {
-        return Excel::download(new UsersExport, 'DataAssetGTP.xlsx');
+        return Excel::download(new AssetssExport, 'DataAssetGTP.xlsx');
     }
 }

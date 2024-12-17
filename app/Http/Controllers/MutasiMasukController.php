@@ -2,47 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MutasiMasukExport;
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiMasukController extends Controller
 {
 
     public function index()
     {
-        $assets = Asset::whereIn('asal_id', [])
+        $assets = Asset::whereIn('asal_id', ['4','5'])
+            ->where('status_id', 1)
             ->orderBy('created_at', 'DESC')
-            ->paginate(10); // Pindahkan paginate sebelum get()
+            ->paginate(10);
 
         return view('mutasiMasuk.index', compact('assets'));
     }
 
 
-    public function create() {}
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+
+        $assets = Asset::where('nama_barang', 'LIKE', "%{$query}%")
+        ->whereIn('asal_id', ['4','5'])
+            -> whereIn('status_id', ['1'])
+            // ->orWhere('description', 'LIKE', "%{$query}%")
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10); // Pindahkan paginate sebelum get()
+
+        $assets->appends(['search' => $query]);
+
+
+        return view('mutasiMasuk.index', compact('assets'));
+    }
 
 
     public function store(Request $request)
     {
-        // Asset::create($request->all());
-        // Validasi data
-        $validated = $request->validate([
-            'nama_barang' => 'required',
-            'kode_barang' => 'required',
-            'kategori_id' => 'required|exists:kategoris,id', // Pastikan kategori_id valid
+        $imageName = time() . '.' . $request->gambar->extension();
+        $request->gambar->move(public_path('images'), $imageName);
 
-        ]);
-
-        // Menyimpan asset dengan kategori_id
         Asset::create([
             'nama_barang' => $request->nama_barang,
             'kode_barang' => $request->kode_barang,
             'no_ba_terima' => $request->no_ba_terima,
             'tgl_ba_terima' => $request->tgl_ba_terima,
             'kategori_id' => $request->kategori_id,
-
+            'status_id' => '1',
+            'asal_id' => '4',
+            'img_url' =>  'images/' . $imageName,
         ]);
 
-        return redirect()->route('assets')->with('success', 'Assets added successfully');
+        return redirect()->route('mutasiMasuk')->with('success', 'Barang Perolehan Berhasil Ditambahkan');
     }
 
     /**
@@ -64,26 +77,40 @@ class MutasiMasukController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, string $id)
     {
-        // Mengambil nilai asset_id yang dipilih dari form
-        $asset_id = $request->input('asset_id');
 
-        // Validasi jika asset_id kosong atau tidak valid
-        $request->validate([
-            'asset_id' => 'required|exists:assets,id', // Pastikan asset_id valid
+        $asset = Asset::findOrFail($id);
+        if (!$asset) {
+            return response()->json(['message' => 'Asset not found'], 404);
+        }
+        // dd($request);
+        // Validasi input data
+        $validated = $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:255',
+            'no_register' => 'nullable|numeric',
+            'merk' => 'nullable|string|max:255',
+            'bahan' => 'nullable|string|max:255',
+            'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
+            'pabrik' => 'nullable|string|max:255',
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+            'harga' => 'nullable|numeric', // Harga sebagai angka
+            'deskripsi_brg' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
+            'opd' => 'nullable|string|max:255',
+            'asal_id' => 'nullable|exists:asals,id',
+            // 'img_url' => 'nullable|exists:asals,id',
         ]);
 
-        // Temukan asset berdasarkan ID
-        $asset = Asset::findOrFail($asset_id);
 
 
-        $asset->update([
-            'status_id' => '5', // Nilai statis
-        ]);
-
-        // Redirect ke halaman asset dengan pesan sukses
-        return redirect()->route('penghapusan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
+        // Update asset dengan data baru
+        $asset->update($validated);
+        return redirect()->route('mutasiMasuk')->with('success', 'Assets updated successfully');
     }
 
     /**
@@ -91,6 +118,16 @@ class MutasiMasukController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $asset = Asset::findOrFail($id);
+
+        $asset->delete();
+
+        return redirect()->route('mutasiMasuk')->with('success', 'Data telah dipindahkan ke halaman sampah.');
+    }
+
+    public function export()
+
+    {
+        return Excel::download(new MutasiMasukExport, 'DataAsset-MutasiMasuk-GTP.xlsx');
     }
 }

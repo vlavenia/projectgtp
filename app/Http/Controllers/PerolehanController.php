@@ -17,7 +17,7 @@ class PerolehanController extends Controller
     public function index()
     {
         $assets = Asset::whereIn('asal_id', ['1', '2', '3'])
-        ->orWhere('status_id', '1')
+            ->where('status_id', 1)
             ->orderBy('created_at', 'DESC')
             ->paginate(10); // Pindahkan paginate sebelum get()
         $asals = asal::all();
@@ -53,24 +53,6 @@ class PerolehanController extends Controller
      */
     public function store(Request $request)
     {
-        // $validated = $request->validate([
-        //     'nama_barang' => 'required|string|max:255',
-        //     'kode_barang' => 'required|string|max:255',
-        //     'no_register' => 'nullable|numeric',
-        //     'merk' => 'nullable|string|max:255',
-        //     'bahan' => 'nullable|string|max:255',
-        //     'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'),
-        //     'pabrik' => 'nullable|string|max:255',
-        //     'rangka' => 'nullable|string|max:255',
-        //     'mesin' => 'nullable|string|max:255',
-        //     'polisi' => 'nullable|string|max:255',
-        //     'bpkb' => 'nullable|string|max:255',
-        //     'harga' => 'nullable|numeric',
-        //     'deskripsi_brg' => 'nullable|string|max:255',
-        //     'keterangan' => 'nullable|string|max:255',
-        //     'opd' => 'nullable|string|max:255',
-        //     'asal_id' => 'nullable|exists:asals,id',
-        // ]);
         $imageName = time() . '.' . $request->gambar->extension();
         $request->gambar->move(public_path('images'), $imageName);
 
