@@ -49,13 +49,13 @@ class Asset extends Model
 
     public function asal()
     {
-        return $this->belongsTo(asal::class);
+        return $this->belongsTo(asal::class, 'asal_id');
     }
 
-    // public function jenis()
-    // {
-    //     return $this->belongsTo(Jenis::class);
-    // }
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class);
+    }
 
     public function statusAsset()
     {

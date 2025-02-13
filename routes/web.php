@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\KerusakanController;
+use App\Http\Controllers\KibaController;
+use App\Http\Controllers\LaporanKibController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\MutasiMasukController;
 use App\Http\Controllers\PenghapusanController;
@@ -46,11 +48,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy');
 
         Route::delete('/assets/count', 'getCounters')->name('assets.count');
-   #
+        #
 
         Route::get('/filter-assets', 'filter')->name('filter.assets');
-        Route::get('/get-asals', 'getAsals')->name('getAsals');
         Route::get('/search-assets', 'search')->name('assets.search');
+
+        Route::get('/get-asals', 'getAsals')->name('getAsals');
+        Route::get('/get-unit', 'getUnit')->name('getUnit');
+        Route::get('/get-jenis', 'getJenis')->name('getJenis');
+        Route::get('/get-objek', 'getObjek')->name('getObjek');
+        Route::get('/get-Klasifikasi', 'getKlasifikasi')->name('getKlasifikasi');
     });
 
     Route::post('/objek/{id}', [DropdownController::class, 'getObjek']);
@@ -72,10 +79,10 @@ Route::middleware('auth')->group(function () {
         Route::put('editStatus', 'changeStatus')->name('mutasikeluar.changeStatus');
         Route::post('editAsset/{id}', 'update')->name('mutasiKeluar.update');
         Route::delete('destroy/{id}', 'destroy')->name('mutasiKeluar.destroy');
+        Route::post('restore/{id}', 'restore')->name('mutasiKeluar.restore');
 
         Route::get('search', 'search')->name('assets.search.mutasiKeluar');
         Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.mutasiKeluar');
-
     });
 
     Route::controller(MutasiMasukController::class)->prefix('mutasiMasuk')->group(function () {
@@ -86,7 +93,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('search', 'search')->name('mutasiMasuk.search');
         Route::get('/asets-mutasiMasuk-export', 'export')->name('exportAsset.mutasiMasuk');
-
     });
 
     Route::controller(SampahController::class)->prefix('sampah')->group(function () {
@@ -103,6 +109,7 @@ Route::middleware('auth')->group(function () {
         Route::put('edit', 'changeStatus')->name('kerusakan.changeStatus');
         Route::post('edit/{id}', 'update')->name('kerusakan.update');
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kerusakan');
+        Route::post('restore/{id}', 'restore')->name('assets.restore.kerusakan');
 
         Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kerusakan');
         Route::get('search', 'search')->name('assets.search.kerusakan');
@@ -114,14 +121,27 @@ Route::middleware('auth')->group(function () {
         Route::put('edit', 'changeStatus')->name('penghapusan.edit');
         Route::post('edit/{id}', 'update')->name('assets.update.penghapusan');
         Route::delete('destroy/{id}', 'destroy')->name('penghapusan.destroy');
+        Route::post('restore/{id}', 'restore')->name('assets.restore.penghapusan');
 
         Route::get('search', 'search')->name('assets.search.penghapusan');
         Route::get('/asets-penghapusan-export', 'export')->name('exportAsset.penghapusan');
     });
 
-    Route::controller(InventarisasiController::class)->prefix('inventarisasi')->group(function () {
-        Route::get('', 'index')->name('inventarisasi');
+    Route::controller(LaporanKibController::class)->prefix('kib')->group(function () {
+        Route::get('/a', 'kiba')->name('kibaExport');
+        Route::get('/b', 'kibb')->name('kibbExport');
+        Route::get('/c', 'kibc')->name('kibcExport');
+        Route::get('/d', 'kib_d')->name('kib-d');
+        Route::get('/e', 'kib_e')->name('kib-e');
+        Route::get('/f', 'kib_f')->name('kib-f');
+        Route::get('/atb', 'kib_atb')->name('kib-atb');
     });
+
+    // Route::controller(KibaController::class)->prefix('kib')->group(function () {
+    //     Route::get('/a', 'index')->name('kiba');
+    //     Route::get('/a/export', 'export')->name('kibaExport');
+    // });
+
 
     Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile');
 

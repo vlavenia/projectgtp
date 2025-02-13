@@ -17,7 +17,10 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('admin_assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    
+
+    {{-- update --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 </head>
 
 <body id="page-top">
@@ -51,7 +54,10 @@
             <h1 class="h3 mb-0 text-gray-800">@yield('title')</h1>
           </div> --}}
 
-                    @yield('contents')
+                    <div class="mr-500">
+                        @yield('contents')
+
+                    </div>
 
                     <!-- Content Row -->
 

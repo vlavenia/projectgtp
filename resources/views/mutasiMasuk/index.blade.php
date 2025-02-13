@@ -4,8 +4,10 @@
 
 @section('contents')
 
-    <p class="mb-4">Data asset Mutasi Masuk adalah data Asset terkini yang dikategorikan berdasarkan asal nya, yaitu Hibah/Hadiah</p>
-    <a href="" class=" btn btn-primary" data-dismiss="modal" data-target="#addmodal" data-toggle="modal">Add Asset </a>
+    <p class="mb-4">Data asset Mutasi Masuk adalah data Asset terkini yang dikategorikan berdasarkan asal nya, yaitu
+        Hibah/Hadiah</p>
+    <a href="" class=" btn btn-primary addAssetBtn" data-dismiss="modal" data-target="#addmodal" data-toggle="modal">Add
+        Asset </a>
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
@@ -19,12 +21,17 @@
             <div class="row d-flex justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Assets</h6>
                 <div class=" row mr-3">
-                     <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
+                    <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
                         action="{{ route('mutasiMasuk.search') }}">
                         @csrf
                         <input name="search" id="search" class="form-control mr-sm-2" type="search"
                             placeholder="Search" aria-label="Search">
                         <button type="submit" class="btn btn-primary ml-2">Search</button>
+
+                        <div class="ml-2">
+                            <a class="btn btn-secondary" href="{{ route('mutasiMasuk') }}">Reset</a>
+                        </div>
+
                     </form>
                     <div class="ml-2"><a class="btn btn-info float-end"
                             href="{{ route('exportAsset.mutasiMasuk') }}">Export
@@ -62,7 +69,10 @@
                                             data-target="#detailModal-{{ $asset->id }}"></i>
                                         <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
                                             data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
-                                            data-asalid="{{ $asset->asal_id }}"></i>
+                                            data-asalid="{{ $asset->asal_id }}" data-asalid="{{ $asset->asal_id }}"
+                                            data-jenisid="{{ $asset->jenis_id }}" data-unitid="{{ $asset->unit_id }}"
+                                            data-objekid="{{ $asset->objek_id }}"
+                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}"></i>
                                         <form action="{{ route('mutasimasuk.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
@@ -85,7 +95,7 @@
                                             </button>
                                         </div>
                                         <form action="{{ route('mutasiMasuk.update', ['id' => $asset->id]) }}"
-                                            method="POST">
+                                            method="POST" enctype="multipart/form-data">
                                             @csrf
                                             {{-- @method('PUT') --}}
                                             <div class="modal-body">
@@ -123,9 +133,12 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Tahun Pembelian</label>
-                                                            <input type="text" id="thn_pembelian-{{ $asset->id }}"
-                                                                name="thn_pembelian" class="form-control"
-                                                                value="{{ $asset->thn_pembelian }}">
+                                                            <input type="number" id="thn_pembelian-{{ $asset->id }}"
+                                                                name="thn_pmbelian" class="form-control"
+                                                                value="{{ $asset->thn_pmbelian }}" min="1990"
+                                                                max="{{ date('Y') }}"
+                                                                oninvalid="this.setCustomValidity('Tahun harus antara 1990 - {{ date('Y') }}')"
+                                                                oninput="this.setCustomValidity('')">
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Pabrik</label>
@@ -139,8 +152,6 @@
                                                                 name="rangka" class="form-control"
                                                                 value="{{ $asset->rangka }}">
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label>Mesin</label>
                                                             <input type="text" id="mesin-{{ $asset->id }}"
@@ -159,12 +170,54 @@
                                                                 name="bpkb" class="form-control"
                                                                 value="{{ $asset->bpkb }}">
                                                         </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+
+                                                        <div class="form-group">
+                                                            <label>Unit</label>
+                                                            <select name="unit_id" id="unit_id-{{ $asset->id }}"
+                                                                class="form-control">
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Jenis</label>
+                                                            <select name="jenis_id" id="jenis_id-{{ $asset->id }}"
+                                                                class="form-control">
+                                                            </select>
+                                                        </div>
+                                                        {{-- <div class="form-group">
+                                                            <label for="jenis_id_add">Jenis</label>
+                                                            <select name="jenis_id_add" id="jenis_id_add"
+                                                                class="form-control">
+                                                                <option>-Pilih-</option>
+                                                                @foreach ($jenis as $unit)
+                                                                    <option value="{{ $unit->id }}"
+                                                                        {{ $unit->jenis_asset }}
+                                                                        {{ $unit->id == $asset->unit_id ? 'selected' : '' }}>
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div> --}}
+                                                        <div class="form-group">
+                                                            <label>Objek</label>
+                                                            <select name="objek_id" id="objek_id-{{ $asset->id }}"
+                                                                class="form-control">
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Klasifikasi</label>
+                                                            <select name="klasifikasi_id"
+                                                                id="klasifikasi_id-{{ $asset->id }}"
+                                                                class="form-control">
+                                                            </select>
+                                                        </div>
                                                         <div class="form-group">
                                                             <label>Asal</label>
                                                             <select name="asal_id" id="asal_id-{{ $asset->id }}"
                                                                 class="form-control">
                                                             </select>
                                                         </div>
+
                                                         <div class="form-group">
                                                             <label>Harga</label>
                                                             <input type="text" id="harga-{{ $asset->id }}"
@@ -189,6 +242,18 @@
                                                                 name="opd" class="form-control"
                                                                 value="{{ $asset->opd }} " readonly>
                                                         </div>
+
+                                                         <div class="form-group">
+                                                            <label for="img_url">Gambar</label>
+                                                            <input type="file" id="img_url" name="gambar"
+                                                                accept="image/*" class="form-control img-upload"  data-id="{{ $asset->id }}">
+                                                        </div>
+
+                                                        <div class="mt-3 text-center">
+                                                            <img id="preview-img-{{ $asset->id }}" src="{{ asset($asset->img_url) }}"
+                                                                alt="Gambar Barang" class="img-fluid rounded"
+                                                                style="max-height: 200px;">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -196,8 +261,11 @@
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-warning updateAssetBtn"
-                                                    data-id="{{ $asset->id }}"
-                                                    data-asalid="{{ $asset->asal_id }}">Update</button>
+                                                    data-id="{{ $asset->id }}" data-asalid="{{ $asset->asal_id }}"
+                                                    data-jenisid="{{ $asset->jenis_id }}"
+                                                    data-unitid="{{ $asset->unit_id }}"
+                                                    data-objekid="{{ $asset->objek_id }}"
+                                                    data-klasifikasiid="{{ $asset->klasifikasi_id }}">Update</button>
                                             </div>
                                         </form>
                                     </div>
@@ -219,7 +287,7 @@
                                         <div class="modal-body">
                                             <div class="row mb-4">
                                                 <div class="col-12 text-center">
-                                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang"
+                                                    <img src="/{{ $asset->img_url }}" alt="Gambar Barang"
                                                         class="img-fluid rounded" style="max-height: 200px;">
                                                 </div>
                                             </div>
@@ -237,7 +305,7 @@
                                                         <li class="list-group-item"><strong>Bahan:</strong>
                                                             {{ $asset->bahan }}</li>
                                                         <li class="list-group-item"><strong>Tahun Pembelian:</strong>
-                                                            {{ $asset->thn_pembelian }}</li>
+                                                            {{ $asset->thn_pmbelian }}</li>
                                                         <li class="list-group-item"><strong>Pabrik:</strong>
                                                             {{ $asset->pabrik }}</li>
                                                         <li class="list-group-item"><strong>Rangka:</strong>
@@ -255,7 +323,7 @@
                                                         <li class="list-group-item"><strong>BPKB:</strong>
                                                             {{ $asset->bpkb }}</li>
                                                         <li class="list-group-item"><strong>Asal:</strong>
-                                                            {{ $asset->asal_id }}</li>
+                                                            {{ $asset->asal->asal_asset ?? 'belum ada data asal' }}</li>
                                                         <li class="list-group-item"><strong>Harga:</strong>
                                                             {{ $asset->harga }}</li>
                                                         <li class="list-group-item"><strong>Deskripsi Barang:</strong>
@@ -296,7 +364,7 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Barang Mutasi Masuk</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -357,10 +425,72 @@
                                     <label>BPKB</label>
                                     <input type="text" name="bpkb" class="form-control" placeholder="BPKB">
                                 </div>
-                                <div class="form-group ">
-                                    <label>Asal</label>
-                                    <input type="text" name="asal_id" class="form-control" placeholder="Asal">
+
+                                <div class="form-group">
+                                    <label for="unit_id">Unit</label>
+                                    <select name="unit_id" id="unit_id" class="form-control">
+                                        <option value="">-Pilih-</option>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}" {{-- {{ $unit->id == $asset->unit_id ? 'selected' : '' }}> --}}>
+                                                {{ $unit->nama_unit }} </option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="jenis_id_add">Jenis</label>
+                                    <select name="jenis_id_add" id="jenis_id_add" class="form-control">
+                                        <option>-Pilih-</option>
+                                        @foreach ($jenis as $unit)
+                                            <option value="{{ $unit->id }}" {{-- {{ $unit->id == $asset->unit_id ? 'selected' : '' }} --}}>
+                                                {{ $unit->jenis_asset }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="objek_add_id">Objek</label>
+                                    <select name="objek_id" id="objek_add_id" class="form-control">
+                                        <option value="">-Pilih-</option>
+                                        @foreach ($Objeks as $unit)
+                                            <option value="{{ $unit->id }}" {{-- {{ $unit->id == $asset->unit_id ? 'selected' : '' }} --}}>
+                                                {{ $unit->nama_objek }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- <div class="form-group">
+                                    <label>Objek</label>
+                                    <select name="objek_id" id="objek_id-{{ $asset->id }}"
+                                        class="form-control">
+                                    </select>
+                                </div> --}}
+
+                                <div class="form-group">
+                                    <label for="klasifikasi_id">Klasifikasi</label>
+                                    <select name="klasifikasi_id" id="klasifikasi_id" class="form-control">
+                                        <option value="">-Pilih-</option>
+                                        @foreach ($klasifikasi as $unit)
+                                            <option value="{{ $unit->id }}" {{-- {{ $unit->id == $asset->unit_id ? 'selected' : '' }} --}}>
+                                                {{ $unit->nama_klasifikasi }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="asal_id">Asal</label>
+                                    <select name="asal_id" id="asal_id" class="form-control">
+                                        <option value="">-Pilih-</option>
+                                        @foreach ($asals as $asal)
+                                            <option value="{{ $asal->id }}" {{-- {{ $asal->id == $asset->asal_id ? 'selected' : '' }} --}}>
+                                                {{ $asal->asal_asset }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                                 <div class="form-group ">
                                     <label>Harga</label>
                                     <input type="text" name="harga" class="form-control" placeholder="harga">
@@ -379,16 +509,7 @@
                                     <label>OPD</label>
                                     <input type="text" name="opd" class="form-control" placeholder="OPD">
                                 </div>
-                                {{-- <div class="form-group">
-                                    <label>Klasifikasi</label>
-                                    <input type="date" name="klasifikasi" class="form-control"
-                                        value="{{ $asset->tgl_ba_terima }}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Objek</label>
-                                    <input type="date" name="klasifikasi" class="form-control"
-                                        value="{{ $asset->tgl_ba_terima }}">
-                                </div> --}}
+
                                 <div class="form-group">
                                     <label>Gambar</label>
                                     <input type="file" name="gambar" class="form-control">
@@ -411,39 +532,364 @@
 
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.editAssetBtn', function() {
-                console.log('edit button clicked');
-                const assetId = $(this).data('id');
-                const asalId = $(this).data('asalid');
 
+            document.addEventListener("change", function(event) {
+                if (event.target.classList.contains("img-upload")) {
+                    let file = event.target.files[0];
+                    let assetId = event.target.dataset.id; // Ambil ID dari atribut data-id
+
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById(`preview-img-${assetId}`).src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            $(document).on('click', '.updateAssetBtn', function() {
+                const id = $(this).data('id');
+                const url = '{{ route('mutasiMasuk.update', ':id') }}'.replace(':id', id);
+
+                const data = {
+                    _token: '{{ csrf_token() }}',
+                    _method: 'PUT',
+                    nama_barang: $(`#nama_barang-${id}`).val(),
+                    kode_barang: $(`#kode_barang-${id}`).val(),
+                    no_register: $(`#no_register-${id}`).val(),
+                    merk: $(`#merk-${id}`).val(),
+                    bahan: $(`#bahan-${id}`).val(),
+                    thn_pmbelian: $(`#thn_pembelian-${id}`).val(),
+                    pabrik: $(`#pabrik-${id}`).val(),
+                    rangka: $(`#rangka-${id}`).val(),
+                    mesin: $(`#mesin-${id}`).val(),
+                    polisi: $(`#polisi-${id}`).val(),
+                    bpkb: $(`#bpkb-${id}`).val(),
+                    asal_id: $(`#asal_id-${id}`).val(),
+                    jenis_id: $(`#jenis_id-${id}`).val(),
+                    unit_id: $(`#unit_id-${id}`).val(),
+                    objek_id: $(`#objek_id-${id}`).val(),
+                    klasifikasi_id: $(`#klasifikasi_id-${id}`).val(),
+                    harga: $(`#harga-${id}`).val(),
+                    deskripsi_brg: $(`#deskripsi_brg-${id}`).val(),
+                    keterangan: $(`#keterangan-${id}`).val(),
+                    opd: $(`#opd-${id}`).val(),
+                };
+            });
+
+
+        });
+
+
+        $(document).on('click', '.editAssetBtn', function() {
+            const assetId = $(this).data('id');
+            const jenisId = $(this).data('jenisid');
+            const objekId = $(this).data('objekid');
+            const asalId = $(this).data('asalid');
+            const unitId = $(this).data('unitid');
+            const klasifikasiId = $(this).data('klasifikasiid');
+
+            //Fungsi untuk memuat Data Jenis
+            $.ajax({
+                url: '{{ route('getJenis') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+
+                    if (response.jenis) {
+                        $(`#jenis_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.jenis, function(key, jenis) {
+                            console.log(jenis.id, jenisId);
+                            $(`#jenis_id-${assetId}`).append(
+                                `<option ${jenisId == jenis.id ? 'selected' : ''} value="${jenis.id}">${jenis.jenis_asset}</option>`
+                            );
+
+                        });
+                        loadObjekEdit(assetId, jenisId, objekId);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            // Event Listener ketika Jenis berubah
+            $(`#jenis_id-${assetId}`).on('change', function() {
+                const newJenisId = $(this).val();
+                loadObjekEdit(assetId, newJenisId, null);
+            });
+
+            //Fungsi untuk memuat Data Asal
+            $.ajax({
+                url: '{{ route('getAsals') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.asals) {
+
+                        $(`#asal_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.asals, function(key, asal) {
+                            $(`#asal_id-${assetId}`).append(
+                                `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                            );
+
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            //Fungsi untuk memuat Data Unit
+            $.ajax({
+                url: '{{ route('getUnit') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.unit) {
+                        $(`#unit_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.unit, function(key, unit) {
+                            $(`#unit_id-${assetId}`).append(
+                                `<option ${unitId == unit.id ? 'selected' : ''} value="${unit.id}">${unit.nama_unit}</option>`
+                            );
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            //Fungsi untuk memuat Data Klasifikasi
+            $.ajax({
+                url: '{{ route('getKlasifikasi') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.Klasifikasi) {
+                        $(`#klasifikasi_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih Klasifikasi-</option>'
+                        );
+                        $.each(response.Klasifikasi, function(key, Klasifikasi) {
+                            $(`#klasifikasi_id-${assetId}`).append(
+                                `<option ${klasifikasiId == Klasifikasi.id ? 'selected' : ''} value="${Klasifikasi.id}">${Klasifikasi.nama_klasifikasi}</option>`
+                            );
+                        });
+                    }
+                },
+
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        });
+
+        $(document).on('click', '.addAssetBtn', function() {
+            const assetId = $(this).data('id');
+            const jenisId = $(this).data('jenisid');
+            const objekId = $(this).data('objekid');
+            const asalId = $(this).data('asalid');
+            const unitId = $(this).data('unitid');
+            const klasifikasiId = $(this).data('klasifikasiid');
+
+            //Fungsi untuk memuat Data Jenis
+            $.ajax({
+                url: '{{ route('getJenis') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.jenis) {
+                        $(`#jenis_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.jenis, function(key, jenis) {
+                            $(`#jenis_id-${assetId}`).append(
+                                `<option ${jenisId == jenis.id ? 'selected' : ''} value="${jenis.id}">${jenis.jenis_asset}</option>`
+                            );
+
+                        });
+                        loadObjekAdd(assetId, jenisId, objekId);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            // Event Listener ketika Jenis berubah
+            // $(`#jenis_id-${assetId}`).on('change', function() {
+            //     const newJenisId = $(this).val();
+            //     console.log("testing assetId, newJenisId");
+            //     console.log(assetId, newJenisId);
+            // });
+
+            $(`#jenis_id_add`).on('change', function() {
+                const newJenisId = $(this).val();
+                loadObjekAdd(assetId, newJenisId, null);
+
+            });
+
+            //Fungsi untuk memuat Data Asal
+            $.ajax({
+                url: '{{ route('getAsals') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.asals) {
+
+                        $(`#asal_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.asals, function(key, asal) {
+                            $(`#asal_id-${assetId}`).append(
+                                `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                            );
+
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            //Fungsi untuk memuat Data Unit
+            $.ajax({
+                url: '{{ route('getUnit') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.unit) {
+                        $(`#unit_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih</option>'
+                        );
+                        $.each(response.unit, function(key, unit) {
+                            $(`#unit_id-${assetId}`).append(
+                                `<option ${unitId == unit.id ? 'selected' : ''} value="${unit.id}">${unit.nama_unit}</option>`
+                            );
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            //Fungsi untuk memuat Data Klasifikasi
+            $.ajax({
+                url: '{{ route('getKlasifikasi') }}',
+                type: 'GET',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.Klasifikasi) {
+                        $(`#klasifikasi_id-${assetId}`).empty().append(
+                            '<option value="">-Pilih Klasifikasi-</option>'
+                        );
+                        $.each(response.Klasifikasi, function(key, Klasifikasi) {
+                            $(`#klasifikasi_id-${assetId}`).append(
+                                `<option ${klasifikasiId == Klasifikasi.id ? 'selected' : ''} value="${Klasifikasi.id}">${Klasifikasi.nama_klasifikasi}</option>`
+                            );
+                        });
+                    }
+                },
+
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        });
+
+        // Fungsi untuk memuat Objek berdasarkan Jenis yang dipilih
+        function loadObjekAdd(assetId, jenisId, objekId) {
+            if (jenisId) {
                 $.ajax({
-                    url: '{{ route('getAsals') }}',
-                    type: 'GET',
+                    url: '/objek/' + jenisId,
+                    type: 'POST',
                     data: {
                         '_token': '{{ csrf_token() }}'
                     },
-                    success: function(response) {
-                        if (response.asals) {
-                            console.log('+++');
-                            console.log(response.asals);
-                            $(`#asal_id-${assetId}`).empty().append(
-                                '<option value="">-Pilih</option>'
-                            );
-                            $.each(response.asals, function(key, asal) {
-                                $(`#asal_id-${assetId}`).append(
-                                    `<option ${asalId == asal.id ? 'selected' : ''} value="${asal.id}">${asal.asal_asset}</option>`
+                    dataType: 'json',
+                    success: function(data) {
+
+                        if (data) {
+                            $(`#objek_add_id`).empty().append(
+                                '<option value="">-Pilih Objek-</option>');
+                            $.each(data, function(key, objek) {
+                                $(`#objek_add_id`).append(
+                                    `<option ${objekId == objek.id ? 'selected' : ''} value="${objek.id}">${objek.nama_objek}</option>`
                                 );
-                                console.log(asalId + "-" + JSON.stringify(asal));
                             });
-                        } else {
-                            console.log('Data asal tidak ditemukan');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', error);
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Gagal memuat data objek.');
                     }
                 });
+            } else {
+                $(`#objek_add_id`).empty().append('<option value="">-Pilih Objek-</option>');
+            }
+        }
+
+        function loadObjekEdit(assetId, jenisId, objekId) {
+            let selectElement = $(`#objek_id-${assetId}`);
+
+            if (!jenisId) {
+                selectElement.empty().append('<option value="">-Silahkan pilih data jenis terlebih dahulu-</option>').prop(
+                    'disabled', true);
+                return;
+            }
+
+            $.ajax({
+                url: '/objek/' + jenisId,
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    selectElement.empty();
+
+                    if (data && data.length > 0) {
+                        selectElement.append('<option value="">-Pilih Objek-</option>');
+                        $.each(data, function(key, objek) {
+                            selectElement.append(
+                                `<option ${objekId == objek.id ? 'selected' : ''} value="${objek.id}">${objek.nama_objek}</option>`
+                            ).prop('disabled', false);
+                        });
+                    } else {
+                        selectElement.append('<option value="">Belum ada data</option>');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                    alert('Gagal memuat data objek.');
+                }
             });
-        })
+        }
     </script>
 @endsection

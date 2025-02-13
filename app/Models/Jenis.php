@@ -10,13 +10,8 @@ class Jenis extends Model
     use HasFactory;
     protected $fillable = ['jenis_asset'];
 
-    // public function assets()
-    // {
-    //     return $this->hasMany(Asset::class);
-    // }
-
-    public function objek()
+    public function assets()
     {
-        return $this->hasMany(Objek::class);
+        return $this->hasMany(Asset::class);
     }
 }

@@ -62,12 +62,13 @@ class AssetController extends Controller
                     ->orWhere('polisi', 'like', '%' . $search . '%');
             })->whereIn('status_id', ['1', '6']);
         } else {
-            $query->whereIn('status_id', ['1','6']);
+            $query->whereIn('status_id', ['1', '6']);
         }
 
         $query->orderBy('updated_at', 'DESC');
 
-        $assets = $query->paginate(10);
+        $assets = $query->with('asal')->paginate(10);
+
 
 
 
@@ -79,22 +80,22 @@ class AssetController extends Controller
 
         $perolehanCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('asal_id', [1, 2, 3]);
-        })->whereIn('status_id', ['1','6'])->count();
+        })->whereIn('status_id', ['1', '6'])->count();
 
         $mutasimasukCount = Asset::whereHas('asal', function ($query) {
             $query->whereIn('asal_id', ['4', '5']);
-        })->whereIn('status_id', ['1','6'])->count();
+        })->whereIn('status_id', ['1', '6'])->count();
 
         $hibahCount = Asset::whereHas('asal', function ($query) {
-            $query->whereIn('asal_id',[]);//notes:?
-        })->whereIn('status_id', ['1','6'])->count();
+            $query->whereIn('asal_id', []); //notes:?
+        })->whereIn('status_id', ['1', '6'])->count();
 
 
         $unit = Unit::all();
-        $jenis = Jenis::all();
+        $jenis = Jenis::select('id', 'jenis_asset')->get();
         $objek = Objek::select('id', 'nama_objek', 'jenis_id')->get();
         $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
-
+        $jenis_select = Jenis::select('id', 'jenis_asset')->get();
         return view('assets.index', compact(
             'assets',
             'asetsCount',
@@ -103,10 +104,55 @@ class AssetController extends Controller
             'hibahCount',
             'unit',
             'jenis',
+            'jenis_select',
             'objek',
             'Klasifikasi',
 
         ));
+    }
+
+
+
+    public function getUnit(Request $request)
+    {
+        // Ambil semua data asal
+        $unit = Unit::select('id', 'nama_unit')->get();
+
+        // Pastikan ini mengembalikan data unit dalam bentuk JSON
+        return response()->json([
+            'unit' => $unit
+        ]);
+    }
+
+    public function getJenis(Request $request)
+    {
+        // Ambil semua data asal
+        $jenis = Jenis::select('id', 'jenis_asset')->get();
+
+        // Pastikan ini mengembalikan data jenis dalam bentuk JSON
+        return response()->json([
+            'jenis' => $jenis
+        ]);
+    }
+
+    public function getObjek(Request $request)
+    {
+        // Ambil semua data asal
+        $objek = objek::select('id', 'nama_objek')->get();
+
+        // Pastikan ini mengembalikan data jenis dalam bentuk JSON
+        return response()->json([
+            'objek' => $objek
+        ]);
+    }
+    public function getKlasifikasi(Request $request)
+    {
+        // Ambil semua data Klasifikasi
+        $Klasifikasi = Klasifikasi::select('id', 'nama_klasifikasi')->get();
+
+        return response()->json([
+            'Klasifikasi' => $Klasifikasi
+        ]);
     }
 
     public function getAsals(Request $request)
@@ -119,6 +165,8 @@ class AssetController extends Controller
             'asals' => $asals
         ]);
     }
+
+
     public function search(Request $request)
     {
 
@@ -130,6 +178,7 @@ class AssetController extends Controller
 
         return response()->json($assets);
     }
+
 
     public function filter(Request $request)
     {
@@ -158,7 +207,7 @@ class AssetController extends Controller
             $query->where('klasifikasi_id', $request->klasifikasi_id);
         }
 
-        $query->whereIn('status_id', ['1','6']);
+        $query->whereIn('status_id', ['1', '6']);
 
         $query->orderBy('updated_at', 'DESC');
 
@@ -220,6 +269,13 @@ class AssetController extends Controller
 
     public function update(Request $request, $id)
     {
+        $imageName = '';
+        if ($request->has('gambar')) {
+            $imageName = time() . '.' . $request->file('gambar')->extension();
+            $request->file('gambar')->move(public_path('images'), $imageName);
+            $request['img_url'] = 'images/' . $imageName;
+        }
+
         $asset = Asset::findOrFail($id);
         if (!$asset) {
             return response()->json(['message' => 'Asset not found'], 404);
@@ -232,25 +288,28 @@ class AssetController extends Controller
             'no_register' => 'nullable|numeric',
             'merk' => 'nullable|string|max:255',
             'bahan' => 'nullable|string|max:255',
-            'thn_pembelian' => 'nullable|integer|min:1900|max:' . date('Y'), // Tahun valid
+            'thn_pmbelian' => 'nullable|integer|min:1900|max:' . date('Y'),
             'pabrik' => 'nullable|string|max:255',
             'rangka' => 'nullable|string|max:255',
             'mesin' => 'nullable|string|max:255',
             'polisi' => 'nullable|string|max:255',
             'bpkb' => 'nullable|string|max:255',
-            'harga' => 'nullable|numeric', // Harga sebagai angka
+            'harga' => 'nullable|numeric',
             'deskripsi_brg' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:255',
             'opd' => 'nullable|string|max:255',
+            'unit_id' => 'nullable|exists:units,id',
+            'jenis_id' => 'nullable|exists:jenis,id',
+            'klasifikasi_id' => 'nullable|exists:klasifikasis,id',
             'asal_id' => 'nullable|exists:asals,id',
+            'objek_id' => 'nullable|exists:objeks,id',
+            'img_url' => 'nullable',
         ]);
-
-
 
         // Update asset dengan data baru
         $asset->update($validated);
 
-        return response()->json(['message' => 'Asset updated successfully'], 200);
+        return response()->json(['message' => 'Asset updated successfully',], 200);
     }
 
 

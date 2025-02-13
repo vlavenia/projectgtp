@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::table('assets', function (Blueprint $table) {
 
-            // $table->foreign('jenis_id')
-            //     ->references('id')
-            //     ->on('jenis')
-            //     ->onDelete('restrict');
+            $table->foreign('jenis_id')
+                ->references('id')
+                ->on('jenis')
+                ->onDelete('restrict');
             $table->foreign('objek_id')
                 ->references('id')
                 ->on('objeks')

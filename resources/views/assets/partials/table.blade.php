@@ -22,7 +22,9 @@
                         <i class="btn far fa-eye" data-toggle="modal" data-target="#detailModal-{{ $asset->id }}"></i>
                         <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
                             data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
-                            data-asalid="{{ $asset->asal_id }}"></i>
+                            data-asalid="{{ $asset->asal_id }}" data-jenisid="{{ $asset->jenis_id }}"
+                            data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
+                            data-klasifikasiid="{{ $asset->klasifikasi_id }}"></i>
                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST"
                             onsubmit="return confirm('Delete?')">
                             @csrf
@@ -65,7 +67,7 @@
                                         <li class="list-group-item"><strong>Bahan:</strong>
                                             {{ $asset->bahan }}</li>
                                         <li class="list-group-item"><strong>Tahun Pembelian:</strong>
-                                            {{ $asset->thn_pembelian }}</li>
+                                            {{ $asset->thn_pmbelian }}</li>
                                         <li class="list-group-item"><strong>Pabrik:</strong>
                                             {{ $asset->pabrik }}</li>
                                         <li class="list-group-item"><strong>Rangka:</strong>
@@ -83,7 +85,7 @@
                                         <li class="list-group-item"><strong>BPKB:</strong>
                                             {{ $asset->bpkb }}</li>
                                         <li class="list-group-item"><strong>Asal:</strong>
-                                            {{ $asset->asal_id }}</li>
+                                            {{ $asset->asal->asal_asset ?? 'belum ada data asal' }}</li>
                                         <li class="list-group-item"><strong>Harga:</strong>
                                             {{ $asset->harga }}</li>
                                         <li class="list-group-item"><strong>Deskripsi Barang:</strong>
@@ -150,10 +152,17 @@
                                                 class="form-control" value="{{ $asset->bahan }}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Tahun Pembelian</label>
+                                            {{-- <label>Tahun Pembelian</label>
                                             <input type="text" id="thn_pembelian-{{ $asset->id }}"
                                                 name="thn_pembelian" class="form-control"
-                                                value="{{ $asset->thn_pembelian }}">
+                                                value="{{ $asset->thn_pmbelian }} " > --}}
+                                            <label>Tahun Pembelian</label>
+                                            <input type="number" id="thn_pembelian-{{ $asset->id }}"
+                                                name="thn_pmbelian" class="form-control"
+                                                value="{{ $asset->thn_pmbelian }}" min="1990"
+                                                max="{{ date('Y') }}"
+                                                oninvalid="this.setCustomValidity('Tahun harus antara 1990 - {{ date('Y') }}')"
+                                                oninput="this.setCustomValidity('')">
                                         </div>
                                         <div class="form-group">
                                             <label>Pabrik</label>
@@ -165,8 +174,6 @@
                                             <input type="text" id="rangka-{{ $asset->id }}" name="rangka"
                                                 class="form-control" value="{{ $asset->rangka }}">
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Mesin</label>
                                             <input type="text" id="mesin-{{ $asset->id }}" name="mesin"
@@ -181,6 +188,32 @@
                                             <label>BPKB</label>
                                             <input type="text" id="bpkb-{{ $asset->id }}" name="bpkb"
                                                 class="form-control" value="{{ $asset->bpkb }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Unit</label>
+                                            <select name="unit_id" id="unit_id-{{ $asset->id }}"
+                                                class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Jenis</label>
+                                            <select name="jenis_id" id="jenis_id-{{ $asset->id }}"
+                                                class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Objek</label>
+                                            <select name="objek_id" id="objek_id-{{ $asset->id }}"
+                                                class="form-control">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Klasifikasi</label>
+                                            <select name="klasifikasi_id" id="klasifikasi_id-{{ $asset->id }}"
+                                                class="form-control">
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <label>Asal</label>
@@ -211,26 +244,35 @@
                                                 class="form-control" value="{{ $asset->opd }} " readonly>
                                         </div>
                                         {{-- <div class="form-group">
-                                            <label for="gambar-{{ $asset->id }}">Gambar</label>
-
-                                            @if ($asset->img_url)
-                                                <div class="mb-2">
-                                                    <img src="{{ $asset->img_url }}" alt="Gambar Barang"
-                                                        class="img-thumbnail" style="max-height: 200px;">
-                                                </div>
-                                            @endif
-
-                                            <input type="file" id="gambar-{{ $asset->id }}" name="gambar"
+                                            <label for="img_url-{{ $asset->id }}">Gambar</label>
+                                            <input type="file" id="img_url-{{ $asset->id }}" name="gambar" accept="image/*"
                                                 class="form-control">
                                         </div> --}}
+
+                                        <div class="form-group">
+                                            <label for="img_url-{{ $asset->id }}">Gambar</label>
+                                            <input type="file" id="img_url-{{ $asset->id }}" name="gambar"
+                                                accept="image/*" class="form-control img-upload"
+                                                data-id="{{ $asset->id }}">
+                                        </div>
+
+                                        <div class="mt-3 text-center">
+                                            <img id="preview-img-{{ $asset->id }}"
+                                                src="{{ asset($asset->img_url) }}" alt="Gambar Barang"
+                                                class="img-fluid rounded" style="max-height: 200px;">
+                                        </div>
+
+
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-warning updateAssetBtn"
-                                    data-id="{{ $asset->id }}"
-                                    data-asalid="{{ $asset->asal_id }}">Update</button>
+                                    data-id="{{ $asset->id }}" data-asalid="{{ $asset->asal_id }}"
+                                    data-jenisid="{{ $asset->jenis_id }}" data-unitid="{{ $asset->unit_id }}"
+                                    data-objekid="{{ $asset->objek_id }}"
+                                    data-klasifikasiid="{{ $asset->klasifikasi_id }}">Update</button>
                             </div>
                         </form>
                     </div>
