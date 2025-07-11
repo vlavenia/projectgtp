@@ -66,4 +66,6 @@ class Asset extends Model
     {
         return $this->belongsTo(Objek::class);
     }
+
+    
 }

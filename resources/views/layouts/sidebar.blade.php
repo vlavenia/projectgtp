@@ -1,4 +1,5 @@
- <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " id="accordionSidebar" style="position: sticky; top: 0; z-index: 1000;">
+ <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion " id="accordionSidebar"
+     style="position: sticky; top: 0; z-index: 1000;">
 
      <!-- Sidebar - Brand -->
      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -19,76 +20,115 @@
              <span>Dashboard</span></a>
      </li>
 
-     <li class="nav-item">
-         <a class="nav-link" href="{{ route('assets') }}">
-             <i class="fas fa-fw fa-tachometer-alt"></i>
-             <span>Data Asset</span></a>
-     </li>
-
-     <li class="nav-item">
-         <a class="nav-link" href="/perolehan">
-             <i class="fas fa-fw fa-tachometer-alt"></i>
-             <span>Pengadaan / Perolehan </span></a>
-     </li>
-
-     <li class="nav-item">
-         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menumutasi"
-             aria-expanded="true" aria-controls="menumutasi">
-             <i class="fas fa-fw fa-wrench"></i>
-             <span>Menu Mutasi</span>
-         </a>
-         <div id="menumutasi" class="collapse"
-             data-parent="#accordionSidebar">
-             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Mutasi Masuk</a>
-                 <a class="collapse-item" href="/mutasikeluar">Mutasi Keluar</a>
-             </div>
-         </div>
-     </li>
-     <li class="nav-item">
-         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menukib"
-             aria-expanded="true" aria-controls="menukib">
-             <i class="fas fa-fw fa-wrench"></i>
-             <span>Menu KIB</span>
-         </a>
-         <div id="menukib" class="collapse"
-             data-parent="#accordionSidebar">
-             <div class="bg-white py-2 collapse-inner rounded">
-                 <h6 class="collapse-header">Laporan KIB</h6>
-                 <a class="collapse-item" href="{{ route('kibaExport') }}">KIB A</a>
-                 <a class="collapse-item" href="{{ route('kibbExport') }}">KIB B</a>
-                 <a class="collapse-item" href="{{ route('kibcExport') }}">KIB C</a>
-                 <a class="collapse-item" href="/">KIB D</a>
-                 <a class="collapse-item" href="/">KIB E</a>
-                 <a class="collapse-item" href="/">KIB F</a>
-                 <a class="collapse-item" href="/">KIB ATB</a>
-             </div>
-         </div>
-     </li>
-
-     <li class="nav-item">
-         <a class="nav-link" href="/kerusakan">
-             <i class="fas fa-fw fa-tachometer-alt"></i>
-             <span>Kerusakan</span></a>
-     </li>
-
-     <li class="nav-item">
-         <a class="nav-link" href="/penghapusan">
-             <i class="fas fa-fw fa-tachometer-alt"></i>
-             <span>penghapusan</span></a>
-     </li>
-
      {{-- <li class="nav-item">
          <a class="nav-link" href="/inventarisasi">
              <i class="fas fa-fw fa-tachometer-alt"></i>
              <span>Inventarisasi</span></a>
      </li> --}}
 
+
+
+     @if (Auth::user()->role_id == 1)
+         <li class="nav-item">
+             <a class="nav-link" href="/usermenu">
+                 <i class="fas fa-fw fa-tachometer-alt"></i>
+                 <span>User Menu</span></a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menumaster"
+                 aria-expanded="true" aria-controls="menumaster">
+                 <i class="fas fa-fw fa-wrench"></i>
+                 <span>Master Data</span>
+             </a>
+             <div id="menumaster" class="collapse" data-parent="#accordionSidebar">
+                 <div class="bg-white py-2 collapse-inner rounded">
+                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Unit</a>
+                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Jenis</a>
+                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Objek</a>
+                     <a class="collapse-item" href="/mutasikeluar">Klasifikasi</a>
+                 </div>
+             </div>
+         </li>
+     @endif
+
+     @if (Auth::user()->role_id == 2)
+
      <li class="nav-item">
-         <a class="nav-link" href="/sampah">
-             <i class="fas fa-fw fa-tachometer-alt"></i>
-             <span>Sampah</span></a>
-     </li>
+        <a class="nav-link" href="{{ route('assets') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Data Asset</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/perolehan">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Pengadaan / Perolehan </span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menumutasi"
+            aria-expanded="true" aria-controls="menumutasi">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Menu Mutasi</span>
+        </a>
+        <div id="menumutasi" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Mutasi Masuk</a>
+                <a class="collapse-item" href="/mutasikeluar">Mutasi Keluar</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menukib" aria-expanded="true"
+            aria-controls="menukib">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Menu KIB</span>
+        </a>
+        <div id="menukib" class="collapse" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Laporan KIB</h6>
+                <a class="collapse-item" href="{{ route('kibaExport') }}">KIB A</a>
+                <a class="collapse-item" href="{{ route('kibbExport') }}">KIB B</a>
+                <a class="collapse-item" href="{{ route('kibcExport') }}">KIB C</a>
+                <a class="collapse-item" href="/">KIB D</a>
+                <a class="collapse-item" href="/">KIB E</a>
+                <a class="collapse-item" href="/">KIB F</a>
+                <a class="collapse-item" href="/">KIB ATB</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/kerusakan">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Kerusakan</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/peminjaman">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Peminjaman</span></a>
+    </li>
+
+
+
+    <li class="nav-item">
+        <a class="nav-link" href="/penghapusan">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>penghapusan</span></a>
+    </li>
+        
+     @endif
+
+     @if (Auth::user()->role_id == 3)
+
+         <li class="nav-item">
+            <a class="nav-link" href="/peminjaman/staf">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Peminjaman</span></a>
+        </li>
+
+     @endif
 
      {{-- <li class="nav-item">
          <a class="nav-link" href="/profile">

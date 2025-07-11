@@ -9,17 +9,20 @@ use App\Http\Controllers\KibaController;
 use App\Http\Controllers\LaporanKibController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\MutasiMasukController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PenghapusanController;
 use App\Http\Controllers\PerolehanController;
 use App\Http\Controllers\SampahController;
+use App\Http\Controllers\UserMenuController;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Models\Asset;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    // return view('auth/login');
+    return view('dashboard');
+})->middleware('auth')->name('home');
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('register', 'register')->name('register');
@@ -31,7 +34,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('logout', 'logout')->middleware('auth')->name('logout');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
 
     Route::get('dashboard', function () {
         return view('dashboard');
@@ -115,15 +118,33 @@ Route::middleware('auth')->group(function () {
         Route::get('search', 'search')->name('assets.search.kerusakan');
     });
 
+    //Peminjaman
+    Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(function () {
+        //pengelola
+        Route::get('', 'index')->name('peminjaman');
+        //staf
+        Route::get('staf', 'peminjaman_staf')->name('peminjaman_staf');
+        Route::put('edit', 'addPeminjaman')->name('peminjaman.addpeminjaman');
+        Route::post('restore/{id}', 'restorePeminjaman')->name('peminjaman.restore');
+
+        Route::get('search-pengelola', 'search_pengelola')->name('search.pengelola');
+        Route::get('search-staf', 'search_staf')->name('search.staf');
+
+        // Route::post('edit/{id}', 'update')->name('peminjaman.update');
+        // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.peminjaman');
+
+        // Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.peminjaman');
+    });
+
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {
         Route::get('', 'index')->name('penghapusan');
 
         Route::put('edit', 'changeStatus')->name('penghapusan.edit');
         Route::post('edit/{id}', 'update')->name('assets.update.penghapusan');
+        Route::get('search', 'search')->name('assets.search.penghapusan');
         Route::delete('destroy/{id}', 'destroy')->name('penghapusan.destroy');
         Route::post('restore/{id}', 'restore')->name('assets.restore.penghapusan');
 
-        Route::get('search', 'search')->name('assets.search.penghapusan');
         Route::get('/asets-penghapusan-export', 'export')->name('exportAsset.penghapusan');
     });
 
@@ -145,10 +166,26 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [App\Http\Controllers\AuthController::class, 'profile'])->name('profile');
 
+    // Route::get('/user-menu', [App\Http\Controllers\UserMenuController::class, 'index'])->name('usermenu');
+
+
+
     Route::get('/user', function (HttpRequest $request) {
         return $request->user();
     })->middleware('auth:sanctum');
 
     Route::post('/asets-import', [AssetController::class, 'import'])->name('importAsset');
     Route::get('/asets-export', [AssetController::class, 'export'])->name('exportAsset');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::controller(UserMenuController::class)->prefix('usermenu')->group(function () {
+        Route::get('', 'index')->name('usermenu');
+    });
+});
+
+Route::middleware(['auth', 'role:Pengelola'])->group(function () {
+    // Route::controller(UserMenuController::class)->prefix('usermenu')->group(function () {
+    //     Route::get('', 'index')->name('usermenu');
+    // });
 });
