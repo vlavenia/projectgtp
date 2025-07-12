@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\PenghapusanExport;
 use App\Models\Asset;
+use App\Models\Penghapusan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PenghapusanController extends Controller
@@ -14,7 +17,10 @@ class PenghapusanController extends Controller
     {
         $assets = Asset::where('status_id', '1')->get();
 
-        $asset_penghapusan = Asset::where('status_id', '5')->paginate(10);
+        $asset_penghapusan = Penghapusan::leftJoin('assets','assets.id','=','penghapusan.aset_id')
+                                ->leftJoin('users','users.id','=','penghapusan.user_id')
+                                // ->where('status_id', '5')
+                                ->paginate(10);
 
         return view('penghapusan.index', compact('assets', 'asset_penghapusan'));
     }
@@ -94,6 +100,19 @@ class PenghapusanController extends Controller
      */
     public function changeStatus(Request $request)
     {
+        $now = Carbon::now()->format('Y-m-d');
+        $asset_id = $request->input('asset_id');
+        $currentUser = Auth::user()->id;
+
+        // INSERT data Penghapusan
+        $penghapusan = new Penghapusan();
+        $penghapusan->aset_id = $asset_id;
+        $penghapusan->tanggal_penghapusan = $now;
+        $penghapusan->user_id = $currentUser;
+        $penghapusan->status = $request->status;
+        $penghapusan->save();
+
+        // UPDATE
         // Mengambil nilai asset_id yang dipilih dari form
         $asset_id = $request->input('asset_id');
 

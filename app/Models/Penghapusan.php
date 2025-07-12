@@ -9,9 +9,16 @@ class Penghapusan extends Model
 {
     use HasFactory;
 
+    protected $table = 'penghapusan';
+    // protected $guarded;
+
     protected $fillable = [
         'desc',
-        'assetfk_id'
+        'assetfk_id',
+        'tanggal_penghapusan',
+        'status',
+        'user_id',
+        'aset_id',
     ];
 
     public function asset()

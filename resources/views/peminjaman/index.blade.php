@@ -87,13 +87,17 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Merk</th>
                             <th>BPKB</th>
                             <th>Polisi</th>
+                            <th>Tanggal Peminjaman</th>
+                            <th>User</th>
+                            <th>Deskripsi</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -105,6 +109,16 @@
                                 <td>{{ $asset->merk }}</td>
                                 <td>{{ $asset->bpkb }}</td>
                                 <td>{{ $asset->polisi }}</td>
+                                <td>{{ $asset->tanggal_peminjaman }}</td>
+                                <td>{{ $asset->name }}</td>
+                                <td>{{ $asset->deskripsi }}</td>
+                                <td>
+                                    @if($asset->status == 'request')
+                                        <span class="bg-warning px-2 rounded text-white">Menunggu</span>
+                                    @elseif($asset->status == 'approve')
+                                        <span class="bg-success px-2 rounded text-white">Distujui</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"
@@ -127,6 +141,16 @@
                                             @method('POST')
                                             <button class="btn fas fa-arrow-alt-circle-left"></button>
                                         </form> --}}
+
+                                        @if($asset->status == 'request')
+                                            <form action="{{ route('approvePeminjaman', $asset->peminjaman_id) }}" method="GET"
+                                                onsubmit="return confirm('Setujui Peminjaman ?')">
+                                                @csrf
+                                                @method('GET')
+                                                <button class="btn fas fa-check-circle"></button>
+                                            </form>
+                                        @endif
+                                        
                                     </div>
                                 </td>
                             </tr>

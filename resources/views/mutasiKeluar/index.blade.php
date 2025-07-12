@@ -93,6 +93,8 @@
                             <th>Merk</th>
                             <th>BPKB</th>
                             <th>Polisi</th>
+                            <th>Tanggal Mutasi Keluar</th>
+                            <th>User</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -104,6 +106,8 @@
                                 <td>{{ $asset->merk }}</td>
                                 <td>{{ $asset->bpkb }}</td>
                                 <td>{{ $asset->polisi }}</td>
+                                <td>{{ $asset->tanggal_mutasi_keluar }}</td>
+                                <td>{{ $asset->name }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"

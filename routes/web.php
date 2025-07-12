@@ -130,11 +130,14 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
 
         Route::get('search-pengelola', 'search_pengelola')->name('search.pengelola');
         Route::get('search-staf', 'search_staf')->name('search.staf');
-
+        
+        
         // Route::post('edit/{id}', 'update')->name('peminjaman.update');
         // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.peminjaman');
-
+        
         // Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.peminjaman');
+        
+        Route::get('approvePeminjaman/{id}', 'approvePeminjaman')->name('approvePeminjaman');
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {

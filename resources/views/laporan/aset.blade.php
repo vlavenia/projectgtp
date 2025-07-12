@@ -2,7 +2,7 @@
 
 @section('title', 'Laporan Aset')
 
-@section('contents')
+@section('contents')s
 
     <p class="mb-4">Laporan Aset adalah laporan yang berkaitan dengan data aset</p>
     

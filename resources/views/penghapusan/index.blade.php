@@ -41,6 +41,15 @@
                                 @error('asset_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+
+                                <div class="mt-3">
+                                    <label>Status Penghapusan</label>
+                                    <select required class="form-control"  style="width:100%" name="status">
+                                        <option value="">- Pilih -</option>
+                                        <option value="sementara">Hapus Sementara</option>
+                                        <option value="permanen">Hapus Permanen</option>
+                                    </select>
+                                </div>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -94,6 +103,9 @@
                             <th>Merk</th>
                             <th>BPKB</th>
                             <th>Polisi</th>
+                            <th>Tanggal Dihapus</th>
+                            <th>Status</th>
+                            <th>User</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -105,6 +117,9 @@
                                 <td>{{ $asset->merk }}</td>
                                 <td>{{ $asset->bpkb }}</td>
                                 <td>{{ $asset->polisi }}</td>
+                                <td>{{ $asset->tanggal_penghapusan }}</td>
+                                <td>{{ $asset->status }}</td>
+                                <td>{{ $asset->name }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"

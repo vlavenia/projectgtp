@@ -6,7 +6,9 @@ use App\Exports\MutasiKeluarExport;
 use App\Models\Asset;
 use App\Models\Jenis;
 use App\Models\MutasiKeluar;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiKeluarController extends Controller
@@ -16,7 +18,10 @@ class MutasiKeluarController extends Controller
 
         $assets = Asset::whereIn('status_id', [1, 6])->get();
         $jenis = Jenis::select('id', 'jenis_asset')->get();
-        $asset_mutasiKeluar = Asset::where('status_id', 3)->paginate(10);
+        $asset_mutasiKeluar = MutasiKeluar::leftJoin('assets','assets.id','=','mutasi_keluar.aset_id')
+                                    ->leftJoin('users','users.id','=','mutasi_keluar.user_id')
+                                    // ->where('status_id', 3)
+                                    ->paginate(10);
         return view('mutasiKeluar.index', compact('assets', 'asset_mutasiKeluar', 'jenis'));
     }
 
@@ -29,6 +34,19 @@ class MutasiKeluarController extends Controller
         $request->validate([
             'asset_id' => 'required|exists:assets,id',
         ]);
+
+        $now = Carbon::now()->format('Y-m-d');
+        $asset_id = $request->input('asset_id');
+        $currentUser = Auth::user()->id;
+
+        // INSERT data Penghapusan
+        $mutasi_keluar = new MutasiKeluar();
+        $mutasi_keluar->aset_id = $asset_id;
+        $mutasi_keluar->tanggal_mutasi_keluar = $now;
+        $mutasi_keluar->user_id = $currentUser;
+        $mutasi_keluar->status = isset($request->status) ? $request->status : '' ;
+        $mutasi_keluar->save();
+
 
         $asset = Asset::findOrFail($asset_id);
 

@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\KerusakanExport;
 use App\Models\Asset;
+use App\Models\Kerusakan;
+use App\Models\Peminjaman;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class KerusakanController extends Controller
@@ -12,7 +16,10 @@ class KerusakanController extends Controller
     public function index()
     {
         $assets = Asset::where('status_id', '1')->get();
-        $asset_kerusakan = Asset::where('status_id', '6')->paginate(10);
+        $asset_kerusakan = Kerusakan::leftJoin('assets','assets.id','=','kerusakan.aset_id')
+                            ->leftJoin('users','users.id','=','kerusakan.user_id')
+                            // ->where('status_id', '6')
+                            ->paginate(10);
 
         return view('kerusakan.index', compact('assets', 'asset_kerusakan'));
     }
@@ -34,12 +41,25 @@ class KerusakanController extends Controller
 
     public function changeStatus(Request $request)
     {
+        $now = Carbon::now()->format('Y-m-d');
+        $asset_id = $request->input('asset_id');
+        $currentUser = Auth::user()->id;
+
+        // Insert data Kerusakan
+        $kerusakan = new Kerusakan();
+        $kerusakan->aset_id = $asset_id;
+        $kerusakan->tanggal_kerusakan = $now;
+        $kerusakan->user_id = $currentUser;
+        $kerusakan->status = $request->status;
+        $kerusakan->save();
+
+        // Update status data aset
         $asset_id = $request->input('asset_id');
         $asset = Asset::findOrFail($asset_id);
         $asset->update([
             'status_id' => '6',
         ]);
-
+        
         return redirect()->route('kerusakan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 

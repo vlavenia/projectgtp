@@ -29,18 +29,30 @@
                             <div class="card-body">
                                 <label>Pilih Asset</label>
                                 <select id="asset_select" class="asset_select" style="width:100%" name="asset_id">
-                                <option value="">- Pilih -</option>
-                                @foreach ($assets as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ old('asset_select') == $item->id ? 'selected' : '' }}>
-                                        {{ $item->nama_barang . ' - ' . $item->kode_barang }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                    <option value="">- Pilih -</option>
+                                    @foreach ($assets as $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ old('asset_select') == $item->id ? 'selected' : '' }}>
+                                            {{ $item->nama_barang . ' - ' . $item->kode_barang }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-                            @error('asset_select')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                @error('asset_select')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+
+                                <div class="mt-3">
+                                    <label>Status Kerusakan</label>
+                                    <select required class="form-control"  style="width:100%" name="status">
+                                        <option value="">- Pilih -</option>
+                                        <option value="tidak_diperbaiki">Tidak Perlu Perbaikan</option>
+                                        <option value="diajukan">Diajukan Perbaikan</option>
+                                        <option value="diperbaiki">Sedang Diperbaiki</option>
+                                        <option value="terperbaiki">Sudah Diperbaiki</option>
+                                    </select>
+                                </div>
+
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -90,6 +102,9 @@
                             <th>Merk</th>
                             <th>BPKB</th>
                             <th>Polisi</th>
+                            <th>Tanggal Kerusakan</th>
+                            <th>User</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -101,6 +116,15 @@
                                 <td>{{ $asset->merk }}</td>
                                 <td>{{ $asset->bpkb }}</td>
                                 <td>{{ $asset->polisi }}</td>
+                                <td>{{ $asset->tanggal_kerusakan }}</td>
+                                <td>{{ $asset->name }}</td>
+                                <td>
+                                    @if($asset->status)
+                                        <span class="bg-secondary text-white p-1 rounded">
+                                            {{ $asset->status }}
+                                        </span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"
