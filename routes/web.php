@@ -6,6 +6,7 @@ use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\KibaController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKibController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\MutasiMasukController;
@@ -188,4 +189,18 @@ Route::middleware(['auth', 'role:Pengelola'])->group(function () {
     // Route::controller(UserMenuController::class)->prefix('usermenu')->group(function () {
     //     Route::get('', 'index')->name('usermenu');
     // });
+});
+
+
+// ROUTES LAPORAN
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::controller(LaporanController::class)->prefix('laporan')->group(function () {
+        Route::get('/laporanAset', 'laporanAset')->name('laporanAset');
+        Route::post('/exportSemuaLaporanAset', 'exportSemuaLaporanAset')->name('exportSemuaLaporanAset');
+        
+        Route::get('/laporanUser', 'laporanUser')->name('laporanUser');
+        Route::post('/exportLaporanUser', 'exportLaporanUser')->name('exportLaporanUser');
+
+        Route::get('/laporanPeminjaman', 'laporanPeminjaman')->name('laporanPeminjaman');
+    });
 });

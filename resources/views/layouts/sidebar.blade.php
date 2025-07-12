@@ -49,6 +49,24 @@
                  </div>
              </div>
          </li>
+
+         <!-- Start Menu Laporan -->
+         <li class="nav-item">
+             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menulaporan"
+                 aria-expanded="true" aria-controls="menulaporan">
+                 <i class="fas fa-fw fa-calendar"></i>
+                 <span>Laporan</span>
+             </a>
+             <div id="menulaporan" class="collapse" data-parent="#accordionSidebar">
+                 <div class="bg-white py-2 collapse-inner rounded">
+                     <a class="collapse-item" href="{{ route('laporanAset') }}">Laporan Aset</a>
+                     <a class="collapse-item" href="{{ route('laporanUser') }}">Laporan User</a>
+                     <a class="collapse-item" href="{{ route('laporanPeminjaman') }}">Laporan Peminjaman</a>
+                 </div>
+             </div>
+         </li>
+         <!-- End Menu Laporan -->
+
      @endif
 
      @if (Auth::user()->role_id == 2)
