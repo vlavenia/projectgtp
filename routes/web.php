@@ -115,7 +115,7 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
         Route::put('edit', 'AddKerusakan')->name('kerusakan.add');
-        Route::post('edit/{id}', 'updateStatus')->name('kerusakan.updateStatus');
+        Route::post('edit-status/{id}', 'updateStatus')->name('kerusakan.updateStatus');
         Route::post('return/{id}', 'ReturnKerusakan')->name('assets.return.kerusakan');
 
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kerusakan');

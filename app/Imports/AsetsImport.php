@@ -6,6 +6,7 @@ namespace App\Imports;
 
 use App\Models\asal;
 use App\Models\Asset;
+use App\Models\Detailangkutan;
 use App\Models\Jenis;
 use App\Models\Kategori;
 use App\Models\Klasifikasi;
@@ -49,7 +50,7 @@ class AsetsImport implements ToModel, WithHeadingRow
         }
 
         if (is_numeric($row['no'])) {
-            $newAsset = new Asset([
+            $newAsset = Asset::create([
                 'nama_barang'  => $row['nama_barang'],
                 'kode_barang'  => $row['kode_barang'],
                 'no_register'  => $row['no_register'],
@@ -57,10 +58,6 @@ class AsetsImport implements ToModel, WithHeadingRow
                 'bahan'        => $row['bahan'],
                 'thn_pmbelian' => $row['thn_pmbelian'],
                 'pabrik'       => $row['pabrik'],
-                'rangka'       => $row['rangka'],
-                'mesin'        => $row['mesin'],
-                'polisi'       => $row['polisi'],
-                'bpkb'         => $row['bpkb'],
                 'asal_id'      => Asal::where('asal_asset', $row['asal_usul'])->value('id'),
                 'harga'        => $row['harga'],
                 'deskripsi_brg' => $row['deskripsi_brg'],
@@ -71,7 +68,22 @@ class AsetsImport implements ToModel, WithHeadingRow
                 'unit_id'      => null,
                 'klasifikasi_id' => Klasifikasi::where('nama_klasifikasi', 'Extra Countable')->value('id'),
             ]);
+            
+            // $gabungan = array_merge(
+            //     $newAsset->toArray(),
+            //     // $newDetailAngkutan->toArray()
+            // );
+            
             $this->newData[] = $newAsset;
+
+            DetailAngkutan::create([
+                'aset_id' => $newAsset->id,
+                'rangka'  => $row['rangka'],
+                'mesin'   => $row['mesin'],
+                'polisi'  => $row['polisi'],
+                'bpkb'    => $row['bpkb'],
+            ]);
+
             return $newAsset;
         }
 

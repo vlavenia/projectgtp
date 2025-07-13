@@ -87,18 +87,20 @@ class KerusakanController extends Controller
         return redirect()->route('kerusakan')->with('success', 'Data aset berhasil diupdate');
     }
 
-    public function updateStatus(string $id)
+    public function updateStatus(Request $request,string $id)
     {
         $kerusakan = Kerusakan::findOrFail($id);
-        // $kerusakan->update([
-        //     'status' => $request->status,
-        // ]);
-
-        $asset_kerusakan = $kerusakan->aset_id;
-        $asset = Asset::findOrFail($asset_kerusakan);
-        $asset->update([
-            'status_id' => '1',
+        $kerusakan->update([
+            'status' => $request->status,
         ]);
+
+        if($request->status == 'Diperbaiki'){
+            $asset_kerusakan = $kerusakan->aset_id;
+            $asset = Asset::findOrFail($asset_kerusakan);
+            $asset->update([
+                'status_id' => '1',
+            ]);
+        }
 
         return redirect()->route('kerusakan')->with('success', 'Status Perbaikan aset berhasil diupdate');
     }

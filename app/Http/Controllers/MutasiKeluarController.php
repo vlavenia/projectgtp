@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\MutasiKeluarExport;
 use App\Models\Asset;
+use App\Models\Detailangkutan;
 use App\Models\Jenis;
 use App\Models\MutasiKeluar;
 use Carbon\Carbon;
@@ -103,10 +104,10 @@ class MutasiKeluarController extends Controller
             'bahan' => 'nullable|string|max:255',
             'thn_pmbelian' => 'nullable|integer|min:1900|max:' . date('Y'),
             'pabrik' => 'nullable|string|max:255',
-            'rangka' => 'nullable|string|max:255',
-            'mesin' => 'nullable|string|max:255',
-            'polisi' => 'nullable|string|max:255',
-            'bpkb' => 'nullable|string|max:255',
+            // 'rangka' => 'nullable|string|max:255',
+            // 'mesin' => 'nullable|string|max:255',
+            // 'polisi' => 'nullable|string|max:255',
+            // 'bpkb' => 'nullable|string|max:255',
             'harga' => 'nullable|numeric',
             'deskripsi_brg' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:255',
@@ -119,6 +120,17 @@ class MutasiKeluarController extends Controller
         ]);
 
         $asset->update($validated);
+
+         // Update detail angkutan
+         $detail_angkutan = Detailangkutan::where('aset_id',$id)->first();
+         $validated2 = $request->validate([
+             'rangka' => 'nullable|string|max:255',
+             'mesin' => 'nullable|string|max:255',
+             'polisi' => 'nullable|string|max:255',
+             'bpkb' => 'nullable|string|max:255',
+         ]);
+         $detail_angkutan->update($validated2);
+
         return redirect()->route('mutasikeluar')->with('success', 'Assets updated successfully');
     }
 

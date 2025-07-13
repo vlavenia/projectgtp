@@ -59,7 +59,8 @@ class MutasiMasukExport implements FromCollection, WithHeadings
 
     {
 
-        return Asset::select("nama_barang", "kode_barang", "no_register", "merk", "bahan", "thn_pmbelian", "pabrik", "rangka", "mesin", "polisi", "bpkb", "harga", "deskripsi_brg", "keterangan", "opd")
+        return Asset::leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id')
+            ->select("nama_barang", "kode_barang", "no_register", "merk", "bahan", "thn_pmbelian", "pabrik", "rangka", "mesin", "polisi", "bpkb", "harga", "deskripsi_brg", "keterangan", "opd")
             ->whereIn("status_id", ['1'])
             ->whereIn('asal_id', ['4','5'])
             ->get();

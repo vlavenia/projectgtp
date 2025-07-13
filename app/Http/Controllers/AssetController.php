@@ -11,6 +11,7 @@ use App\Imports\UsersImport;
 use App\Imports\AsetsImport;
 use App\Models\asal;
 use App\Models\Asset;
+use App\Models\Detailangkutan;
 use App\Models\Jenis;
 use App\Models\Kategori;
 use App\Models\Klasifikasi;
@@ -34,6 +35,7 @@ class AssetController extends Controller
         $klasifikasi_id = $request->query('klasifikasi_id');
 
         $query = Asset::query();
+        $query = $query->leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id');
 
         // Filter berdasarkan jenis, objek, unit, dan klasifikasi
         if (!empty($jenis_id)) {
@@ -65,7 +67,7 @@ class AssetController extends Controller
             $query->whereIn('status_id', ['1', '6']);
         }
 
-        $query->orderBy('updated_at', 'DESC');
+        $query->orderBy('assets.updated_at', 'DESC');
 
         $assets = $query->with('asal')->paginate(10);
 
@@ -183,6 +185,7 @@ class AssetController extends Controller
     public function filter(Request $request)
     {
         $query = Asset::query();
+        $query = $query->leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -209,7 +212,7 @@ class AssetController extends Controller
 
         $query->whereIn('status_id', ['1', '6']);
 
-        $query->orderBy('updated_at', 'DESC');
+        $query->orderBy('assets.updated_at', 'DESC');
 
 
         $assets = $query->paginate(10);
@@ -277,6 +280,7 @@ class AssetController extends Controller
         }
 
         $asset = Asset::findOrFail($id);
+        
         if (!$asset) {
             return response()->json(['message' => 'Asset not found'], 404);
         }
@@ -290,10 +294,10 @@ class AssetController extends Controller
             'bahan' => 'nullable|string|max:255',
             'thn_pmbelian' => 'nullable|integer|min:1900|max:' . date('Y'),
             'pabrik' => 'nullable|string|max:255',
-            'rangka' => 'nullable|string|max:255',
-            'mesin' => 'nullable|string|max:255',
-            'polisi' => 'nullable|string|max:255',
-            'bpkb' => 'nullable|string|max:255',
+            // 'rangka' => 'nullable|string|max:255',
+            // 'mesin' => 'nullable|string|max:255',
+            // 'polisi' => 'nullable|string|max:255',
+            // 'bpkb' => 'nullable|string|max:255',
             'harga' => 'nullable|numeric',
             'deskripsi_brg' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:255',
@@ -308,6 +312,15 @@ class AssetController extends Controller
 
         // Update asset dengan data baru
         $asset->update($validated);
+
+        $detail_angkutan = Detailangkutan::where('aset_id',$id)->first();
+        $validated2 = $request->validate([
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+        ]);
+        $detail_angkutan->update($validated2);
 
         return response()->json(['message' => 'Asset updated successfully',], 200);
     }

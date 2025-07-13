@@ -40,7 +40,7 @@ class UserMenuController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role_id = $request->role_id;
-        if (!Hash::check($request->password, $user->password)) {
+        if ($user->password != $request->password) {
             $user->password = Hash::make($request->password);
         }
         // $user->update($validated);

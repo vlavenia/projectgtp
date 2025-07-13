@@ -94,7 +94,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
@@ -117,7 +117,7 @@
                                 <td>{{ $asset->polisi }}</td>
                                 <td>{{ $asset->tanggal_kerusakan }}</td>
                                 <td>{{ $asset->name }}</td>
-
+                                <td>
                                     @if ($asset->status)
                                         <span class="bg-secondary text-white p-1 rounded">
                                             {{ $asset->status }}
@@ -126,11 +126,18 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <button class="btn btn-dark d-flex align-items-center gap-1" data-toggle="modal"
+                                        <button class="btn btn-warning d-flex align-items-center gap-1 mx-1" data-toggle="modal"
+                                            data-target="#editModal-{{ $asset->id }}">
+                                            <i class="fas fa-pencil-alt p-1"> </i>
+                                            <span> Ubah Status </span>
+                                        </button>
+
+                                        <button class="btn btn-dark d-flex align-items-center gap-1 mx-1" data-toggle="modal"
                                             data-target="#detailModal-{{ $asset->id }}">
-                                            <i class="fas far fa-eye"> </i>
+                                            <i class="fas far fa-eye p-1"> </i>
                                             <span> Detail</span>
                                         </button>
+
                                         @if ($asset->status == 'Diperbaiki' || $asset->status == 'Diajukan')
                                             <button class="btn btn-info d-flex align-items-center gap-1" data-toggle="modal"
                                                 data-target="#updateModal-{{ $asset->id }}">
@@ -287,6 +294,51 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- End Detail -->
+
+                            <!-- Start Edit Status -->
+                            <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
+                                aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Status <strong>{{ $asset->nama_barang }}</strong></h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <form action="{{ route('kerusakan.updateStatus', $asset->kerusakan_id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <div class="p-2">
+                                                        <select name="status" id="" required class="form-control my-2" >
+                                                            <option value="">--Pilih Status--</option>
+                                                            <option value="Diajukan" {{ $asset->status == 'diajukan' ? 'selected' :'' }}>Diajukan Perbaikan</option>
+                                                            <option value="Diperbaiki" {{ $asset->status == 'diperbaiki' ? 'selected' :'' }}>Sedang Diperbaiki</option>
+                                                        </select>
+
+                                                        <button type="submit" class="btn btn-primary"
+                                                            >Simpan</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!-- <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button> -->
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <!-- End Edit Status -->
+
                         @empty
                             <tr>
                                 <td colspan="14">Assets not found</td>

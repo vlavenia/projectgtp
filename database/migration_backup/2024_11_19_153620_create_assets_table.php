@@ -22,10 +22,10 @@ return new class extends Migration
             $table->string('bahan');
             $table->date('thn_pmbelian');
             $table->string('pabrik');
-            $table->string('rangka');
-            $table->string('mesin');
-            $table->string('polisi');
-            $table->string('bpkb');
+            // $table->string('rangka');
+            // $table->string('mesin');
+            // $table->string('polisi');
+            // $table->string('bpkb');
             $table->bigInteger('harga');
             $table->string('deskripsi_brg');
             $table->string('keterangan');

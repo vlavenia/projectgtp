@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Exports\exportPerolehan;
 use App\Exports\PerolehanExport;
 use App\Models\asal;
+use App\Models\Detailangkutan;
 use App\Models\Jenis;
 use App\Models\Klasifikasi;
 use App\Models\objek;
@@ -59,17 +60,17 @@ class PerolehanController extends Controller
             return response()->json(['message' => 'Asset not found'], 404);
         }
 
-        Asset::create(['kode_barang' => $request->kode_barang,
+        $asset = Asset::create(['kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'no_register' => $request->no_register,
             'merk' => $request->merk,
             'bahan' => $request->bahan,
             'thn_pmbelian' => $request->thn_pembelian,
             'pabrik' => $request->pabrik,
-            'rangka' => $request->rangka,
-            'mesin' => $request->mesin,
-            'polisi' => $request->polisi,
-            'bpkb' => $request->bpkb,
+            // 'rangka' => $request->rangka,
+            // 'mesin' => $request->mesin,
+            // 'polisi' => $request->polisi,
+            // 'bpkb' => $request->bpkb,
             'unit_id' => $request->unit_id,
             'jenis_id' => $request->jenis_id_add,
             'objek_id' => $request->objek_id,
@@ -81,6 +82,14 @@ class PerolehanController extends Controller
             'opd' => $request->opd,
             'status_id' => 1,
             'img_url' =>  'images/' . $imageName,
+        ]);
+
+        Detailangkutan::create([
+            'aset_id' => $asset->id,
+            'rangka' => $request->rangka,
+            'mesin' => $request->mesin,
+            'polisi' => $request->polisi,
+            'bpkb' => $request->bpkb,
         ]);
 
         return redirect()->route('perolehan')->with('success', 'Barang Perolehan Berhasil Ditambahkan');
@@ -102,10 +111,10 @@ class PerolehanController extends Controller
             'bahan' => 'nullable|string|max:255',
             'thn_pmbelian' => 'nullable|integer|min:1900|max:' . date('Y'),
             'pabrik' => 'nullable|string|max:255',
-            'rangka' => 'nullable|string|max:255',
-            'mesin' => 'nullable|string|max:255',
-            'polisi' => 'nullable|string|max:255',
-            'bpkb' => 'nullable|string|max:255',
+            // 'rangka' => 'nullable|string|max:255',
+            // 'mesin' => 'nullable|string|max:255',
+            // 'polisi' => 'nullable|string|max:255',
+            // 'bpkb' => 'nullable|string|max:255',
             'harga' => 'nullable|numeric',
             'deskripsi_brg' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:255',
@@ -127,6 +136,16 @@ class PerolehanController extends Controller
         }
 
         $asset->update($validated);
+
+        // Update detail angkutan
+        $detail_angkutan = Detailangkutan::where('aset_id',$id)->first();
+        $validated2 = $request->validate([
+            'rangka' => 'nullable|string|max:255',
+            'mesin' => 'nullable|string|max:255',
+            'polisi' => 'nullable|string|max:255',
+            'bpkb' => 'nullable|string|max:255',
+        ]);
+        $detail_angkutan->update($validated2);
         
         return redirect()->route('perolehan')->with('success', 'Assets updated successfully');
     }

@@ -85,7 +85,7 @@ class PeminjamanController extends Controller
             ->leftJoin('users', 'users.id', '=', 'peminjaman.user_id')
             ->select(
                 'assets.*',
-                'users.*',
+                'users.name',
                 'peminjaman.id as peminjaman_id',
                 'peminjaman.tanggal_peminjaman as tanggal_peminjaman',
                 'peminjaman.status as status',
@@ -101,7 +101,7 @@ class PeminjamanController extends Controller
             ->leftJoin('users', 'users.id', '=', 'peminjaman.user_id')
             ->select(
                 'assets.*',
-                'users.*',
+                'users.name',
                 'peminjaman.id as peminjaman_id',
                 'peminjaman.tanggal_peminjaman as tanggal_peminjaman',
                 'peminjaman.status as status',

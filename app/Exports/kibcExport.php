@@ -19,7 +19,8 @@ class KibcExport implements FromCollection, WithHeadings
     public function collection()
 
     {
-        return Asset::where("jenis_id", 3)
+        return Asset::leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id')
+            ->where("jenis_id", 3)
             ->where("status_id", 1)
             ->select([
                 "nama_barang",

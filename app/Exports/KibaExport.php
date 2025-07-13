@@ -20,7 +20,8 @@ class KibaExport implements FromCollection, WithHeadings
 
     {
 
-        return Asset::where("jenis_id", 1)
+        return Asset::leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id')
+        ->where("jenis_id", 1)
         ->where("status_id", 1)
         ->select([
             "nama_barang",

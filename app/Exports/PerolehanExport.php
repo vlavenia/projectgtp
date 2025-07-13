@@ -59,7 +59,8 @@ class PerolehanExport implements FromCollection, WithHeadings
 
     {
 
-        return Asset::select("nama_barang", "kode_barang", "no_register", "merk", "bahan", "thn_pmbelian", "pabrik", "rangka", "mesin", "polisi", "bpkb", "harga", "deskripsi_brg", "keterangan", "opd")
+        return Asset::leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id')
+            ->select("nama_barang", "kode_barang", "no_register", "merk", "bahan", "thn_pmbelian", "pabrik", "rangka", "mesin", "polisi", "bpkb", "harga", "deskripsi_brg", "keterangan", "opd")
             ->where("asal_id",'asal_id', [1, 2, 3])
             ->get();
     }

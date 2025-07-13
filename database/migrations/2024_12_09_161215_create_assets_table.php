@@ -27,10 +27,10 @@ return new class extends Migration
             $table->string('bahan')->nullable();
             $table->year('thn_pmbelian')->nullable();
             $table->string('pabrik')->nullable();
-            $table->string('rangka')->nullable();
-            $table->string('mesin')->nullable();
-            $table->string('polisi')->nullable();
-            $table->string('bpkb')->nullable();
+            // $table->string('rangka')->nullable();
+            // $table->string('mesin')->nullable();
+            // $table->string('polisi')->nullable();
+            // $table->string('bpkb')->nullable();
             $table->bigInteger('harga')->nullable();
             $table->string('deskripsi_brg')->nullable();
             $table->string('keterangan')->nullable();
