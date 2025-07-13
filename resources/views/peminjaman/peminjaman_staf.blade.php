@@ -116,42 +116,119 @@
                                 <td>{{ $asset->polisi }}</td>
                                 <td>{{ $asset->tanggal_peminjaman }}</td>
                                 <td>{{ $asset->name }}</td>
+                                {{-- <td>{{ $asset->peminjaman_id}}</td> --}}
                                 <td>
-                                    @if($asset->status == 'request')
+                                    @if ($asset->status == 'request')
                                         <span class="bg-warning px-2 rounded text-white">Menunggu</span>
                                     @elseif($asset->status == 'approve')
-                                        <span class="bg-success px-2 rounded text-white">Distujui</span>
+                                        <span class="bg-success px-2 rounded text-white">Disetujui</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex justify-content-center">
-                                        <i class="btn far fa-eye" data-toggle="modal"
-                                            data-target="#detailModal-{{ $asset->id }}"></i>
-                                        {{-- <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
-                                            data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
-                                           data-asalid="{{ $asset->asal_id }}"
-                                            data-jenisid="{{ $asset->jenis_id }}"
-                                            data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
-                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i> --}}
-                                        {{-- <form action="{{ route('penghapusan.destroy', $asset->id) }}" method="POST"
-                                            onsubmit="return confirm('Delete?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn fas fa-trash-alt" ></button>
-                                        </form> --}}
+                                    <div class="d-flex justify-content-center gap-2">
 
-                                        @if($asset->status == 'request')
-                                            <form action="{{ route('peminjaman.restore', $asset->id) }}" method="POST"
-                                                onsubmit="return confirm('ga jadi pinjam?')">
+                                        <button class="btn btn-dark d-flex align-items-center gap-1" data-toggle="modal"
+                                            data-target="#detailModal-{{ $asset->id }}">
+                                            <i class="fas far fa-eye"> </i>
+                                            <span> Detail</span>
+                                        </button>
+
+                                        @if ($asset->status == 'request')
+                                            <button class="btn btn-danger d-flex align-items-center " data-toggle="modal"
+                                                data-target="#cancelModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-trash-alt"> </i>
+                                                <span> Batalkan</span>
+                                            </button>
+                                        @elseif ($asset->status == 'approve')
+                                            <button class="btn btn-info  d-flex align-items-center " data-toggle="modal"
+                                                data-target="#ReturnModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-check-circle"> </i>
+                                                <span> pengembalian</span>
+                                            </button>
+
+                                            {{-- <form action="{{ route('ReturnPeminjaman', $asset->peminjaman_id) }}"
+                                                method="POST" onsubmit="return confirm('Kembalikan Aset?')">
                                                 @csrf
-                                                @method('POST')
-                                                <button class="btn fas fa-trash-alt"></button>
-                                            </form>
+                                                <button class="btn btn-success  fas fas fa-check-circle "></button>
+                                            </form> --}}
                                         @endif
-                                        
                                     </div>
                                 </td>
                             </tr>
+
+                            <!-- Cancel Modal -->
+                            <div class="modal fade" id="cancelModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="cancelLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow rounded-lg">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="cancelLabel">Konfirmasi Pembatalan</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                                            <p class="mb-2">Yakin ingin <strong>membatalkan</strong> pengajuan peminjaman
+                                                aset ini?</p>
+                                            <small class="text-muted">Aksi ini akan menghapus pengajuan peminjaman dari
+                                                sistem.</small>
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('assets.destroy.peminjaman', $asset->peminjaman_id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger px-4">Ya, Batalkan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- END Cancel Modal -->
+
+                            <!-- Return Penminjaman Modal -->
+                            <div class="modal fade" id="ReturnModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="cancelLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow rounded-lg">
+                                        <div class="modal-header bg-info text-white">
+                                            <h5 class="modal-title" id="cancelLabel">Konfirmasi Pengembalian</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <i class="fas fa-times-circle fa-3x text-info mb-3"></i>
+                                            <p class="mb-2">Apakah anda ingin <strong>mengembalikan</strong> peminjaman
+                                                ini?</p>
+                                            {{-- <small class="text-muted">Aksi ini akan menghapus pengajuan peminjaman dari
+                                                sistem.</small> --}}
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('ReturnPeminjaman', $asset->peminjaman_id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="submit" class="btn btn-info px-4">Ya, Kembalikan Asset</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- END Cancel Modal -->
 
                             <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
@@ -159,8 +236,10 @@
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <h5 class="modal-title" id="editModalLabel-{{ $asset->id }}">Edit Asset
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -401,7 +480,7 @@
                             </div>
                         @empty
                             <tr>
-                                <td colspan="14">Assets not found</td>
+                                <td colspan="14">Saat ini tidak peminjaman yang diajukan</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -412,6 +491,35 @@
             </div>
         </div>
     </div>
+
+
+    {{-- Card History Peminjaman --}}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="row d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">History Peminjaman</h6>
+                <div class=" row mr-3">
+                    <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
+                        action="{{ route('search.staf') }}">
+                        @csrf
+                        <input name="search" id="search" class="form-control mr-sm-2" type="search"
+                            placeholder="Search" aria-label="Search">
+                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+                        <div class="ml-2">
+                            <a class="btn btn-secondary" href="{{ route('peminjaman_staf') }}">Reset</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                @include('peminjaman.partials.historyCard', ['assets' => $assets])
+            </div>
+        </div>
+    </div>
+    {{-- END Card History Peminjaman --}}
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"

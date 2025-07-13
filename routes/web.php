@@ -110,11 +110,12 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
     Route::controller(KerusakanController::class)->prefix('kerusakan')->group(function () {
         Route::get('', 'index')->name('kerusakan');
 
-        Route::put('edit', 'changeStatus')->name('kerusakan.changeStatus');
-        Route::post('edit/{id}', 'update')->name('kerusakan.update');
-        Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kerusakan');
-        Route::post('restore/{id}', 'restore')->name('assets.restore.kerusakan');
+        Route::put('edit', 'AddKerusakan')->name('kerusakan.add');
+        Route::post('edit/{id}', 'updateStatus')->name('kerusakan.updateStatus');
+        Route::post('return/{id}', 'ReturnKerusakan')->name('assets.return.kerusakan');
 
+        Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kerusakan');
+        Route::post('edit/{id}', 'update')->name('kerusakan.update');
         Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kerusakan');
         Route::get('search', 'search')->name('assets.search.kerusakan');
     });
@@ -126,17 +127,17 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
         //staf
         Route::get('staf', 'peminjaman_staf')->name('peminjaman_staf');
         Route::put('edit', 'addPeminjaman')->name('peminjaman.addpeminjaman');
-        Route::post('restore/{id}', 'restorePeminjaman')->name('peminjaman.restore');
+        Route::post('return/{id}', 'returnPeminjaman')->name('ReturnPeminjaman');
+        Route::delete('destroy/{id}', 'destroyPeminjaman')->name('assets.destroy.peminjaman');
 
         Route::get('search-pengelola', 'search_pengelola')->name('search.pengelola');
         Route::get('search-staf', 'search_staf')->name('search.staf');
-        
-        
+
+
         // Route::post('edit/{id}', 'update')->name('peminjaman.update');
-        // Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.peminjaman');
-        
+
         // Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.peminjaman');
-        
+
         Route::get('approvePeminjaman/{id}', 'approvePeminjaman')->name('approvePeminjaman');
     });
 
@@ -200,7 +201,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::controller(LaporanController::class)->prefix('laporan')->group(function () {
         Route::get('/laporanAset', 'laporanAset')->name('laporanAset');
         Route::post('/exportSemuaLaporanAset', 'exportSemuaLaporanAset')->name('exportSemuaLaporanAset');
-        
+
         Route::get('/laporanUser', 'laporanUser')->name('laporanUser');
         Route::post('/exportLaporanUser', 'exportLaporanUser')->name('exportLaporanUser');
 

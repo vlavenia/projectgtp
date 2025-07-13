@@ -4,7 +4,7 @@
 
 @section('contents')
 
-     {{-- <div class="mb-4">
+    {{-- <div class="mb-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
             Daftar Peminjaman
         </button>
@@ -75,10 +75,7 @@
                             <a class="btn btn-secondary" href="{{ route('peminjaman') }}">Reset</a>
                         </div>
                     </form>
-                    <div class="ml-2"><a class="btn btn-info float-end"
-                            href="{{ route('exportAsset.penghapusan') }}">Export
-                            Data</a>
-                    </div>
+
 
                 </div>
 
@@ -113,47 +110,71 @@
                                 <td>{{ $asset->name }}</td>
                                 <td>{{ $asset->deskripsi }}</td>
                                 <td>
-                                    @if($asset->status == 'request')
+                                    @if ($asset->status == 'request')
                                         <span class="bg-warning px-2 rounded text-white">Menunggu</span>
                                     @elseif($asset->status == 'approve')
-                                        <span class="bg-success px-2 rounded text-white">Distujui</span>
+                                        <span class="bg-success px-2 rounded text-white">Disetujui</span>
+                                    @elseif($asset->status == 'Dikembalikan')
+                                        <span class="bg-primary px-2 rounded text-white">Dikembalikan</span>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <i class="btn far fa-eye" data-toggle="modal"
-                                            data-target="#detailModal-{{ $asset->id }}"></i>
-                                        {{-- <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
-                                            data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
-                                           data-asalid="{{ $asset->asal_id }}"
-                                            data-jenisid="{{ $asset->jenis_id }}"
-                                            data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
-                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i> --}}
-                                        {{-- <form action="{{ route('penghapusan.destroy', $asset->id) }}" method="POST"
-                                            onsubmit="return confirm('Delete?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn fas fa-trash-alt" ></button>
-                                        </form> --}}
-                                          {{-- <form action="{{ route('assets.restore.penghapusan', $asset->id) }}" method="POST"
-                                            onsubmit="return confirm('Restore?')">
-                                            @csrf
-                                            @method('POST')
-                                            <button class="btn fas fa-arrow-alt-circle-left"></button>
-                                        </form> --}}
+                                        <button class="btn btn-info d-flex align-items-center gap-1" data-toggle="modal"
+                                            data-target="#detailModal-{{ $asset->id }}">
+                                            <i class="fas far fa-eye"> </i>
+                                            <span> Detail</span>
+                                        </button>
 
-                                        @if($asset->status == 'request')
-                                            <form action="{{ route('approvePeminjaman', $asset->peminjaman_id) }}" method="GET"
-                                                onsubmit="return confirm('Setujui Peminjaman ?')">
-                                                @csrf
-                                                @method('GET')
-                                                <button class="btn fas fa-check-circle"></button>
-                                            </form>
+
+                                        @if ($asset->status == 'request')
+                                            <button class="btn btn-success d-flex align-items-center gap-1"
+                                                data-toggle="modal"
+                                                data-target="#approveModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-check-circle"></i>
+                                                <span> Setujui</span>
+                                            </button>
                                         @endif
-                                        
+
+
                                     </div>
                                 </td>
                             </tr>
+
+                            {{-- Approve Modal  --}}
+                            <div class="modal fade" id="approveModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="approveLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow-lg rounded-lg">
+                                        <div class="modal-header bg-success text-white">
+                                            <h5 class="modal-title" id="approveLabel">Konfirmasi Persetujuan</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <i class="fas fa-exclamation-circle fa-3x text-success mb-3"></i>
+                                            <p class="mb-2">Apakah kamu yakin ingin <strong>menyetujui</strong> peminjaman
+                                                aset ini?</p>
+                                            <small class="text-muted">Aksi ini tidak bisa dibatalkan.</small>
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('approvePeminjaman', $asset->peminjaman_id) }}"
+                                                method="GET">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success px-4">Setujui</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- END Approve Modal  --}}
 
                             <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
@@ -204,7 +225,7 @@
                                                                 value="{{ $asset->bahan }}">
                                                         </div>
                                                         <div class="form-group">
-                                                             <label>Tahun Pembelian</label>
+                                                            <label>Tahun Pembelian</label>
                                                             <input type="number" id="thn_pembelian-{{ $asset->id }}"
                                                                 name="thn_pmbelian" class="form-control"
                                                                 value="{{ $asset->thn_pmbelian }}" min="1990"
@@ -302,13 +323,14 @@
                                                         <div class="form-group">
                                                             <label for="img_url">Gambar</label>
                                                             <input type="file" id="img_url" name="gambar"
-                                                                accept="image/*" class="form-control img-upload"  data-id="{{ $asset->id }}">
+                                                                accept="image/*" class="form-control img-upload"
+                                                                data-id="{{ $asset->id }}">
                                                         </div>
 
                                                         <div class="mt-3 text-center">
-                                                            <img id="preview-img-{{ $asset->id }}" src="{{ asset($asset->img_url) }}"
-                                                                alt="Gambar Barang" class="img-fluid rounded"
-                                                                style="max-height: 200px;">
+                                                            <img id="preview-img-{{ $asset->id }}"
+                                                                src="{{ asset($asset->img_url) }}" alt="Gambar Barang"
+                                                                class="img-fluid rounded" style="max-height: 200px;">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -317,11 +339,11 @@
                                                 <button type="button" class="btn btn-secondary"
                                                     data-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-warning updateAssetBtn"
-                                                    data-id="{{ $asset->id }}"
-                                                     data-asalid="{{ $asset->asal_id }}"
-                                            data-jenisid="{{ $asset->jenis_id }}"
-                                            data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
-                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}">Update</button>
+                                                    data-id="{{ $asset->id }}" data-asalid="{{ $asset->asal_id }}"
+                                                    data-jenisid="{{ $asset->jenis_id }}"
+                                                    data-unitid="{{ $asset->unit_id }}"
+                                                    data-objekid="{{ $asset->objek_id }}"
+                                                    data-klasifikasiid="{{ $asset->klasifikasi_id }}">Update</button>
                                             </div>
                                         </form>
                                     </div>
@@ -334,7 +356,9 @@
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Detail <strong>{{ $asset->nama_barang }}</strong></h5>
+                                            <h5 class="modal-title">Detail Pengajuan oleh
+                                                <strong>{{ $asset->status }}</strong>
+                                            </h5>
                                             <button type="button" class="close" data-dismiss="modal"
                                                 aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -414,6 +438,33 @@
         </div>
     </div>
 
+    {{-- Card History Pengembalian Aset --}}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="row d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">History Peminjaman</h6>
+                <div class=" row mr-3">
+                    <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
+                        action="{{ route('search.staf') }}">
+                        @csrf
+                        <input name="search" id="search" class="form-control mr-sm-2" type="search"
+                            placeholder="Search" aria-label="Search">
+                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+                        <div class="ml-2">
+                            <a class="btn btn-secondary" href="{{ route('peminjaman_staf') }}">Reset</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                @include('peminjaman.partials.historyCard', ['assets' => $assets])
+            </div>
+        </div>
+    </div>
+    {{-- END Card History Pengembalian Aset --}}
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -424,7 +475,7 @@
     <script>
         $(document).ready(function() {
 
-             document.addEventListener("change", function(event) {
+            document.addEventListener("change", function(event) {
                 if (event.target.classList.contains("img-upload")) {
                     let file = event.target.files[0];
                     let assetId = event.target.dataset.id; // Ambil ID dari atribut data-id
@@ -480,38 +531,38 @@
         })
 
         //button update
-         $(document).on('click', '.updateAssetBtn', function() {
-                const id = $(this).data('id');
-                const url = '{{ route('assets.update.penghapusan', ':id') }}'.replace(':id', id);
+        $(document).on('click', '.updateAssetBtn', function() {
+            const id = $(this).data('id');
+            const url = '{{ route('assets.update.penghapusan', ':id') }}'.replace(':id', id);
 
-                const data = {
-                    _token: '{{ csrf_token() }}',
-                    _method: 'PUT',
-                    nama_barang: $(`#nama_barang-${id}`).val(),
-                    kode_barang: $(`#kode_barang-${id}`).val(),
-                    no_register: $(`#no_register-${id}`).val(),
-                    merk: $(`#merk-${id}`).val(),
-                    bahan: $(`#bahan-${id}`).val(),
-                    thn_pmbelian: $(`#thn_pembelian-${id}`).val(),
-                    pabrik: $(`#pabrik-${id}`).val(),
-                    rangka: $(`#rangka-${id}`).val(),
-                    mesin: $(`#mesin-${id}`).val(),
-                    polisi: $(`#polisi-${id}`).val(),
-                    bpkb: $(`#bpkb-${id}`).val(),
-                    asal_id: $(`#asal_id-${id}`).val(),
-                    jenis_id: $(`#jenis_id-${id}`).val(),
-                    unit_id: $(`#unit_id-${id}`).val(),
-                    objek_id: $(`#objek_id-${id}`).val(),
-                    klasifikasi_id: $(`#klasifikasi_id-${id}`).val(),
-                    harga: $(`#harga-${id}`).val(),
-                    deskripsi_brg: $(`#deskripsi_brg-${id}`).val(),
-                    keterangan: $(`#keterangan-${id}`).val(),
-                    opd: $(`#opd-${id}`).val(),
-                };
-            });
+            const data = {
+                _token: '{{ csrf_token() }}',
+                _method: 'PUT',
+                nama_barang: $(`#nama_barang-${id}`).val(),
+                kode_barang: $(`#kode_barang-${id}`).val(),
+                no_register: $(`#no_register-${id}`).val(),
+                merk: $(`#merk-${id}`).val(),
+                bahan: $(`#bahan-${id}`).val(),
+                thn_pmbelian: $(`#thn_pembelian-${id}`).val(),
+                pabrik: $(`#pabrik-${id}`).val(),
+                rangka: $(`#rangka-${id}`).val(),
+                mesin: $(`#mesin-${id}`).val(),
+                polisi: $(`#polisi-${id}`).val(),
+                bpkb: $(`#bpkb-${id}`).val(),
+                asal_id: $(`#asal_id-${id}`).val(),
+                jenis_id: $(`#jenis_id-${id}`).val(),
+                unit_id: $(`#unit_id-${id}`).val(),
+                objek_id: $(`#objek_id-${id}`).val(),
+                klasifikasi_id: $(`#klasifikasi_id-${id}`).val(),
+                harga: $(`#harga-${id}`).val(),
+                deskripsi_brg: $(`#deskripsi_brg-${id}`).val(),
+                keterangan: $(`#keterangan-${id}`).val(),
+                opd: $(`#opd-${id}`).val(),
+            };
+        });
 
-            //button edit
-            $(document).on('click', '.editAssetBtn', function() {
+        //button edit
+        $(document).on('click', '.editAssetBtn', function() {
             const assetId = $(this).data('id');
             const jenisId = $(this).data('jenisid');
             const objekId = $(this).data('objekid');
@@ -630,7 +681,7 @@
             });
         });
 
-         // Fungsi untuk memuat Objek berdasarkan Jenis yang dipilih
+        // Fungsi untuk memuat Objek berdasarkan Jenis yang dipilih
         function loadObjekAdd(assetId, jenisId, objekId) {
             if (jenisId) {
                 $.ajax({

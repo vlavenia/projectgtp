@@ -18,9 +18,15 @@ class KerusakanController extends Controller
         $assets = Asset::where('status_id', '1')->get();
         $asset_kerusakan = Kerusakan::leftJoin('assets','assets.id','=','kerusakan.aset_id')
                             ->leftJoin('users','users.id','=','kerusakan.user_id')
-                            // ->where('status_id', '6')
+                            ->Select(
+                                'assets.*',
+                                'users.name as user_name',
+                                'kerusakan.id as kerusakan_id',
+                                'kerusakan.tanggal_kerusakan as tanggal_kerusakan',
+                                'kerusakan.status as status',                            )
+                            ->where('status_id', '6')
                             ->paginate(10);
-
+        // dd($asset_kerusakan);
         return view('kerusakan.index', compact('assets', 'asset_kerusakan'));
     }
 
@@ -39,7 +45,7 @@ class KerusakanController extends Controller
     }
 
 
-    public function changeStatus(Request $request)
+    public function AddKerusakan(Request $request)
     {
         $now = Carbon::now()->format('Y-m-d');
         $asset_id = $request->input('asset_id');
@@ -59,73 +65,43 @@ class KerusakanController extends Controller
         $asset->update([
             'status_id' => '6',
         ]);
-        
+
         return redirect()->route('kerusakan')->with('success', 'Asset status updated to Mutasi Keluar successfully');
     }
 
-    public function restore(Request $request, $id)
+    //changeStatus
+    public function ReturnKerusakan(string $id)
     {
-        $asset = Asset::findOrFail($id);
+        $kerusakan = Kerusakan::findOrFail($id);
+        $kerusakan->update([
+            'status' => 'Selesai Diperbaiki',
+        ]);
+
+        $asset_peminjaman = $kerusakan->aset_id;
+        $asset = Asset::findOrFail($asset_peminjaman);
         $asset->update([
             'status_id' => '1',
         ]);
 
-        return redirect()->route('kerusakan')->with('success', 'Asset status restore successfully');
+
+        return redirect()->route('kerusakan')->with('success', 'Data aset berhasil diupdate');
     }
 
-    public function update(Request $request, string $id)
+    public function updateStatus(string $id)
     {
+        $kerusakan = Kerusakan::findOrFail($id);
+        // $kerusakan->update([
+        //     'status' => $request->status,
+        // ]);
 
-        $asset = Asset::findOrFail($id);
-        if (!$asset) {
-            return response()->json(['message' => 'Asset not found'], 404);
-        }
-
-        // Validasi input data
-        $validated = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'kode_barang' => 'required|string|max:255',
-            'no_register' => 'nullable|numeric',
-            'merk' => 'nullable|string|max:255',
-            'bahan' => 'nullable|string|max:255',
-            'thn_pmbelian' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'pabrik' => 'nullable|string|max:255',
-            'rangka' => 'nullable|string|max:255',
-            'mesin' => 'nullable|string|max:255',
-            'polisi' => 'nullable|string|max:255',
-            'bpkb' => 'nullable|string|max:255',
-            'harga' => 'nullable|numeric',
-            'deskripsi_brg' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string|max:255',
-            'opd' => 'nullable|string|max:255',
-            'unit_id' => 'nullable|exists:units,id',
-            'jenis_id' => 'nullable|exists:jenis,id',
-            'klasifikasi_id' => 'nullable|exists:klasifikasis,id',
-            'asal_id' => 'nullable|exists:asals,id',
-            'objek_id' => 'nullable|exists:objeks,id','img_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file gambar
+        $asset_kerusakan = $kerusakan->aset_id;
+        $asset = Asset::findOrFail($asset_kerusakan);
+        $asset->update([
+            'status_id' => '1',
         ]);
 
-        $imageName = '';
-        if ($request->hasFile('gambar')) {
-            // Simpan gambar baru
-            $imageName = time() . '.' . $request->file('gambar')->extension();
-            $request->file('gambar')->move(public_path('images'), $imageName);
-            $validated['img_url'] = 'images/' . $imageName;
-        }
-
-        $asset->update($validated);
-        return redirect()->route('kerusakan')->with('success', 'Assets updated successfully');
+        return redirect()->route('kerusakan')->with('success', 'Status Perbaikan aset berhasil diupdate');
     }
-
-    public function destroy(string $id)
-    {
-        $asset = Asset::findOrFail($id);
-
-        $asset->delete();
-
-        return redirect()->route('kerusakan')->with('success', 'Data telah dipindahkan ke halaman sampah.');
-    }
-
 
     public function export()
 
