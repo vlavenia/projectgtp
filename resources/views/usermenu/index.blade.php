@@ -21,7 +21,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                             <th>Nama User</th>
                             <th>Email</th>
@@ -31,30 +31,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($user as $users)
-                            <tr>
-                                <td>{{ $users->name }}</td>
-                                <td>{{ $users->email }}</td>
-                                <td>{{ $users->created_at }}</td>
-                                <td>{{ $users->role_id }}</td>
+                        @foreach ($users as $user)
+                            <tr class="text-center">
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->created_at }}</td>
+                                <td>{{ $user->role_name }}</td>
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        {{-- <form action="" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-warning mr-2 editUsermodal"  data-dismiss="modal" data-target="#editUsermodal" data-toggle="modal">edit</button>
-                                        </form> --}}
-                                        <a href="" class="btn btn-warning mr-2 editUsermodal" data-dismiss="modal"
-                                            data-target="#editUsermodal{{ $users->id }}" data-toggle="modal">Edit
+                                        <!-- <a href="" class="btn btn-warning mr-2 editUsermodal" data-dismiss="modal"
+                                            data-target="#editUsermodal{{ $user->id }}" data-toggle="modal">Edit
                                             User
-                                        </a>
-                                        {{-- <a href="" class=" btn btn-primary" data-dismiss="modal"
-                                            data-target="#editUsermodal" data-toggle="modal">Edit
-                                            User
-                                        </a> --}}
+                                        </a> -->
+                                        <button type="button" class="btn btn-warning m-1" data-toggle="modal" data-target="#editUsermodal{{$user->id}}">
+                                            Edit
+                                        </button>
+
                                         <form action="" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger fas fa-trash-alt" type="submit"> Hapus</button>
+                                            <button class="btn btn-danger fas fa-trash-alt m-1" type="submit"> Hapus</button>
                                         </form>
                                     </div>
                                 </td>
@@ -66,91 +62,64 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    @foreach ($user as $users)
-        <div class="modal fade" id="editUsermodal{{ $users->id }}" tabindex="-1" role="dialog"
-            aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-s" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+<!-- Modal -->
+@foreach ($users as $user)
+<div class="modal fade" id="editUsermodal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="editUsermodalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUsermodalLabel">Edit Data User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-2">
+            <form id="" action="{{ route('usermenu.update',$user->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+                <div class="row">
+                    <div class="form-group p-1">
+                        <label>Nama</label>
+                        <input type="text" name="name" class="form-control" value="{{ $user->name }}"
+                            required>
                     </div>
-                    <form id="" action="" method="" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="form-group">
-                                    <label>Nama</label>
-                                    <input type="text" name="name" class="form-control" value="{{ $users->name }}"
-                                        required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" name="email" class="form-control" value="{{ $users->email }}"
-                                        required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" name="password" class="form-control"
-                                        value="{{ $users->password }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Role</label>
-                                    <input type="text" name="role_id" class="form-control" value="{{ $users->role_id }}"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Simpan</button>
-                            </div>
-                    </form>
+                    <div class="form-group p-1">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ $user->email }}"
+                            required>
+                    </div>
+                    <div class="form-group p-1">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control"
+                            value="{{ $user->password }}" required>
+                    </div>
+                    <div class="form-group p-1">
+                        <label>Role</label>
+                        <select name="role_id" id="" class="form-control" required>
+                            <option value="">--Choose--</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}" {{ $role->id == $user->role_id ? 'selected' : '' }}>
+                                    {{ $role->role_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
-    @endforeach
-    <!-- Edit Modal -->
-
-    {{--
-
-
-    <div class="modal fade" id="editUsermodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-s" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
-                <form id="" action="" method="" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group">
-                                <label>Nama</label>
-                                <input type="text" name="name" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <label>Role</label>
-                            <input type="text" name="role_id" class="form-control" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success">Simpan</button>
-                        </div>
-                </form>
-
-            </div>
-        </div>
+            </form>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
     </div>
-    --}}
+  </div>
+</div>
+@endforeach
+<!-- Edit Modal -->
+
+
+    
 @endsection

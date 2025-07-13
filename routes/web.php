@@ -4,16 +4,20 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\InventarisasiController;
+use App\Http\Controllers\JenisController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\KibaController;
+use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKibController;
 use App\Http\Controllers\MutasiKeluarController;
 use App\Http\Controllers\MutasiMasukController;
+use App\Http\Controllers\ObjekController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PenghapusanController;
 use App\Http\Controllers\PerolehanController;
 use App\Http\Controllers\SampahController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserMenuController;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
@@ -186,6 +190,34 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::controller(UserMenuController::class)->prefix('usermenu')->group(function () {
         Route::get('', 'index')->name('usermenu');
+        Route::post('/update/{id}', 'update')->name('usermenu.update');
+    });
+    Route::controller(UnitController::class)->prefix('unit')->group(function () {
+        Route::get('', 'index')->name('unit');
+        Route::post('/update/{id}', 'update')->name('unit.update');
+        Route::post('/add', 'add')->name('unit.add');
+        Route::post('/delete/{id}', 'delete')->name('unit.delete');
+    });
+    Route::controller(JenisController::class)->prefix('jenis')->group(function () {
+        Route::get('', 'index')->name('jenis');
+        Route::post('/update/{id}', 'update')->name('jenis.update');
+        Route::post('/add', 'add')->name('jenis.add');
+        Route::post('/delete/{id}', 'delete')->name('jenis.delete');
+
+        Route::post('/addObjek', 'addObjek')->name('addObjek');
+
+    });
+    Route::controller(ObjekController::class)->prefix('objek')->group(function () {
+        Route::get('', 'index')->name('objek');
+        Route::post('/update/{id}', 'update')->name('objek.update');
+        Route::post('/add', 'add')->name('objek.add');
+        Route::post('/delete/{id}', 'delete')->name('objek.delete');
+    });
+    Route::controller(KlasifikasiController::class)->prefix('klasifikasi')->group(function () {
+        Route::get('', 'index')->name('klasifikasi');
+        Route::post('/update/{id}', 'update')->name('klasifikasi.update');
+        Route::post('/add', 'add')->name('klasifikasi.add');
+        Route::post('/delete/{id}', 'delete')->name('klasifikasi.delete');
     });
 });
 

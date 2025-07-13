@@ -42,10 +42,10 @@
              </a>
              <div id="menumaster" class="collapse" data-parent="#accordionSidebar">
                  <div class="bg-white py-2 collapse-inner rounded">
-                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Unit</a>
-                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Jenis</a>
-                     <a class="collapse-item" href="{{ route('mutasiMasuk') }}">Objek</a>
-                     <a class="collapse-item" href="/mutasikeluar">Klasifikasi</a>
+                     <a class="collapse-item" href="{{ route('unit') }}">Unit</a>
+                     <a class="collapse-item" href="{{ route('jenis') }}">Jenis</a>
+                     <a class="collapse-item" href="{{ route('objek') }}">Objek</a>
+                     <a class="collapse-item" href="{{ route('klasifikasi') }}">Klasifikasi</a>
                  </div>
              </div>
          </li>
