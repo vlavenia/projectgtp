@@ -70,30 +70,35 @@
                                             {{ $asset->thn_pmbelian }}</li>
                                         <li class="list-group-item"><strong>Pabrik:</strong>
                                             {{ $asset->pabrik }}</li>
-                                        <li class="list-group-item"><strong>Rangka:</strong>
-                                            {{ $asset->rangka }}</li>
+                                        <li class="list-group-item"><strong>Harga:</strong>
+                                            {{ $asset->harga }}</li>
                                     </ul>
                                 </div>
 
 
                                 <div class="col-md-6">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item"><strong>Mesin:</strong>
-                                            {{ $asset->mesin }}</li>
-                                        <li class="list-group-item"><strong>Polisi:</strong>
-                                            {{ $asset->polisi }}</li>
-                                        <li class="list-group-item"><strong>BPKB:</strong>
-                                            {{ $asset->bpkb }}</li>
+                                        {{-- pengkondisian atrbitut detail kendaraan ditampilkan --}}
+                                     @if (substr($asset->kode_barang, 0, 11) === '01.03.02.02')
+
+                                            <li class="list-group-item"><strong>Rangka:</strong>
+                                            {{ $asset->rangka }}</li>
+                                            <li class="list-group-item"><strong>Mesin:</strong>
+                                                {{ $asset->mesin }}</li>
+                                            <li class="list-group-item"><strong>Polisi:</strong>
+                                                {{ $asset->polisi }}</li>
+                                            <li class="list-group-item"><strong>BPKB:</strong>
+                                                {{ $asset->bpkb }}</li>
+                                        @endif
+
                                         <li class="list-group-item"><strong>Asal:</strong>
                                             {{ $asset->asal->asal_asset ?? 'belum ada data asal' }}</li>
-                                        <li class="list-group-item"><strong>Harga:</strong>
-                                            {{ $asset->harga }}</li>
-                                        <li class="list-group-item"><strong>Deskripsi Barang:</strong>
-                                            {{ $asset->deskripsi_brg }}</li>
-                                        <li class="list-group-item"><strong>Keterangan:</strong>
-                                            {{ $asset->keterangan }}</li>
-                                        <li class="list-group-item"><strong>OPD:</strong>
-                                            {{ $asset->opd }}</li>
+                                            <li class="list-group-item"><strong>Deskripsi Barang:</strong>
+                                                {{ $asset->deskripsi_brg }}</li>
+                                            <li class="list-group-item"><strong>Keterangan:</strong>
+                                                {{ $asset->keterangan }}</li>
+                                            <li class="list-group-item"><strong>OPD:</strong>
+                                                {{ $asset->opd }}</li>
                                     </ul>
                                 </div>
                             </div>

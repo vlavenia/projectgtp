@@ -68,21 +68,19 @@ class AsetsImport implements ToModel, WithHeadingRow
                 'unit_id'      => null,
                 'klasifikasi_id' => Klasifikasi::where('nama_klasifikasi', 'Extra Countable')->value('id'),
             ]);
-            
-            // $gabungan = array_merge(
-            //     $newAsset->toArray(),
-            //     // $newDetailAngkutan->toArray()
-            // );
-            
+
             $this->newData[] = $newAsset;
 
-            DetailAngkutan::create([
-                'aset_id' => $newAsset->id,
-                'rangka'  => $row['rangka'],
-                'mesin'   => $row['mesin'],
-                'polisi'  => $row['polisi'],
-                'bpkb'    => $row['bpkb'],
-            ]);
+            // Jika kode_barang diawali dengan 01.03.02.02 → tambahkan ke DetailAngkutan
+            if (substr($row['kode_barang'], 0, 11) === '01.03.02.02') {
+                DetailAngkutan::create([
+                    'aset_id' => $newAsset->id,
+                    'rangka'  => $row['rangka'] ?? null,
+                    'mesin'   => $row['mesin'] ?? null,
+                    'polisi'  => $row['polisi'] ?? null,
+                    'bpkb'    => $row['bpkb'] ?? null,
+                ]);
+            }
 
             return $newAsset;
         }

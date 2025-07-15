@@ -35,7 +35,11 @@ class AssetController extends Controller
         $klasifikasi_id = $request->query('klasifikasi_id');
 
         $query = Asset::query();
-        $query = $query->leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id');
+        $query = $query->leftJoin('detail_angkutan', 'detail_angkutan.aset_id', '=', 'assets.id')
+            ->select(
+                'detail_angkutan.*',
+                'Assets.*'
+            );
 
         // Filter berdasarkan jenis, objek, unit, dan klasifikasi
         if (!empty($jenis_id)) {
@@ -72,7 +76,7 @@ class AssetController extends Controller
         $assets = $query->with('asal')->paginate(10);
 
 
-
+        // dd($assets);
 
         if ($request->ajax()) {
             return view('assets.partials.table', ['assets' => $assets])->render();
@@ -185,7 +189,7 @@ class AssetController extends Controller
     public function filter(Request $request)
     {
         $query = Asset::query();
-        $query = $query->leftJoin('detail_angkutan','detail_angkutan.aset_id','=','assets.id');
+        $query = $query->leftJoin('detail_angkutan', 'detail_angkutan.aset_id', '=', 'assets.id');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -258,6 +262,7 @@ class AssetController extends Controller
 
         ]);
 
+
         return redirect()->route('assets')->with('success', 'Assets added successfully');
     }
 
@@ -280,7 +285,7 @@ class AssetController extends Controller
         }
 
         $asset = Asset::findOrFail($id);
-        
+
         if (!$asset) {
             return response()->json(['message' => 'Asset not found'], 404);
         }
@@ -313,7 +318,7 @@ class AssetController extends Controller
         // Update asset dengan data baru
         $asset->update($validated);
 
-        $detail_angkutan = Detailangkutan::where('aset_id',$id)->first();
+        $detail_angkutan = Detailangkutan::where('aset_id', $id)->first();
         $validated2 = $request->validate([
             'rangka' => 'nullable|string|max:255',
             'mesin' => 'nullable|string|max:255',
@@ -337,6 +342,7 @@ class AssetController extends Controller
 
     public function import(Request $request)
     {
+       
         // Validasi file
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
@@ -356,6 +362,7 @@ class AssetController extends Controller
         Excel::import($import, $file->store('temp'));
 
         $newData = $import->getNewData();
+
         $duplicateData = $import->getDuplicateData();
 
         $newDataCount = count($newData);
