@@ -117,6 +117,18 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('kir') }}">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Menu KIR</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('ruangan') }}">
+            <i class="fas fa-fw fa-calendar-alt"></i>
+            <span>Menu Ruangan</span></a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="/kerusakan">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Kerusakan</span></a>

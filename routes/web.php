@@ -7,6 +7,7 @@ use App\Http\Controllers\InventarisasiController;
 use App\Http\Controllers\JenisController;
 use App\Http\Controllers\KerusakanController;
 use App\Http\Controllers\KibaController;
+use App\Http\Controllers\KirController;
 use App\Http\Controllers\KlasifikasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKibController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ObjekController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PenghapusanController;
 use App\Http\Controllers\PerolehanController;
+use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\SampahController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserMenuController;
@@ -122,6 +124,28 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
         Route::post('edit/{id}', 'update')->name('kerusakan.update');
         Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kerusakan');
         Route::get('search', 'search')->name('assets.search.kerusakan');
+    });
+    
+    Route::controller(RuanganController::class)->prefix('ruangan')->group(function () {
+        Route::get('', 'index')->name('ruangan');
+        Route::post('/update/{id}', 'update')->name('ruangan.update');
+        Route::post('/add', 'add')->name('ruangan.add');
+        Route::post('/delete/{id}', 'delete')->name('ruangan.delete');
+    });
+    
+    Route::controller(KirController::class)->prefix('kir')->group(function () {
+        Route::get('', 'index')->name('kir');
+
+        Route::post('add', 'add')->name('kir.add');
+        Route::get('/detail/{id}', 'detail')->name('kir.detail');
+        
+        Route::post('edit-status/{id}', 'updateStatus')->name('kir.updateStatus');
+        Route::post('return/{id}', 'ReturnKir')->name('assets.return.kir');
+
+        Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kir');
+        Route::post('edit/{id}', 'update')->name('kir.update');
+        Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kir');
+        Route::get('search', 'search')->name('assets.search.kir');
     });
 
     //Peminjaman
