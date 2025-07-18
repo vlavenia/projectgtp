@@ -138,13 +138,14 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
 
         Route::post('add', 'add')->name('kir.add');
         Route::get('/detail/{id}', 'detail')->name('kir.detail');
+        Route::post('add-asset', 'add_asset')->name('kir.add-asset');
+        Route::get('/asets-kir-export/{id}', 'export')->name('exportAsset.kir');
         
         Route::post('edit-status/{id}', 'updateStatus')->name('kir.updateStatus');
         Route::post('return/{id}', 'ReturnKir')->name('assets.return.kir');
 
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kir');
         Route::post('edit/{id}', 'update')->name('kir.update');
-        Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.kir');
         Route::get('search', 'search')->name('assets.search.kir');
     });
 

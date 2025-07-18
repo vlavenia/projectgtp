@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'KIR')
+@section('title', 'Detail KIR - ' . $ruangans->nama_ruangan )
 
 @section('contents')
 
     <div class="mb-4">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal ">
-            Tambah KIR 
+            Tambah Aset KIR
         </button>
     </div>
 
@@ -21,7 +21,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('kir.add') }}" method="POST">
+                <form action="{{ route('kir.add-asset') }}" method="POST">
                     @csrf
                     @method('POST')
                     <div class="modal-body">
@@ -42,18 +42,11 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
 
-                                <div class="mt-3">
-                                    <label>Ruangan</label>
-                                    <select required class="form-control" style="width:100%" name="ruangan_id">
-                                        <option value="">- Pilih -</option>
-                                        @foreach($ruangans as $ruangan)
-                                            <option value="{{ $ruangan->id }}"> {{ $ruangan->nama_ruangan }} </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
                             </div>
                     </div>
+
+                    <input type="text" name="id_ruangan" value="{{ $ruangans->id }}" hidden>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -71,7 +64,23 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="row d-flex justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Daftar KIR</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Daftar KIR Detail</h6>
+                <div class=" row mr-3">
+                    <form id="searchForm" class="form-inline my-2 my-lg-0 mr-3" method="GET"
+                        action="{{ route('assets.search.kir') }}">
+                        @csrf
+                        <input name="search" id="search" class="form-control mr-sm-2" type="search"
+                            placeholder="Search" aria-label="Search">
+                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+                        <div class="ml-2">
+                            <a class="btn btn-secondary" href="{{ route('kir') }}">Reset</a>
+                        </div>
+                    </form>
+                    <div class="ml-2"><a class="btn btn-info float-end" href="{{ route('exportAsset.kir', $ruangans->id ) }}">Export
+                            Excel</a>
+                    </div>
+
+                </div>
 
             </div>
         </div>
@@ -80,22 +89,35 @@
                 <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
                     <thead class="text-center">
                         <tr>
-                            <th>Nama Ruangan</th>
-                            <th>Kode Deskripsi</th>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
                         @forelse ($asset_kir as $asset)
                             <tr>
-                                <td>{{ $asset->nama_ruangan }}</td>
-                                <td>{{ $asset->deskripsi }}</td>
+                                <td>{{ $asset->kode_barang }}</td>
+                                <td>{{ $asset->nama_barang }}</td>
+                                <td>
+                                    <span class="bg-secondary text-white p-1 rounded">
+                                        {{ $asset->status_asset }}
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
-                                        <a href="{{ route('kir.detail', $asset->id) }}" class="btn btn-dark d-flex align-items-center gap-1 mx-1" >
+                                        <button class="btn btn-warning d-flex align-items-center gap-1 mx-1" data-toggle="modal"
+                                            data-target="#editModal-{{ $asset->id }}">
+                                            <i class="fas fa-pencil-alt p-1"> </i>
+                                            <span> Ubah Data </span>
+                                        </button>
+
+                                        <button class="btn btn-dark d-flex align-items-center gap-1 mx-1" data-toggle="modal"
+                                            data-target="#detailModal-{{ $asset->id }}">
                                             <i class="fas far fa-eye p-1"> </i>
                                             <span> Detail</span>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -275,16 +297,6 @@
                                                         @error('asset_select')
                                                             <div class="invalid-feedback">{{ $message }}</div>
                                                         @enderror
-                                                        
-                                                        <label>Ruangan</label>
-                                                        <select required class="form-control mb-4" style="width:100%" name="ruangan_id">
-                                                            <option value="">- Pilih -</option>
-                                                            @foreach($ruangans as $ruangan)
-                                                                <option value="{{ $ruangan->id }}" {{ $ruangan->id == $asset->id_ruangan ? 'selected' : '' }}> 
-                                                                    {{ $ruangan->nama_ruangan }} 
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
 
                                                         <button type="submit" class="btn btn-primary"
                                                             >Simpan</button>
