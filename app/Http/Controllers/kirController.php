@@ -19,17 +19,10 @@ class KirController extends Controller
     {
         $ruangans = Ruangan::all();
         $assets = Asset ::where('status_id', '1')->get();
-        // $transaction_ruangan_asset = TransactionRuanganAsset::all();
 
         $asset_kir = Ruangan::
-                        leftJoin('transaction_ruangan_assets','transaction_ruangan_assets.id_ruangan','=','ruangan.id')
-                        ->select(
+                        select(
                             'ruangan.*',
-                            'transaction_ruangan_assets.id_asset',
-                            'transaction_ruangan_assets.id_ruangan',
-                            'transaction_ruangan_assets.keterangan',
-                            'ruangan.deskripsi',
-                            'ruangan.nama_ruangan',
                         )
                         ->paginate(10);
         return view('kir.index', compact('assets','asset_kir','ruangans'));

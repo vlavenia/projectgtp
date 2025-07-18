@@ -49,5 +49,10 @@ class UserMenuController extends Controller
         return redirect()->route('usermenu')->with('success', 'User updated successfully');
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
 
 }

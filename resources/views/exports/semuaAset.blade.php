@@ -100,7 +100,7 @@
         <td style="border: 1px solid black; text-align: center;word-wrap: break-word; vertical-align: middle;"> {{ $asset->mesin }} </td> <!-- Pencipta -->
         <td style="border: 1px solid black; text-align: center;word-wrap: break-word; vertical-align: middle;"> {{ $asset->polisi }} </td> <!-- Jenis -->
         <td style="border: 1px solid black; text-align: center;word-wrap: break-word; vertical-align: middle; width: 3cm;"> {{ $asset->bpkb }} </td> <!-- Asal usul -->
-        <td style="border: 1px solid black;  text-align: center; word-wrap: break-word;vertical-align: middle;"> {{ $asset->asal->asal_asset}} </td> <!-- Harga -->
+        <td style="border: 1px solid black;  text-align: center; word-wrap: break-word;vertical-align: middle;"> {{ isset($asset->asal->asal_asset) ? $asset->asal->asal_asset : ''}} </td> <!-- Harga -->
         <td style="border: 1px solid black; width: 2cm;"> {{ $asset->harga }} </td> <!-- Deskripsi barang -->
         <td style="border: 1px solid black; width: 2cm;  word-wrap: break-word; text-align: center; vertical-align: middle;"> {{ $asset->keterangan }} </td> <!-- Ket -->
         <td style="border: 1px solid black;width: 3cm; word-wrap: break-word; text-align: center; vertical-align: middle;"> {{ $asset->opd }} </td> <!-- Unit Kerja -->

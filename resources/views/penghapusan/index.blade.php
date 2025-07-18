@@ -96,7 +96,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
@@ -124,17 +124,17 @@
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"
                                             data-target="#detailModal-{{ $asset->id }}"></i>
-                                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
+                                        <!-- <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
                                             data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
                                            data-asalid="{{ $asset->asal_id }}"
                                             data-jenisid="{{ $asset->jenis_id }}"
                                             data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
-                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i>
-                                        <form action="{{ route('penghapusan.destroy', $asset->id) }}" method="POST"
+                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i> -->
+                                        <!-- <form action="{{ route('penghapusan.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn fas fa-trash-alt" ></button>
+                                            <button class="btn fas fa-trash-alt" ></button> -->
                                         </form>
                                           <form action="{{ route('assets.restore.penghapusan', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Restore?')">

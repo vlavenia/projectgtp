@@ -146,8 +146,7 @@
         <span class="mr-2 d-none d-lg-inline text-gray-600 small">
           {{ auth()->user()->name }}
           <br>
-          <small>Admin</small>
-          {{-- {{ auth()->user()->level }} --}}
+          <small>{{ auth()->user()->role->role_name }}</small>
         </span>
         <img class="img-profile rounded-circle" src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg">
       </a>
