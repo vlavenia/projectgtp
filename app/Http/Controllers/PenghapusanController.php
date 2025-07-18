@@ -21,6 +21,12 @@ class PenghapusanController extends Controller
         $asset_penghapusan = Penghapusan::leftJoin('assets','assets.id','=','penghapusan.aset_id')
                                 ->leftJoin('users','users.id','=','penghapusan.user_id')
                                 // ->where('status_id', '5')
+                                ->Select(
+                                    'assets.*',
+                                    'users.name as user_name',
+                                    'penghapusan.id as penghapusan_id',
+                                    'penghapusan.tanggal_penghapusan as tanggal_penghapusan',
+                                    'penghapusan.status as status')
                                 ->paginate(10);
 
         return view('penghapusan.index', compact('assets', 'asset_penghapusan'));
@@ -53,8 +59,25 @@ class PenghapusanController extends Controller
         return redirect()->route('penghapusan')->with('success', 'Asset status restore successfully');
     }
 
-    public function create() {}
 
+    public function updateStatus(Request $request,string $id)
+    {
+        // dd($request, $id);
+        $penghapusan = Penghapusan::findOrFail($id);
+        $penghapusan->update([
+            'status' => $request->status,
+        ]);
+
+        if($request->status == 'Setujui_penghapusan'){
+            $asset_penghapusan = $penghapusan->aset_id;
+            $asset = Asset::findOrFail($asset_penghapusan);
+            // $asset->update([
+            //     'status_id' => '1',
+            // ]);
+        }
+
+        return redirect()->route('penghapusan')->with('success', 'Status Perbaikan aset berhasil diupdate');
+    }
 
     public function store(Request $request)
     {

@@ -124,12 +124,12 @@
                                     <div class="d-flex justify-content-center">
                                         <i class="btn far fa-eye" data-toggle="modal"
                                             data-target="#detailModal-{{ $asset->id }}"></i>
-                                        <!-- <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
+                                        <i class="btn fas fa-edit editAssetBtn" data-toggle="modal"
                                             data-target="#editModal-{{ $asset->id }}" data-id="{{ $asset->id }}"
                                            data-asalid="{{ $asset->asal_id }}"
                                             data-jenisid="{{ $asset->jenis_id }}"
                                             data-unitid="{{ $asset->unit_id }}" data-objekid="{{ $asset->objek_id }}"
-                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i> -->
+                                            data-klasifikasiid="{{ $asset->klasifikasi_id }}" ></i>
                                         <!-- <form action="{{ route('penghapusan.destroy', $asset->id) }}" method="POST"
                                             onsubmit="return confirm('Delete?')">
                                             @csrf
@@ -146,8 +146,52 @@
                                 </td>
                             </tr>
 
-                            <!-- Edit Modal -->
+                            <!-- Start Edit Status -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
+                                aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Status <strong>{{ $asset->nama_barang }}</strong></h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <form action="{{ route('penghapusan.updateStatus', $asset->penghapusan_id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <div class="p-2">
+                                                        <select name="status" id="" required class="form-control my-2" >
+                                                            <option value="">--Pilih Status--</option>
+                                                            <option value="Sementara" {{ $asset->status == 'sementara' ? 'selected' :'' }}>Sementara</option>
+                                                            <option value="Pengajuan" {{ $asset->status == 'pengajuan' ? 'selected' :'' }}>Sedang Pengajuan</option>
+                                                            <option value="Setuijui_penghapusan" {{ $asset->status == 'Setuijui_penghapusan' ? 'selected' :'' }}>Setujui Penghapusan</option>
+                                                        </select>
+
+                                                        <button type="submit" class="btn btn-primary"
+                                                            >Simpan</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!-- <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button> -->
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <!-- End Edit Status -->
+
+                            <!-- Edit Modal -->
+                            <!-- <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="editModalLabel-{{ $asset->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
@@ -317,7 +361,7 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Modal Detail -->
                             <div class="modal fade" id="detailModal-{{ $asset->id }}" tabindex="-1" role="dialog"

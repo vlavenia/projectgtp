@@ -179,6 +179,9 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
         Route::delete('destroy/{id}', 'destroy')->name('penghapusan.destroy');
         Route::post('restore/{id}', 'restore')->name('assets.restore.penghapusan');
 
+        Route::post('edit-status/{id}', 'updateStatus')->name('penghapusan.updateStatus');
+
+
         Route::get('/asets-penghapusan-export', 'export')->name('exportAsset.penghapusan');
     });
 
