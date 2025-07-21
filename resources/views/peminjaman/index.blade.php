@@ -53,7 +53,6 @@
     </div> --}}
 
 
-
     <div class="mb-4"></div>
     @if (Session::has('success'))
         <div class="alert alert-success" role="alert">
@@ -88,6 +87,7 @@
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
+                            <th>Deskripsi</th>
                             <th>Merk</th>
                             <th>BPKB</th>
                             <th>Polisi</th>
@@ -101,20 +101,25 @@
                     <tbody class="text-center">
                         @forelse ($asset_peminjaman as $asset)
                             <tr>
-                                <td>{{ $asset->kode_barang }}</td>
-                                <td>{{ $asset->nama_barang }}</td>
-                                <td>{{ $asset->merk }}</td>
-                                <td>{{ $asset->bpkb }}</td>
-                                <td>{{ $asset->polisi }}</td>
-                                <td>{{ $asset->tanggal_peminjaman }}</td>
-                                <td>{{ $asset->name }}</td>
-                                <td>{{ $asset->deskripsi }}</td>
+                                <td>{{ $asset->kode_barang ?? '-' }}</td>
+                                <td>{{ $asset->nama_barang ?? '-' }}</td>
+                                <td>{{ $asset->deskripsi ?? '-' }}</td>
+                                <td>{{ $asset->merk ?? '-' }}</td>
+                                <td>{{ $asset->bpkb ?? '-' }}</td>
+                                <td>{{ $asset->polisi ?? '-' }}</td>
+                                <td>{{ $asset->tanggal_peminjaman ?? '-' }}</td>
+                                <td>{{ $asset->name ?? '-' }}</td>
+                                <td>{{ $asset->deskripsi ?? '-' }}</td>
                                 <td>
                                     @if ($asset->status == 'request')
-                                        <span class="bg-warning px-2 rounded text-white">Menunggu</span>
+                                        <span class="bg-warning px-2 rounded text-white">Menunggu Peminjaman</span>
+                                    @elseif($asset->status == 'request_return')
+                                        <span class="bg-warning px-2 rounded text-white">Menunggu Pengembalian</span>
                                     @elseif($asset->status == 'approve')
-                                        <span class="bg-success px-2 rounded text-white">Disetujui</span>
-                                    @elseif($asset->status == 'Dikembalikan')
+                                        <span class="bg-success px-2 rounded text-white">Dipinjam</span>
+                                    @elseif($asset->status == 'reject_return')
+                                        <span class="bg-danger px-2 rounded text-white">Pengulangan Pengembalian</span>
+                                    @elseif($asset->status == 'approve_return')
                                         <span class="bg-primary px-2 rounded text-white">Dikembalikan</span>
                                     @endif
                                 </td>
@@ -132,7 +137,30 @@
                                                 data-toggle="modal"
                                                 data-target="#approveModal-{{ $asset->peminjaman_id }}">
                                                 <i class="fas fa-check-circle"></i>
-                                                <span> Setujui</span>
+                                                <span> Setujui Peminjaman</span>
+                                            </button>
+
+                                            <button class="btn btn-danger d-flex align-items-center gap-1"
+                                                data-toggle="modal"
+                                                data-target="#rejectModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-times-circle"></i>
+                                                <span> Tolak</span>
+                                            </button>
+                                        @endif
+
+                                        @if ($asset->status == 'request_return')
+                                            <button class="btn btn-success d-flex align-items-center gap-1"
+                                                data-toggle="modal"
+                                                data-target="#approveReturnModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-check-circle"></i>
+                                                <span> Setujui Pengembalian</span>
+                                            </button>
+
+                                            <button class="btn btn-danger d-flex align-items-center gap-1"
+                                                data-toggle="modal"
+                                                data-target="#rejectReturnModal-{{ $asset->peminjaman_id }}">
+                                                <i class="fas fa-times-circle"></i>
+                                                <span> Tolak Pengembalian </span>
                                             </button>
                                         @endif
 
@@ -167,7 +195,7 @@
                                             <form action="{{ route('approvePeminjaman', $asset->peminjaman_id) }}"
                                                 method="GET">
                                                 @csrf
-                                                <button type="submit" class="btn btn-success px-4">Setujui</button>
+                                                <button type="submit" class="btn btn-success px-4">Setujui Peminjaman</button>
                                             </form>
                                         </div>
                                     </div>
@@ -175,6 +203,119 @@
                             </div>
 
                             {{-- END Approve Modal  --}}
+
+                            {{-- Reject Modal  --}}
+                            <div class="modal fade" id="rejectModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="rejectLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow-lg rounded-lg">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="rejectLabel">Konfirmasi Penolakan</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                                            <p class="mb-2">Apakah kamu yakin ingin <strong>menolak</strong> peminjaman
+                                                aset ini?</p>
+                                            <small class="text-muted">Aksi ini tidak bisa dibatalkan.</small>
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('rejectPeminjaman', $asset->peminjaman_id) }}"
+                                                method="GET">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger px-4">Tolak</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- END Reject Modal  --}}
+
+                            {{-- Approve Return Modal  --}}
+                            <div class="modal fade" id="approveReturnModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="approveLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow-lg rounded-lg">
+                                        <div class="modal-header bg-success text-white">
+                                            <h5 class="modal-title" id="approveLabel">Konfirmasi Persetujuan Pengembalian</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <div class="row mb-4">
+                                                <div class="col-12 text-center">
+                                                    <img src="{{ $asset->bukti_pengembalian }}" alt="Gambar Barang"
+                                                        class="img-fluid rounded" style="max-height: 400px;">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <i class="fas fa-exclamation-circle fa-3x text-success mb-3"></i>
+                                                <p class="mb-2">Apakah kamu yakin ingin <strong>menyetujui</strong> pengembalian
+                                                aset ini?</p>
+                                                <small class="text-muted">Aksi ini tidak bisa dibatalkan.</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('approveReturnPeminjaman', $asset->peminjaman_id) }}"
+                                                method="GET">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success px-4">Setujui Pengembalian</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- END Approve Return Modal  --}}
+
+                            {{-- Reject Pengembalian Modal  --}}
+                            <div class="modal fade" id="rejectReturnModal-{{ $asset->peminjaman_id }}" tabindex="-1"
+                                role="dialog" aria-labelledby="rejectLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content shadow-lg rounded-lg">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="rejectLabel">Konfirmasi Penolakan Pengembalian</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body text-center">
+                                            <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                                            <p class="mb-2">Apakah kamu yakin ingin <strong>menolak</strong> pengembalian
+                                                aset ini?</p>
+                                            <small class="text-muted">Aksi ini tidak bisa dibatalkan.</small>
+                                        </div>
+
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                            <form action="{{ route('rejectReturnPeminjaman', $asset->peminjaman_id) }}"
+                                                method="GET">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger px-4">Tolak Pengembalian</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- END Reject Pengembalian Modal  --}}
 
                             <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $asset->id }}" tabindex="-1" role="dialog"
@@ -415,7 +556,6 @@
                                                     </ul>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"

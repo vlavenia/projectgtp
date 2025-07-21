@@ -20,6 +20,8 @@ class AuthController extends Controller
     {
         Validator::make($request->all(), [
             'name' => 'required',
+            'nip' => 'required',
+            'no_wa' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed',
         ])->validate();
@@ -28,7 +30,9 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => '4',
+            'role_id' => '3',
+            'nip' => $request->nip,
+            'no_wa' => $request->no_wa,
             // 'level' => 'Admin'
         ]);
 

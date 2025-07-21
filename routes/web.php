@@ -151,23 +151,27 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
 
     //Peminjaman
     Route::controller(PeminjamanController::class)->prefix('peminjaman')->group(function () {
-        //pengelola
+        //STAF PENGELOLA
         Route::get('', 'index')->name('peminjaman');
-        //staf
+        Route::get('approvePeminjaman/{id}', 'approvePeminjaman')->name('approvePeminjaman');
+        Route::get('rejectPeminjaman/{id}', 'rejectPeminjaman')->name('rejectPeminjaman');
+        Route::get('approveReturnPeminjaman/{id}', 'approveReturnPeminjaman')->name('approveReturnPeminjaman');
+        Route::get('rejectReturnPeminjaman/{id}', 'rejectReturnPeminjaman')->name('rejectReturnPeminjaman');
+        // Route::post('return/{id}', 'returnPeminjaman')->name('ReturnPeminjaman');
+        
+        //STAF BALAI
         Route::get('staf', 'peminjaman_staf')->name('peminjaman_staf');
         Route::put('edit', 'addPeminjaman')->name('peminjaman.addpeminjaman');
-        Route::post('return/{id}', 'returnPeminjaman')->name('ReturnPeminjaman');
+        Route::post('request-return/{id}', 'requestReturnPeminjaman')->name('requestReturnPeminjaman');
         Route::delete('destroy/{id}', 'destroyPeminjaman')->name('assets.destroy.peminjaman');
 
+        // OTHER
         Route::get('search-pengelola', 'search_pengelola')->name('search.pengelola');
         Route::get('search-staf', 'search_staf')->name('search.staf');
 
-
         // Route::post('edit/{id}', 'update')->name('peminjaman.update');
-
         // Route::get('/asets-mutasiKeluar-export', 'export')->name('exportAsset.peminjaman');
 
-        Route::get('approvePeminjaman/{id}', 'approvePeminjaman')->name('approvePeminjaman');
     });
 
     Route::controller(PenghapusanController::class)->prefix('penghapusan')->group(function () {

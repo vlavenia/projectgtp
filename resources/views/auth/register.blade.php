@@ -40,6 +40,18 @@
                     <span class="invalid-feedback">{{ $message }}</span>
                   @enderror
                 </div>
+                <div class="form-group">
+                  <input name="nip" type="number" class="form-control form-control-user @error('nip')is-invalid @enderror" id="exampleInputNIP" placeholder="NIP">
+                  @error('nip')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                  @enderror
+                </div>
+                <div class="form-group">
+                  <input name="no_wa" type="number" class="form-control form-control-user @error('no_wa')is-invalid @enderror" id="exampleInputNoWA" placeholder="No Whatsapp">
+                  @error('no_wa')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                  @enderror
+                </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
                     <input name="password" type="password" class="form-control form-control-user @error('password')is-invalid @enderror" id="exampleInputPassword" placeholder="Password">
