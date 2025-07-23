@@ -28,7 +28,7 @@ use App\Models\Asset;
 
 Route::get('/', function () {
     // return view('auth/login');
-    return view('dashboard');
+    return redirect()->route('assets');
 })->middleware('auth')->name('home');
 
 Route::controller(AuthController::class)->group(function () {

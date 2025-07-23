@@ -59,7 +59,17 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        $role = Auth::user()->role_id;
+
+        if ($role == 1) {
+            return redirect()->route('usermenu');
+        }else if($role == 2){
+            return redirect()->route('assets');
+        }else if($role == 3){
+            return redirect()->route('peminjaman_staf');
+        }else{
+            return redirect()->route('dashboard');
+        }
     }
 
     public function logout(Request $request)

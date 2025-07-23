@@ -14,11 +14,11 @@
      <hr class="sidebar-divider my-0">
 
      <!-- Nav Item - Dashboard -->
-     <li class="nav-item">
+     <!-- <li class="nav-item">
          <a class="nav-link" href="{{ route('dashboard') }}">
              <i class="fas fa-fw fa-tachometer-alt"></i>
              <span>Dashboard</span></a>
-     </li>
+     </li> -->
 
      {{-- <li class="nav-item">
          <a class="nav-link" href="/inventarisasi">
@@ -51,7 +51,7 @@
          </li>
 
          <!-- Start Menu Laporan -->
-         <li class="nav-item">
+         <!-- <li class="nav-item">
              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menulaporan"
                  aria-expanded="true" aria-controls="menulaporan">
                  <i class="fas fa-fw fa-calendar"></i>
@@ -64,7 +64,7 @@
                      <a class="collapse-item" href="{{ route('laporanPeminjaman') }}">Laporan Peminjaman</a>
                  </div>
              </div>
-         </li>
+         </li> -->
          <!-- End Menu Laporan -->
 
      @endif
