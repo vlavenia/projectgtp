@@ -24,7 +24,7 @@ class KerusakanController extends Controller
                                 'kerusakan.id as kerusakan_id',
                                 'kerusakan.tanggal_kerusakan as tanggal_kerusakan',
                                 'kerusakan.status as status',                            )
-                            ->where('status_id', '6')
+                            // ->where('status_id', '6')
                             ->paginate(10);
         // dd($asset_kerusakan);
         return view('kerusakan.index', compact('assets', 'asset_kerusakan'));

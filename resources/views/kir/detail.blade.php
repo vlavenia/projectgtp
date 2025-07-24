@@ -118,6 +118,12 @@
                                             <i class="fas far fa-eye p-1"> </i>
                                             <span> Detail</span>
                                         </button>
+
+                                        <button class="btn btn-danger d-flex align-items-center gap-1 mx-1" data-toggle="modal"
+                                            data-target="#deleteModal-{{ $asset->id }}">
+                                            <i class="fas fa-pencil-alt p-1"> </i>
+                                            <span> Hapus </span>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -314,8 +320,46 @@
                                         </div>
                                     </div>
                                 </div>
-                            <!-- End Edit Status -->
-                             @endforeach
+                                @endforeach
+                            <!-- End Delete KIR -->
+                             {{-- Approve Return Modal  --}}
+                             
+                             @foreach($asset_kir as $asset)
+                                <div class="modal fade" id="deleteModal-{{ $asset->id }}" tabindex="-1"
+                                    role="dialog" aria-labelledby="approveLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content shadow-lg rounded-lg">
+                                            <div class="modal-header bg-success text-white">
+                                                <h5 class="modal-title" id="approveLabel">Konfirmasi Penghapusan Data KIR</h5>
+                                                <button type="button" class="close text-white" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body text-center">
+                                                <div>
+                                                    <i class="fas fa-exclamation-circle fa-3x text-success mb-3"></i>
+                                                    <p class="mb-2">Apakah kamu yakin ingin <strong>menghapus</strong>
+                                                    aset ini dari KIR?</p>
+                                                    <small class="text-muted">Aksi ini tidak bisa dibatalkan.</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-dismiss="modal">Batal</button>
+                                                <form action="{{ route('deleteDetailKIR', $asset->id) }}"
+                                                    method="GET">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success px-4">Hapus</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            {{-- END Approve Return Modal  --}}
 
                         @empty
                             <tr>

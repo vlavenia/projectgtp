@@ -115,8 +115,15 @@ class KirController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function deleteDetailKIR(string $id)
     {
-        //
+        
+        $asset_kir = TransactionRuanganAsset::find($id);
+
+        if($asset_kir){
+            $asset_kir->delete();
+        }
+
+        return redirect()->back()->with('success', 'Asset detail KIR delete successfully');
     }
 }

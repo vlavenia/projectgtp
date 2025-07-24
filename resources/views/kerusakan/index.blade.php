@@ -98,11 +98,7 @@
                         <tr>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
-                            <th>Merk</th>
-                            <th>BPKB</th>
-                            <th>Polisi</th>
                             <th>Tanggal Kerusakan</th>
-                            <th>User</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -112,17 +108,17 @@
                             <tr>
                                 <td>{{ $asset->kode_barang }}</td>
                                 <td>{{ $asset->nama_barang }}</td>
-                                <td>{{ $asset->merk }}</td>
-                                <td>{{ $asset->bpkb }}</td>
-                                <td>{{ $asset->polisi }}</td>
                                 <td>{{ $asset->tanggal_kerusakan }}</td>
-                                <td>{{ $asset->name }}</td>
                                 <td>
-                                    @if ($asset->status)
-                                        <span class="bg-secondary text-white p-1 rounded">
-                                            {{ $asset->status }}
-                                        </span>
-                                    @endif
+                                @if ($asset->status)
+                                <span class="{{ $asset->status == 'Diperbaiki' ? 'bg-success' : 'bg-primary' }} 
+                                                text-white 
+                                                p-1 
+                                                rounded"
+                                >
+                                    {{ $asset->status }}
+                                </span>
+                            @endif
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
@@ -138,7 +134,7 @@
                                             <span> Detail</span>
                                         </button>
 
-                                        @if ($asset->status == 'Diperbaiki' || $asset->status == 'Diajukan')
+                                        <!-- @if ($asset->status == 'Diperbaiki' || $asset->status == 'Diajukan')
                                             <button class="btn btn-info d-flex align-items-center gap-1" data-toggle="modal"
                                                 data-target="#updateModal-{{ $asset->id }}">
                                                 <i class="fas far fa-eye"> </i>
@@ -150,7 +146,7 @@
                                                 <i class="fas far fa-eye"> </i>
                                                 <span> Restore</span>
                                             </button>
-                                        @endif
+                                        @endif -->
                                     </div>
                                 </td>
                             </tr>

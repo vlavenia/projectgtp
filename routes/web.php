@@ -147,6 +147,8 @@ Route::middleware(['auth', 'role:admin,balai,pengelola'])->group(function () {
         Route::delete('destroy/{id}', 'destroy')->name('assets.destroy.kir');
         Route::post('edit/{id}', 'update')->name('kir.update');
         Route::get('search', 'search')->name('assets.search.kir');
+        
+        Route::get('deleteDetailKIR/{id}', 'deleteDetailKIR')->name('deleteDetailKIR');
     });
 
     //Peminjaman
